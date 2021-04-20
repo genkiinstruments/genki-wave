@@ -1,8 +1,11 @@
 """
 This script is adopted from [here](https://github.com/atizo/pygame/blob/master/examples/midi.py)
 
+# MacOS and Windows
+
 Connecting the wave ring as a midi device via bluetooth should work out-of-the-box on Windows and MacOS.
 
+# Linux
 On Linux you might need to re-install `BlueZ` with support for midi as follows.
 Installation instructions for Linux. Taken from [here](https://tttapa.github.io/Pages/Ubuntu/Software-Installation/BlueZ.html)
 
@@ -45,7 +48,8 @@ try:
     import pygame.midi
 except ModuleNotFoundError as e:
     raise ModuleNotFoundError(
-        f"This script only depends on pygame, not the library so please install manually to run this script"
+        f"This script only depends on pygame, not the genki-wave library so please install 'pygame'"
+        f"manually to run this script"
     )
 
 
@@ -143,6 +147,10 @@ def input_main(device_id):
 
 
 def print_values(midi_events, previous_vals: list) -> list:
+    """Prints a 'data' midi event i.e. where there is information sent about roll/pitch/yaw
+
+    If an event of a certain type is not found, prints the last value for that event
+    """
     s = previous_vals
     for m_e in midi_events:
         if m_e.status == MidiStatus.DATA and m_e.data1 in movements_values:
@@ -169,6 +177,7 @@ def post_midi_events(midi_events, movement_type):
 
 
 def main():
+    print("Make sure your Wave is connected to your computer as a midi device")
     print_device_info()
     device_id, name = wave_input_device_info()
     if device_id is not None:
