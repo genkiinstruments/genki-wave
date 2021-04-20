@@ -7,7 +7,8 @@ Connecting the wave ring as a midi device via bluetooth should work out-of-the-b
 
 # Linux
 On Linux you might need to re-install `BlueZ` with support for midi as follows.
-Installation instructions for Linux. Taken from [here](https://tttapa.github.io/Pages/Ubuntu/Software-Installation/BlueZ.html)
+Installation instructions for Linux. Taken from
+[here](https://tttapa.github.io/Pages/Ubuntu/Software-Installation/BlueZ.html)
 
 ```
 sudo apt install libudev-dev libical-dev libreadline-dev libdbus-1-dev libasound2-dev
@@ -37,7 +38,7 @@ in the wrong place a way to fix it is to create a symbolic link to where the act
 An example for ubuntu (pygame searches in `/usr/lib/alsa-lib`)
 sudo ln -s /usr/lib/x86_64-linux-gnu/alsa-lib /usr/lib/alsa-lib
 
-Solution adapted from [here](https://stackoverflow.com/questions/57946421/im-trying-to-run-this-code-initialize-pygame-midi-code-but-it-returns-an-error)
+Solution adapted from [here](https://stackoverflow.com/questions/57946421/im-trying-to-run-this-code-initialize-pygame-midi-code-but-it-returns-an-error)  # noqa
 """
 import functools
 from enum import IntEnum
@@ -46,10 +47,10 @@ from typing import Optional, Tuple
 try:
     import pygame
     import pygame.midi
-except ModuleNotFoundError as e:
+except ModuleNotFoundError:
     raise ModuleNotFoundError(
-        f"This script only depends on pygame, not the genki-wave library so please install 'pygame'"
-        f"manually to run this script"
+        "This script only depends on pygame, not the genki-wave library so please install 'pygame'"
+        "manually to run this script"
     )
 
 
