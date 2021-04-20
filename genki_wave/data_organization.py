@@ -2,7 +2,7 @@ from dataclasses import dataclass, asdict, Field
 from enum import IntEnum
 from typing import Optional, Union
 
-from genki_wave.data_stream_manipulation import unpack_bytes, split_byte_data
+from .data_stream_manipulation import unpack_bytes, split_byte_data
 
 
 class ButtonId(IntEnum):
