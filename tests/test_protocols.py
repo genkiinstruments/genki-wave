@@ -1,12 +1,12 @@
 import pytest
 
-from pywave.genki_wave.protocols import (
+from genki_wave.protocols import (
     ProtocolThreadBluetooth,
     ProtocolAsyncioBluetooth,
     ProtocolThreadSerial,
     ProtocolAsyncioSerial,
 )
-from pywave.tests.constants import SERIAL_DATA, SERIAL_EXPECTED, BLUETOOTH_EXPECTED, BLUETOOTH_DATA
+from tests.constants import SERIAL_DATA, SERIAL_EXPECTED, BLUETOOTH_EXPECTED, BLUETOOTH_DATA
 
 
 @pytest.mark.parametrize(

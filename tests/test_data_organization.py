@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pytest
 
-from pywave.genki_wave.data_organization import flatten_nested_dataclass_fields, flatten_nested_dicts
+from genki_wave.data_organization import flatten_nested_dataclass_fields, flatten_nested_dicts
 
 
 @pytest.mark.parametrize(

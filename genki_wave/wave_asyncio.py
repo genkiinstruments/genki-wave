@@ -20,7 +20,7 @@ from genki_wave.protocols import (
     ProtocolAsyncioSerial,
     ProtocolThreadBluetooth,
 )
-from genki_wave.utils import get_serial_port
+from genki_wave.utils import get_serial_port, get_or_create_event_loop
 
 logging.basicConfig(format="%(levelname).4s:%(asctime)s [%(filename)s:%(lineno)d] - %(message)s ")
 logger = logging.getLogger(__name__)

@@ -2,9 +2,9 @@ from functools import partial
 
 import pytest
 
-from pywave.genki_wave.protocols import ProtocolAsyncioSerial, ProtocolAsyncioBluetooth
-from pywave.genki_wave.wave_asyncio import run_asyncio
-from pywave.tests.constants import BLUETOOTH_DATA, SERIAL_DATA
+from genki_wave.protocols import ProtocolAsyncioSerial, ProtocolAsyncioBluetooth
+from genki_wave.wave_asyncio import run_asyncio
+from tests.constants import BLUETOOTH_DATA, SERIAL_DATA
 
 
 async def producer_mock(protocol, comm, data):
