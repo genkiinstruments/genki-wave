@@ -3,16 +3,28 @@ import csv
 from pathlib import Path
 from typing import Union, Optional, TextIO
 
-from genki_wave.data_organization import ButtonEvent, DataPackage
+from .data_organization import ButtonEvent, DataPackage
 
 
-class DataCallback(abc.ABC):
+class WaveCallback(abc.ABC):
     @abc.abstractmethod
-    def register(self, data) -> None:
+    def _button_handler(self, data: ButtonEvent) -> None:
         pass
 
+    @abc.abstractmethod
+    def _data_handler(self, data: DataPackage) -> None:
+        pass
 
-class ButtonAndDataPrint(DataCallback):
+    def __call__(self, data: Union[ButtonEvent, DataPackage]) -> None:
+        if isinstance(data, ButtonEvent):
+            self._button_handler(data)
+        elif isinstance(data, DataPackage):
+            self._data_handler(data)
+        else:
+            raise ValueError(f"Got data of unexpected type {type(data)}")
+
+
+class ButtonAndDataPrint(WaveCallback):
     """
     Callback that prints out all button presses received and prints a data package every `print_data_every_n_seconds`
     seconds. Useful for debugging and testing.
@@ -22,12 +34,10 @@ class ButtonAndDataPrint(DataCallback):
     """
 
     def __init__(self, print_data_every_n_seconds: Optional[float] = None):
-        """"""
         self._last_time = None
         self._print_data_every_n_seconds = print_data_every_n_seconds
 
-    @staticmethod
-    def _button_handler(data: ButtonEvent) -> None:
+    def _button_handler(self, data: ButtonEvent) -> None:
         # We use `str` to force the `enum` to print the long version of the name e.g. `ButtonId.MIDDLE` instead of `1`
         print(f"Button: {str(data.button_id)}, Action: {str(data.action)}")
 
@@ -43,16 +53,8 @@ class ButtonAndDataPrint(DataCallback):
             print(data)
             self._last_time = data.timestamp_us
 
-    def register(self, data: Union[ButtonEvent, DataPackage]) -> None:
-        if isinstance(data, ButtonEvent):
-            self._button_handler(data)
-        elif isinstance(data, DataPackage):
-            self._data_handler(data)
-        else:
-            raise ValueError(f"Got data of unexpected type {type(data)}")
 
-
-class CsvOutput(DataCallback):
+class CsvOutput(WaveCallback):
     """
     Exports the streaming data to a csv file, flushing it to the file every `flush_len` elements
 
@@ -100,11 +102,3 @@ class CsvOutput(DataCallback):
                 writer.writerow(d)
 
         self._reset_state()
-
-    def register(self, data: Union[ButtonEvent, DataPackage]) -> None:
-        if isinstance(data, ButtonEvent):
-            self._button_handler(data)
-        elif isinstance(data, DataPackage):
-            self._data_handler(data)
-        else:
-            raise ValueError(f"Got data of unexpected type {type(data)}")

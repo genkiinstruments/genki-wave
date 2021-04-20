@@ -1,7 +1,9 @@
+import asyncio
 from functools import partial
 
 import pytest
 
+from genki_wave.callbacks import ButtonAndDataPrint
 from genki_wave.protocols import ProtocolAsyncioSerial, ProtocolAsyncioBluetooth
 from genki_wave.wave_asyncio import run_asyncio
 from tests.constants import BLUETOOTH_DATA, SERIAL_DATA
@@ -9,7 +11,8 @@ from tests.constants import BLUETOOTH_DATA, SERIAL_DATA
 
 async def producer_mock(protocol, comm, data):
     for packet in data:
-        # The number of bytes read here is an arbitrary power of 2 on the order of a size of a single package
+        # This `sleep` is a hack to make sure consumer and producer take turns
+        await asyncio.sleep(0.001)
         await protocol.data_received(packet)
 
     # Only the consumer can cancel, it calls `is_cancel` so this is a hack to make sure the consumer cancels
@@ -22,4 +25,4 @@ async def producer_mock(protocol, comm, data):
 )
 def test_run_asyncio(protocol_factory, data):
     # An 'integration' test
-    run_asyncio([], partial(producer_mock, data=data), protocol_factory())
+    run_asyncio([ButtonAndDataPrint(5)], partial(producer_mock, data=data), protocol_factory())

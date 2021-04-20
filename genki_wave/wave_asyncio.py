@@ -7,7 +7,7 @@ import serial
 from bleak import BleakClient
 from serial_asyncio import open_serial_connection
 
-from genki_wave.callbacks import DataCallback
+from genki_wave.callbacks import WaveCallback
 from genki_wave.constants import API_CHAR_UUID, BAUDRATE
 from genki_wave.data_organization import (
     ButtonAction,
@@ -128,7 +128,7 @@ async def producer_serial(protocol: ProtocolAsyncioSerial, comm: CommunicateCanc
 async def consumer(
     protocol: Union[ProtocolAsyncioBluetooth, ProtocolAsyncioSerial],
     comm: CommunicateCancel,
-    callbacks: Union[List[DataCallback], Tuple[DataCallback]],
+    callbacks: Union[List[WaveCallback], Tuple[WaveCallback]],
 ) -> None:
     """
 
@@ -149,11 +149,11 @@ async def consumer(
             break
 
         for callback in callbacks:
-            callback.register(package)
+            callback(package)
 
 
 def run_asyncio(
-    callbacks: List[DataCallback], producer: Callable, protocol: Union[ProtocolAsyncioBluetooth, ProtocolAsyncioSerial]
+    callbacks: List[WaveCallback], producer: Callable, protocol: Union[ProtocolAsyncioBluetooth, ProtocolAsyncioSerial]
 ):
     """Runs a producer and a consumer, hooking into the data using the supplied callbacks
 
@@ -171,7 +171,7 @@ def run_asyncio(
     get_or_create_event_loop().run_until_complete(tasks)
 
 
-def run_asyncio_bluetooth(callbacks: List[DataCallback], ble_address) -> None:
+def run_asyncio_bluetooth(callbacks: List[WaveCallback], ble_address) -> None:
     """
 
     Args:
@@ -185,7 +185,7 @@ def run_asyncio_bluetooth(callbacks: List[DataCallback], ble_address) -> None:
     run_asyncio(callbacks, partial(producer_bluetooth, ble_address=ble_address), ProtocolAsyncioBluetooth())
 
 
-def run_asyncio_serial(callbacks: List[DataCallback], serial_port: str = None) -> None:
+def run_asyncio_serial(callbacks: List[WaveCallback], serial_port: str = None) -> None:
     """
 
     Args:
