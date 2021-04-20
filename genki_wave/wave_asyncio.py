@@ -149,7 +149,7 @@ async def consumer(
             break
 
         for callback in callbacks:
-            callback.register(package)
+            callback(package)
 
 
 def run_asyncio(
