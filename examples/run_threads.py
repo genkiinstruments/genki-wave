@@ -37,6 +37,7 @@ if __name__ == '__main__':
         main(ReaderThreadSerial.from_port())
     else:
         if args.ble_address is None:
+            print("No bluetooth address (--ble-address) supplied, searching for devices...")
             run_discover_bluetooth()
         else:
             reader_thread = ReaderThreadBluetooth.from_address(args.ble_address)

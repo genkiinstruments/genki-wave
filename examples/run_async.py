@@ -29,6 +29,7 @@ def main():
         run_asyncio_serial(callbacks)
     else:
         if args.ble_address is None:
+            print("No bluetooth address (--ble-address) supplied, searching for devices...")
             run_discover_bluetooth()
         else:
             run_asyncio_bluetooth(callbacks, args.ble_address)
