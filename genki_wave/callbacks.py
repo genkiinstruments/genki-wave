@@ -22,9 +22,7 @@ class ButtonAndDataPrint(DataCallback):
     """
 
     def __init__(self, print_data_every_n_seconds: Optional[float] = None):
-        """
-
-        """
+        """"""
         self._last_time = None
         self._print_data_every_n_seconds = print_data_every_n_seconds
 

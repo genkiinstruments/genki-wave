@@ -16,7 +16,7 @@ setup(
     long_description=readme,
     author="Robert Torfason",
     author_email="robert@genkiinstruments.com",
-    url='https://github.com/genkiinstruments/genki-wave',
+    url="https://github.com/genkiinstruments/genki-wave",
     license=license,
     packages=find_packages(exclude=("tests", "docs")),
     install_requires=requires,

@@ -75,7 +75,9 @@ def bleak_callback(protocol: Union[ProtocolAsyncioBluetooth, ProtocolThreadBluet
 
 
 async def producer_bluetooth(
-    protocol: Union[ProtocolAsyncioBluetooth, ProtocolThreadBluetooth], comm: CommunicateCancel, ble_address: str,
+    protocol: Union[ProtocolAsyncioBluetooth, ProtocolThreadBluetooth],
+    comm: CommunicateCancel,
+    ble_address: str,
 ) -> None:
     """
 

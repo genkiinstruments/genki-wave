@@ -14,6 +14,7 @@ from pywave.genki_wave.wave_asyncio import producer_bluetooth, CommunicateCancel
 
 class ReaderThreadSerial(ReaderThread):
     """A thin wrapper around `serial.threaded.ReaderThread`"""
+
     def __init__(self, serial_instance: Serial, protocol_factory: Callable):
         super().__init__(serial_instance, protocol_factory)
 
@@ -32,6 +33,7 @@ class ReaderThreadBluetooth(threading.Thread):
     Note: Since the library used to interface with bluetooth only has an interface using `asyncio`, this
           uses the async code in a separate thread and then gets the data from there.
     """
+
     def __init__(self, ble_address, protocol_factory):
         super().__init__(daemon=True)
         self.protocol_factory = protocol_factory

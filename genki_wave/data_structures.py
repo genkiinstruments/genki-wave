@@ -4,6 +4,7 @@ from typing import Optional, Any
 
 class QueueWithPop(Queue):
     """A Queue that implements convenience methods"""
+
     def __init__(self, maxsize=0):
         super().__init__(maxsize=maxsize)
 
