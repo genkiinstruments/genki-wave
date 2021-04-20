@@ -168,7 +168,7 @@ def run_asyncio(
 
     # Note: The consumer and the producer send the data via the instance of `protocol`
     tasks = asyncio.gather(*[producer(protocol, comm), consumer(protocol, comm, callbacks)])
-    asyncio.get_event_loop().run_until_complete(tasks)
+    get_or_create_event_loop().run_until_complete(tasks)
 
 
 def run_asyncio_bluetooth(callbacks: List[DataCallback], ble_address) -> None:

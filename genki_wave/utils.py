@@ -35,8 +35,8 @@ def get_serial_port() -> str:
 DEFAULT_BLE_ADDRESS = {LINUX: "D5:73:DB:85:B4:A1", DARWIN: "b171e34e-9454-4d6d-b3d0-8740b703b66e"}[get_system_name()]
 
 
-def get_or_create_and_set_event_loop():
-    """Gets the running event loop or creates a new one
+def get_or_create_event_loop():
+    """Gets the running event loop or creates a new one and returns it
 
     By default `asyncio` only starts an event loop in the main thread, so when running in another thread we
     need to explicitly create a new event loop for that particular thread.
