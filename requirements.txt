@@ -1,0 +1,4 @@
+bleak==0.11.0
+cobs==1.1.4
+pyserial==3.5
+pyserial-asyncio==0.5
