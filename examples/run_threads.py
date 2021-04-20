@@ -1,7 +1,7 @@
 import time
 
-from pywave.genki_wave.data_organization import ButtonEvent
-from pywave.genki_wave.wave_threading import ReaderThreadSerial
+from genki_wave.data_organization import ButtonEvent
+from genki_wave.wave_threading import ReaderThreadSerial
 
 # with WaveReaderBluetoothThread.from_address("EE:16:6F:7D:70:2A") as wave:
 with ReaderThreadSerial.from_port() as wave:
