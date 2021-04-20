@@ -27,7 +27,7 @@ def main(reader_thread):
             last_time = time.time()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--ble-address", type=str)
     parser.add_argument("--use-serial", action="store_true")
