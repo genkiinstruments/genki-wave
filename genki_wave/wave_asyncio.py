@@ -7,20 +7,20 @@ import serial
 from bleak import BleakClient
 from serial_asyncio import open_serial_connection
 
-from pywave.genki_wave.callbacks import DataCallback
-from pywave.genki_wave.constants import API_CHAR_UUID, BAUDRATE
-from pywave.genki_wave.data_organization import (
+from genki_wave.callbacks import DataCallback
+from genki_wave.constants import API_CHAR_UUID, BAUDRATE
+from genki_wave.data_organization import (
     ButtonAction,
     ButtonEvent,
     ButtonId,
     DataPackage,
 )
-from pywave.genki_wave.protocols import (
+from genki_wave.protocols import (
     ProtocolAsyncioBluetooth,
     ProtocolAsyncioSerial,
     ProtocolThreadBluetooth,
 )
-from pywave.genki_wave.utils import get_serial_port
+from genki_wave.utils import get_serial_port
 
 logging.basicConfig(format="%(levelname).4s:%(asctime)s [%(filename)s:%(lineno)d] - %(message)s ")
 logger = logging.getLogger(__name__)

@@ -3,7 +3,7 @@ import csv
 from pathlib import Path
 from typing import Union, Optional, TextIO
 
-from .data_organization import ButtonEvent, DataPackage
+from genki_wave.data_organization import ButtonEvent, DataPackage
 
 
 class DataCallback(abc.ABC):

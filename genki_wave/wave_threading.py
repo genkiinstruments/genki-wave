@@ -6,10 +6,10 @@ import serial
 from serial import Serial
 from serial.threaded import ReaderThread
 
-from pywave.genki_wave.constants import BAUDRATE
-from pywave.genki_wave.protocols import ProtocolThreadSerial, ProtocolThreadBluetooth
-from pywave.genki_wave.utils import get_serial_port, get_or_create_and_set_event_loop
-from pywave.genki_wave.wave_asyncio import producer_bluetooth, CommunicateCancel
+from genki_wave.constants import BAUDRATE
+from genki_wave.protocols import ProtocolThreadSerial, ProtocolThreadBluetooth
+from genki_wave.utils import get_serial_port, get_or_create_and_set_event_loop
+from genki_wave.wave_asyncio import producer_bluetooth, CommunicateCancel
 
 
 class ReaderThreadSerial(ReaderThread):
