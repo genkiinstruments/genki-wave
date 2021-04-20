@@ -1,9 +1,9 @@
 import argparse
 import time
 
-from genki_wave.data_organization import ButtonEvent
-from genki_wave.wave_discover import run_discover_bluetooth
-from genki_wave.wave_threading import ReaderThreadSerial, ReaderThreadBluetooth
+from genki_wave.data.organization import ButtonEvent
+from genki_wave.discover import run_discover_bluetooth
+from genki_wave.threading import ReaderThreadSerial, ReaderThreadBluetooth
 
 
 def main(reader_thread):

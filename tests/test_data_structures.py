@@ -1,6 +1,6 @@
 import pytest
 
-from genki_wave.data_structures import QueueWithPop
+from genki_wave.data.data_structures import QueueWithPop
 
 
 @pytest.mark.parametrize("insert", [[1, 2, 3], []])

@@ -1,4 +1,4 @@
-from genki_wave.data_organization import (
+from genki_wave.data.organization import (
     ButtonAction,
     ButtonEvent,
     ButtonId,

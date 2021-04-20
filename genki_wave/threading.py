@@ -9,7 +9,7 @@ from serial.threaded import ReaderThread
 from genki_wave.constants import BAUDRATE
 from genki_wave.protocols import ProtocolThreadSerial, ProtocolThreadBluetooth
 from genki_wave.utils import get_serial_port, get_or_create_event_loop
-from genki_wave.wave_asyncio import producer_bluetooth, CommunicateCancel
+from genki_wave.asyncio import producer_bluetooth, CommunicateCancel
 
 
 class ReaderThreadSerial(ReaderThread):
