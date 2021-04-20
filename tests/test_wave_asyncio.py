@@ -5,7 +5,7 @@ import pytest
 
 from genki_wave.callbacks import ButtonAndDataPrint
 from genki_wave.protocols import ProtocolAsyncioSerial, ProtocolAsyncioBluetooth
-from genki_wave.wave_asyncio import run_asyncio
+from genki_wave.asyncio import run_asyncio
 from tests.constants import BLUETOOTH_DATA, SERIAL_DATA
 
 

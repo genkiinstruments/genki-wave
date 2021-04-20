@@ -2,8 +2,8 @@ import argparse
 from pathlib import Path
 
 from genki_wave.callbacks import ButtonAndDataPrint, CsvOutput
-from genki_wave.wave_asyncio import run_asyncio_bluetooth, run_asyncio_serial
-from genki_wave.wave_discover import run_discover_bluetooth
+from genki_wave.asyncio import run_asyncio_bluetooth, run_asyncio_serial
+from genki_wave.discover import run_discover_bluetooth
 
 
 def main():
