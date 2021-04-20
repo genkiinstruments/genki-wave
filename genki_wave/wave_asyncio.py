@@ -20,7 +20,7 @@ from genki_wave.protocols import (
     ProtocolAsyncioSerial,
     ProtocolThreadBluetooth,
 )
-from genki_wave.utils import get_serial_port
+from genki_wave.utils import get_serial_port, get_or_create_event_loop
 
 logging.basicConfig(format="%(levelname).4s:%(asctime)s [%(filename)s:%(lineno)d] - %(message)s ")
 logger = logging.getLogger(__name__)
@@ -168,7 +168,7 @@ def run_asyncio(
 
     # Note: The consumer and the producer send the data via the instance of `protocol`
     tasks = asyncio.gather(*[producer(protocol, comm), consumer(protocol, comm, callbacks)])
-    asyncio.get_event_loop().run_until_complete(tasks)
+    get_or_create_event_loop().run_until_complete(tasks)
 
 
 def run_asyncio_bluetooth(callbacks: List[DataCallback], ble_address) -> None:

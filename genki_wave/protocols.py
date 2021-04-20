@@ -160,5 +160,5 @@ class ProtocolThreadBluetooth(ProtocolAbc):
         self.queue.put(data)
 
     @property
-    def queue(self) -> Queue:
+    def queue(self) -> QueueWithPop:
         return self._queue
