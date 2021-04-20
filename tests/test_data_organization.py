@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from wave.data_organization import (
+from genki_wave.data_organization import (
     ButtonAction,
     ButtonEvent,
     ButtonId,
