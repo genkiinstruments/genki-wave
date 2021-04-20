@@ -42,6 +42,8 @@ jobs:
           architecture: 'x64' # (x64 or x86)
       # Needed for bleak tests
       - name: Install Bluez on Ubuntu
+        run: sudo apt install -y bluez
+      - name: pip install
         run: pip install -r requirements.txt
       - name: Run tests
         run: pytest .
