@@ -9,7 +9,7 @@ from serial_asyncio import open_serial_connection
 
 from genki_wave.callbacks import WaveCallback
 from genki_wave.constants import API_CHAR_UUID, BAUDRATE
-from genki_wave.data.data_organization import (
+from genki_wave.data.organization import (
     ButtonAction,
     ButtonEvent,
     ButtonId,

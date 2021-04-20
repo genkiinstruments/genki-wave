@@ -9,7 +9,7 @@ from cobs import cobs
 from serial.threaded import Packetizer
 
 from genki_wave.data.data_structures import QueueWithPop
-from genki_wave.data.data_organization import process_byte_data
+from genki_wave.data.organization import process_byte_data
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
