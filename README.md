@@ -1,6 +1,15 @@
 # Wave
 Python interface for the wave ring
 
+# Installation
+Currently the only way to install is to clone the repository and pip install from there
+
+```bash
+git clone git@github.com:genkiinstruments/genki-wave.git
+cd genki-wave
+python -m pip install .
+```
+
 # Quickstart
 ## MIDI
 The simplest way to start is to run `examples/run_midi.py`. That script does not depend on this library, only
