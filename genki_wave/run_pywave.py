@@ -9,16 +9,16 @@ import serial
 from bleak import BleakClient, discover
 from serial_asyncio import open_serial_connection
 
-from .callbacks import ButtonAndDataPrint, DataCallback, CsvOutput
-from .data_organization import (
+from genki_wave.callbacks import ButtonAndDataPrint, DataCallback, CsvOutput
+from genki_wave.data_organization import (
     ButtonAction,
     ButtonEvent,
     ButtonId,
     DataPackage,
     process_byte_data,
 )
-from .data_stream_manipulation import PacketizerSerial
-from .utils import get_serial_port
+from genki_wave.data_stream_manipulation import PacketizerSerial
+from genki_wave.utils import get_serial_port
 
 API_CHAR_UUID = "f3402ea2-d017-11e9-bb65-2a2ae2dbcce4"
 BAUDRATE = 921600

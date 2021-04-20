@@ -3,7 +3,7 @@ import csv
 from pathlib import Path
 from typing import Union, Optional, TextIO
 
-from .data_organization import ButtonEvent, DataPackage
+from genki_wave.data_organization import ButtonEvent, DataPackage
 
 
 class DataCallback(abc.ABC):
@@ -22,9 +22,7 @@ class ButtonAndDataPrint(DataCallback):
     """
 
     def __init__(self, print_data_every_n_seconds: Optional[float] = None):
-        """
-
-        """
+        """"""
         self._last_time = None
         self._print_data_every_n_seconds = print_data_every_n_seconds
 
