@@ -1,35 +1,10 @@
-import asyncio
 import logging
 import struct
 from typing import Any, Union
-from typing import Tuple, Callable
-
-from cobs import cobs
-from serial.threaded import Packetizer
+from typing import Tuple
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
-
-class PacketizerSerial(Packetizer):
-    """Defines how to handle the bytes from the serial connection
-
-    Note: This is a slight abuse of subclassing since we are pulling in more functionality than is needed
-    """
-
-    def __init__(self, callback: Callable, sender="serial"):
-        super().__init__()
-        self._callback = callback
-        self._sender = sender
-
-    def handle_packet(self, packet: bytearray) -> None:
-        try:
-            data = cobs.decode(packet)
-            # This way of calling the callback assumes the callback is async. Update if the callback passed
-            # is not async.
-            asyncio.create_task(self._callback(self._sender, data))
-        except cobs.DecodeError:
-            logger.debug("Got an exception decoding serial packet", exc_info=True)
 
 
 def unpack_bytes(dtype: str, raw_bytes: Union[bytearray, bytes]) -> Any:

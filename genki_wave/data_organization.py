@@ -2,7 +2,7 @@ from dataclasses import dataclass, asdict, Field
 from enum import IntEnum
 from typing import Optional, Union
 
-from genki_wave.data_stream_manipulation import unpack_bytes, split_byte_data
+from .data_stream_manipulation import unpack_bytes, split_byte_data
 
 
 class ButtonId(IntEnum):
@@ -16,15 +16,15 @@ class ButtonId(IntEnum):
 class ButtonAction(IntEnum):
     """The action of a button package
 
-    Up: button was released
-    Down: button was pressed down
-    Long: a long press was detected (button down for 500ms or more)
-    LongUp: a long press was released (I think you'll always receive an "up" event with this one)
-    ExtraLong: an extra long press was detected (I think it's about 2000ms, you'll always receive a "long" event
-               before this one)
-    ExtraLongUp: button released after an "extra long" press
-    Click: button was pressed down and released "quickly" (i.e. not triggering a long press)
-    DoubleClick: not used
+        Up: button was released
+        Down: button was pressed down
+        Long: a long press was detected (button down for 500ms or more)
+        LongUp: a long press was released (I think you'll always receive an "up" event with this one)
+        ExtraLong: an extra long press was detected (I think it's about 2000ms, you'll always receive a "long" event
+                   before this one)
+        ExtraLongUp: button released after an "extra long" press
+        Click: button was pressed down and released "quickly" (i.e. not triggering a long press)
+        DoubleClick: not used
     """
 
     UP = 0
