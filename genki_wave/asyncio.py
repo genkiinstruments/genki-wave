@@ -196,4 +196,5 @@ def run_asyncio_serial(callbacks: List[WaveCallback], serial_port: str = None) -
 
     """
     serial_port = get_serial_port() if serial_port is None else serial_port
+
     run_asyncio(callbacks, partial(producer_serial, serial_port=serial_port), ProtocolAsyncioSerial())
