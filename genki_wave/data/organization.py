@@ -1,8 +1,7 @@
-from dataclasses import dataclass, asdict, Field
+from dataclasses import Field, asdict, dataclass
 from enum import IntEnum
+from struct import calcsize, unpack_from
 from typing import Optional, Union
-
-from .stream_manipulation import unpack_bytes, split_byte_data
 
 
 class ButtonId(IntEnum):
@@ -37,11 +36,6 @@ class ButtonAction(IntEnum):
     DOUBLECLICK = 7
 
 
-class PackageType(IntEnum):
-    DATA = 1
-    BUTTON = 4
-
-
 @dataclass(frozen=True)
 class Point3d:
     x: float
@@ -62,6 +56,40 @@ class Euler3d:
     roll: float
     pitch: float
     yaw: float
+
+
+class PackageType(IntEnum):
+    DATA = 1
+    BUTTON = 4
+
+
+@dataclass(frozen=True)
+class PackageMetadata:
+    """
+    This is called `Query` in the public types header file. Splits out and holds the metadata from each package received
+    """
+
+    _fmt = "<BBH"
+
+    type: int
+    id: int
+    length: int
+
+    @classmethod
+    def from_raw_bytes(cls, raw_bytes: Union[bytearray, bytes]) -> "PackageMetadata":
+        # TODO(robert): Check annotation `bytes`
+        q_type, q_id, q_length = unpack_from(cls._fmt, raw_bytes, 0)
+        return cls(type=q_type, id=q_id, length=q_length)
+
+    @classmethod
+    def split_out_data_from_metadata(cls, raw_bytes: Union[bytearray, bytes]) -> Union[bytearray, bytes]:
+        return raw_bytes[calcsize(cls._fmt) :]
+
+    def is_data(self):
+        return self.id == PackageType.DATA
+
+    def is_button(self):
+        return self.id == PackageType.BUTTON
 
 
 @dataclass(frozen=True)
@@ -85,20 +113,20 @@ class DataPackage:
     timestamp_us: int
 
     @classmethod
-    def from_raw_bytes(cls, data: bytearray) -> "DataPackage":
+    def from_raw_bytes(cls, data: Union[bytearray, bytes]) -> "DataPackage":
         # Explanation for the byte structure: https://docs.python.org/3/library/struct.html
         assert len(data) == cls._raw_len, f"Expected the raw data to have len={cls._raw_len}, got len={len(data)}"
         # These parameters encode how to read the bytes from the stream
         return cls(
-            gyro=Point3d(*unpack_bytes("<3f", data[0:12])),
-            accel=Point3d(*unpack_bytes("<3f", data[12:24])),
-            raw_pose=Point4d(*unpack_bytes("<4f", data[24:40])),
-            current_pose=Point4d(*unpack_bytes("<4f", data[40:56])),
-            euler=Euler3d(*unpack_bytes("<3f", data[56:68])),
-            linear=Point3d(*unpack_bytes("<3f", data[68:80])),
-            peak=unpack_bytes("?", data[80:81]),
-            peak_norm_velocity=unpack_bytes("<f", data[81:85]),
-            timestamp_us=unpack_bytes("<Q", data[85:93]),
+            gyro=Point3d(*unpack_from("<3f", data, 0)),
+            accel=Point3d(*unpack_from("<3f", data, 12)),
+            raw_pose=Point4d(*unpack_from("<4f", data, 24)),
+            current_pose=Point4d(*unpack_from("<4f", data, 40)),
+            euler=Euler3d(*unpack_from("<3f", data, 56)),
+            linear=Point3d(*unpack_from("<3f", data, 68)),
+            peak=unpack_from("?", data, 80)[0],
+            peak_norm_velocity=unpack_from("<f", data, 81)[0],
+            timestamp_us=unpack_from("<Q", data, 85)[0],
         )
 
     def as_flat_dict(self) -> dict:
@@ -123,10 +151,10 @@ class ButtonEvent:
     action: ButtonAction
 
     @classmethod
-    def from_raw_bytes(cls, data: bytearray) -> "ButtonEvent":
+    def from_raw_bytes(cls, data: Union[bytearray, bytes]) -> "ButtonEvent":
         """Decomposes raw bytes into its components and returns them as a :class:`ButtonEvent`"""
         assert len(data) == cls._raw_len, f"Expected to get {cls._raw_len} bytes, got {len(data)}"
-        button_id, action = unpack_bytes("<BB", data[: cls._relevant_idx])
+        button_id, action = unpack_from("<BB", data, 0)
         return cls(button_id=ButtonId(button_id), action=ButtonAction(action))
 
 
@@ -207,13 +235,14 @@ def process_byte_data(raw_bytes: Union[bytearray, bytes]) -> Union[ButtonEvent, 
     Returns:
         The resulting button event or data
     """
-    q_type, q_id, length, data_values = split_byte_data(raw_bytes)
+    q = PackageMetadata.from_raw_bytes(raw_bytes)
+    raw_bytes_data = PackageMetadata.split_out_data_from_metadata(raw_bytes)
 
-    if q_id == PackageType.DATA:
-        package = DataPackage.from_raw_bytes(data_values)
-    elif q_id == PackageType.BUTTON:
-        package = ButtonEvent.from_raw_bytes(data_values)
+    if q.is_data():
+        package = DataPackage.from_raw_bytes(raw_bytes_data)
+    elif q.is_button():
+        package = ButtonEvent.from_raw_bytes(raw_bytes_data)
     else:
-        raise ValueError(f"Unknown value for q_id={q_id}")
+        raise ValueError(f"Unknown value for q.id={q.id}")
 
     return package
