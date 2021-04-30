@@ -119,16 +119,16 @@ class DataPackage:
         assert len(data) == cls._raw_len, f"Expected the raw data to have len={cls._raw_len}, got len={len(data)}"
         # These parameters encode how to read the bytes from the stream
         return cls(
-            gyro=Point3d(*unpack_bytes("<3f", data[0:12])),
-            accel=Point3d(*unpack_bytes("<3f", data[12:24])),
-            mag=Point3d(*unpack_bytes("<3f", data[24:36])),
-            raw_pose=Point4d(*unpack_bytes("<4f", data[36:52])),
-            current_pose=Point4d(*unpack_bytes("<4f", data[52:68])),
-            euler=Euler3d(*unpack_bytes("<3f", data[68:80])),
-            linear=Point3d(*unpack_bytes("<3f", data[80:92])),
-            peak=unpack_bytes("?", data[92:93]),
-            peak_norm_velocity=unpack_bytes("<f", data[93:97]),
-            timestamp_us=unpack_bytes("<Q", data[97:105]),
+            gyro=Point3d(*unpack_from("<3f", data, 0)),
+            accel=Point3d(*unpack_from("<3f", data, 12)),
+            mag=Point3d(*unpack_from("<3f", data, 24)),
+            raw_pose=Point4d(*unpack_from("<4f", data, 36)),
+            current_pose=Point4d(*unpack_from("<4f", data, 52)),
+            euler=Euler3d(*unpack_from("<3f", data, 68)),
+            linear=Point3d(*unpack_from("<3f", data, 80)),
+            peak=unpack_from("?", data, 92)[0],
+            peak_norm_velocity=unpack_from("<f", data, 93)[0],
+            timestamp_us=unpack_from("<Q", data, 97)[0],
         )
 
     def as_flat_dict(self) -> dict:
