@@ -62,10 +62,11 @@ def prepare_protocol_as_bleak_callback(protocol: ProtocolThreadBluetooth) -> Cal
 def bleak_callback(protocol: Union[ProtocolAsyncioBluetooth, ProtocolThreadBluetooth]) -> Callable:
     """Wraps our protocol as a callback with the correct signature bleak expects
 
-    NOTE: Bleak checks if a function is a co-routine and we need to take care that `asyncio.Queue` is correctly
-          handled so we have 2 different wrappers, one for a regular `queue.Queue` and one for `asyncio.Queue`.
+    NOTE: 1) Bleak checks if a function is a co-routine so we need to wrap the class method into an `async` function
+          and 2) we need to take care that `asyncio.Queue` is correctly handled so we have 2 different wrappers, one
+          for a regular `queue.Queue` and one for `asyncio.Queue`.
     """
-    if isinstance(protocol, ProtocolAsyncioBluetooth):
+    if isinstance(protocol, (ProtocolAsyncioBluetooth, ProtocolAsyncioSerial)):
         callback = prepare_protocol_as_bleak_callback_asyncio(protocol)
     elif isinstance(protocol, ProtocolThreadBluetooth):
         callback = prepare_protocol_as_bleak_callback(protocol)
@@ -90,6 +91,7 @@ async def producer_bluetooth(
     callback = bleak_callback(protocol)
     async with BleakClient(ble_address) as client:
         await client.start_notify(API_CHAR_UUID, callback)
+        client.write_gatt_char()
 
         while True:
             # This `while` loop and `asyncio.sleep` statement is some magic that is required to continually fetch

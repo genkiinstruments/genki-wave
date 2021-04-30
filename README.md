@@ -10,6 +10,9 @@ cd genki-wave
 python -m pip install .
 ```
 
+## Setting up the Wave ring
+TODO
+
 # Quickstart
 ## MIDI
 The simplest way to start is to run `examples/run_midi.py`. That script does not depend on this library, only

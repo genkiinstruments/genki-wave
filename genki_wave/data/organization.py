@@ -1,6 +1,7 @@
+import struct
 from dataclasses import Field, asdict, dataclass
 from enum import IntEnum
-from struct import calcsize, unpack_from
+from struct import unpack_from
 from typing import Optional, Union
 
 
@@ -58,9 +59,28 @@ class Euler3d:
     yaw: float
 
 
+class DeviceMode(IntEnum):
+    PRESET = 100
+    SOFTWAVE = 101
+    WAVEFRONT = 102
+    API = 103
+
+
 class PackageType(IntEnum):
-    DATA = 1
-    BUTTON = 4
+    REQUEST = 1
+    RESPONSE = 2
+    STREAM = 3
+
+
+class PackageId(IntEnum):
+    DATASTREAM = 1
+    BATTERY_STATUS = 2
+    DEVICE_INFO = 3
+    BUTTON_EVENT = 4
+    DEVICE_MODE = 5
+    IDENTIFY = 6
+    RECENTER = 7
+    DISPLAY_FRAME = 8
 
 
 @dataclass(frozen=True)
@@ -71,25 +91,28 @@ class PackageMetadata:
 
     _fmt = "<BBH"
 
-    type: int
-    id: int
-    length: int
+    type: PackageType
+    id: PackageId
+    payload_size: int
 
     @classmethod
     def from_raw_bytes(cls, raw_bytes: Union[bytearray, bytes]) -> "PackageMetadata":
         # TODO(robert): Check annotation `bytes`
-        q_type, q_id, q_length = unpack_from(cls._fmt, raw_bytes, 0)
-        return cls(type=q_type, id=q_id, length=q_length)
+        q_type, q_id, q_payload_size = unpack_from(cls._fmt, raw_bytes, 0)
+        return cls(type=q_type, id=q_id, payload_size=q_payload_size)
 
     @classmethod
     def split_out_data_from_metadata(cls, raw_bytes: Union[bytearray, bytes]) -> Union[bytearray, bytes]:
-        return raw_bytes[calcsize(cls._fmt) :]
+        return raw_bytes[struct.calcsize(cls._fmt) :]
+
+    def to_bytes(self) -> bytes:
+        return struct.pack(self._fmt, self.type, self.id, self.payload_size)
 
     def is_data(self):
-        return self.id == PackageType.DATA
+        return self.id == PackageId.DATASTREAM
 
     def is_button(self):
-        return self.id == PackageType.BUTTON
+        return self.id == PackageId.BUTTON_EVENT
 
 
 @dataclass(frozen=True)
