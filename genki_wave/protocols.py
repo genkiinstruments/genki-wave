@@ -26,7 +26,7 @@ class ProtocolAbc(abc.ABC):
            a queue, these protocols defined here also have an instance of a Queue and allow consumer and
            producer, or different threads, to communicate.
 
-    The flow of data is `data_received` -> `handle_packet` -> `handle_data`, see docstrings for explanations
+    The flow of data is `data_received` -> `handle_packet`, see docstrings for explanations
     """
 
     @abc.abstractmethod
@@ -36,12 +36,7 @@ class ProtocolAbc(abc.ABC):
 
     @abc.abstractmethod
     def handle_packet(self, packet: Union[bytearray, bytes]) -> None:
-        """Decodes the packets if there is some decoding required before"""
-        pass
-
-    @abc.abstractmethod
-    def handle_data(self, data: Union[bytearray, bytes]) -> None:
-        """Transforms the data into a useful representation and registers it in a queue"""
+        """Decodes and transforms the data into a useful representation and registers it in a queue"""
         pass
 
     @property
@@ -59,10 +54,7 @@ class ProtocolAsyncioBluetooth(ProtocolAbc):
         await self.handle_packet(data)
 
     async def handle_packet(self, packet: Union[bytearray, bytes]) -> None:
-        await self.handle_data(packet)
-
-    async def handle_data(self, data: Union[bytearray, bytes]) -> None:
-        data = process_byte_data(data)
+        data = process_byte_data(packet)
         await self.queue.put(data)
 
     @property
@@ -90,20 +82,15 @@ class ProtocolAsyncioSerial(ProtocolAbc, Packetizer):
     async def handle_packet(self, packet: bytearray) -> None:
         try:
             data = cobs.decode(packet)
+            data = process_byte_data(data)
         except cobs.DecodeError:
             logger.debug("Got an exception decoding serial packet", exc_info=True)
             return
-        await self.handle_data(data)
-
-    async def handle_data(self, data):
-        # This way of calling the callback assumes the callback is async. Update if the callback passed
-        # is not async.
-        try:
-            data = process_byte_data(data)
         except (struct.error, ValueError):
             # Sometimes in the beginning we get garbage data
             logger.debug("Got input data error", exc_info=True)
             return
+
         await self.queue.put(data)
 
     @property
@@ -126,14 +113,10 @@ class ProtocolThreadSerial(ProtocolAbc, Packetizer):
     def handle_packet(self, packet):
         try:
             data = cobs.decode(packet)
+            data = process_byte_data(data)
         except cobs.DecodeError:
             logger.debug("Got an exception decoding serial packet", exc_info=True)
             return
-        self.handle_data(data)
-
-    def handle_data(self, data):
-        try:
-            data = process_byte_data(data)
         except (struct.error, ValueError):
             # Sometimes in the beginning we get garbage data
             logger.debug("Got input data error", exc_info=True)
@@ -153,10 +136,7 @@ class ProtocolThreadBluetooth(ProtocolAbc):
         self.handle_packet(data)
 
     def handle_packet(self, packet):
-        self.handle_data(packet)
-
-    def handle_data(self, data):
-        data = process_byte_data(data)
+        data = process_byte_data(packet)
         self.queue.put(data)
 
     @property
