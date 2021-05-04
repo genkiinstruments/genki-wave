@@ -3,13 +3,13 @@ import asyncio
 import logging
 import struct
 from queue import Queue
-from typing import Union
+from typing import Optional, Union
 
 from cobs import cobs
 from serial.threaded import Packetizer
 
 from genki_wave.data.data_structures import QueueWithPop
-from genki_wave.data.organization import process_byte_data
+from genki_wave.data.organization import ButtonEvent, DataPackage, process_byte_data
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -46,7 +46,7 @@ class ProtocolAbc(abc.ABC):
         pass
 
 
-def _handle_packet(packet):
+def _handle_packet(packet: Union[bytearray, bytes]) -> Optional[Union[ButtonEvent, DataPackage]]:
     try:
         data = cobs.decode(packet)
         data = process_byte_data(data)
