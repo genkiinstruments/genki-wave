@@ -1,21 +1,10 @@
 import pytest
 
-from genki_wave.protocols import (
-    ProtocolThreadBluetooth,
-    ProtocolAsyncioBluetooth,
-    ProtocolThreadSerial,
-    ProtocolAsyncioSerial,
-)
-from tests.constants import SERIAL_DATA, SERIAL_EXPECTED, BLUETOOTH_EXPECTED, BLUETOOTH_DATA
+from genki_wave.protocols import ProtocolAsyncio, ProtocolThread
+from tests.constants import DATA, EXPECTED
 
 
-@pytest.mark.parametrize(
-    "data, expected, protocol_factory",
-    (
-        (SERIAL_DATA, SERIAL_EXPECTED, ProtocolThreadSerial),
-        (BLUETOOTH_DATA, BLUETOOTH_EXPECTED, ProtocolThreadBluetooth),
-    ),
-)
+@pytest.mark.parametrize("data, expected, protocol_factory", ((DATA, EXPECTED, ProtocolThread),))
 def test_protocol_thread_serial(data, expected, protocol_factory):
     protocol = protocol_factory()
     for input_raw in data:
@@ -31,13 +20,7 @@ def test_protocol_thread_serial(data, expected, protocol_factory):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize(
-    "data, expected, protocol_factory",
-    (
-        (SERIAL_DATA, SERIAL_EXPECTED, ProtocolAsyncioSerial),
-        (BLUETOOTH_DATA, BLUETOOTH_EXPECTED, ProtocolAsyncioBluetooth),
-    ),
-)
+@pytest.mark.parametrize("data, expected, protocol_factory", ((DATA, EXPECTED, ProtocolAsyncio),))
 async def test_protocol_asyncio_serial(data, expected, protocol_factory):
     protocol = protocol_factory()
     for input_raw in data:

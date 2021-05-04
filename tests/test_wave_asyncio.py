@@ -4,9 +4,9 @@ from functools import partial
 import pytest
 
 from genki_wave.callbacks import ButtonAndDataPrint
-from genki_wave.protocols import ProtocolAsyncioSerial, ProtocolAsyncioBluetooth
+from genki_wave.protocols import ProtocolAsyncio
 from genki_wave.asyncio import run_asyncio
-from tests.constants import BLUETOOTH_DATA, SERIAL_DATA
+from tests.constants import BLUETOOTH_DATA, DATA
 
 
 async def producer_mock(protocol, comm, data):
@@ -20,9 +20,7 @@ async def producer_mock(protocol, comm, data):
     comm.is_cancel = lambda x: True
 
 
-@pytest.mark.parametrize(
-    "protocol_factory, data", ((ProtocolAsyncioBluetooth, BLUETOOTH_DATA), (ProtocolAsyncioSerial, SERIAL_DATA))
-)
+@pytest.mark.parametrize("protocol_factory, data", ((ProtocolAsyncio, DATA),))
 def test_run_asyncio(protocol_factory, data):
     # An 'integration' test
     run_asyncio([ButtonAndDataPrint(5)], partial(producer_mock, data=data), protocol_factory())
