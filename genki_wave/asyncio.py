@@ -15,6 +15,7 @@ from genki_wave.data.organization import (
     ButtonId,
     DataPackage,
 )
+from genki_wave.data.writing import get_start_api_package
 from genki_wave.protocols import (
     ProtocolAsyncioBluetooth,
     ProtocolAsyncioSerial,
@@ -91,7 +92,7 @@ async def producer_bluetooth(
     callback = bleak_callback(protocol)
     async with BleakClient(ble_address) as client:
         await client.start_notify(API_CHAR_UUID, callback)
-        client.write_gatt_char()
+        await client.write_gatt_char(API_CHAR_UUID, get_start_api_package(), False)
 
         while True:
             # This `while` loop and `asyncio.sleep` statement is some magic that is required to continually fetch
