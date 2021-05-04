@@ -46,23 +46,7 @@ class ProtocolAbc(abc.ABC):
         pass
 
 
-class ProtocolAsyncioBluetooth(ProtocolAbc):
-    def __init__(self):
-        self._queue = asyncio.Queue()
-
-    async def data_received(self, data: Union[bytearray, bytes]) -> None:
-        await self.handle_packet(data)
-
-    async def handle_packet(self, packet: Union[bytearray, bytes]) -> None:
-        data = process_byte_data(packet)
-        await self.queue.put(data)
-
-    @property
-    def queue(self):
-        return self._queue
-
-
-class ProtocolAsyncioSerial(ProtocolAbc, Packetizer):
+class ProtocolAsyncio(ProtocolAbc, Packetizer):
     """Defines how to handle the bytes from the serial connection
 
     Note: This is a slight abuse of subclassing since we are pulling in more functionality than is needed
@@ -98,7 +82,7 @@ class ProtocolAsyncioSerial(ProtocolAbc, Packetizer):
         return self._queue
 
 
-class ProtocolThreadSerial(ProtocolAbc, Packetizer):
+class ProtocolThread(ProtocolAbc, Packetizer):
     def __init__(self):
         super().__init__()
         self._queue = QueueWithPop()
@@ -125,20 +109,4 @@ class ProtocolThreadSerial(ProtocolAbc, Packetizer):
 
     @property
     def queue(self) -> Queue:
-        return self._queue
-
-
-class ProtocolThreadBluetooth(ProtocolAbc):
-    def __init__(self):
-        self._queue = QueueWithPop()
-
-    def data_received(self, data: Union[bytearray, bytes]) -> None:
-        self.handle_packet(data)
-
-    def handle_packet(self, packet):
-        data = process_byte_data(packet)
-        self.queue.put(data)
-
-    @property
-    def queue(self) -> QueueWithPop:
         return self._queue
