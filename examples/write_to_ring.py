@@ -1,41 +1,15 @@
 import asyncio
 import time
 
-from bleak import BleakClient
-import struct
-
 import serial
-from cobs import cobs
+from bleak import BleakClient
 from serial_asyncio import open_serial_connection
 
 from genki_wave.asyncio import bleak_callback
-from genki_wave.constants import API_CHAR_UUID, BAUDRATE
-from genki_wave.data.organization import DeviceMode, PackageId, PackageMetadata, PackageType
-from genki_wave.protocols import ProtocolAsyncioBluetooth, ProtocolAsyncioSerial
+from genki_wave.constants import BAUDRATE
+from genki_wave.data.writing import get_start_api_package
+from genki_wave.protocols import ProtocolAsyncioSerial
 from genki_wave.utils import get_serial_port
-
-
-def pad_with_zero_byte(b: bytes) -> bytes:
-    return b + struct.pack("<B", 0)
-
-
-def create_package_to_write(p: PackageMetadata, data: bytes) -> bytes:
-    # TODO(robert): `data` should probably be a class that has a `to_bytes` method
-    if p.payload_size != len(data):
-        raise ValueError(
-            f"Expected payload_size and the size of the data to match. Got {p.payload_size} and {len(data)}"
-        )
-    b_tot = p.to_bytes() + data
-    b_encoded = cobs.encode(b_tot)
-    b_buffer = pad_with_zero_byte(b_encoded)
-    return b_buffer
-
-
-def start_api_package():
-    return create_package_to_write(
-        PackageMetadata(type=PackageType.REQUEST, id=PackageId.DEVICE_MODE, payload_size=1),
-        struct.pack("<B", DeviceMode.API.value),
-    )
 
 
 def my_callback(data_received):
@@ -52,7 +26,7 @@ async def producer_bluetooth(ble_address: str, api_char: str) -> None:
         print("Start notify")
         await client.start_notify(api_char, callback)
         print("Write gatt")
-        await client.write_gatt_char(api_char, start_api_package(), False)
+        await client.write_gatt_char(api_char, get_start_api_package(), False)
 
         print("Start loop")
         for i in range(100):
@@ -74,7 +48,7 @@ async def run(_protocol: ProtocolAsyncioSerial, _serial_port: str):
     print("Trying to open a serial")
     reader, writer = await open_serial_connection(url=_serial_port, baudrate=BAUDRATE, parity=serial.PARITY_EVEN)
     print("Trying to write")
-    writer.write(start_api_package())
+    writer.write(get_start_api_package())
     print("Trying to read")
     while True:
         packet = await reader.read(n=128)
