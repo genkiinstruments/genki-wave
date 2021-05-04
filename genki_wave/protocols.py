@@ -71,14 +71,14 @@ class ProtocolAsyncio(ProtocolAbc, Packetizer):
         super().__init__()
         self._queue = asyncio.Queue()
 
-    async def data_received(self, data):
+    async def data_received(self, data: Union[bytearray, bytes]) -> None:
         """Buffer received data, find TERMINATOR, call handle_packet"""
         self.buffer.extend(data)
         while self.TERMINATOR in self.buffer:
             packet, self.buffer = self.buffer.split(self.TERMINATOR, 1)
             await self.handle_packet(packet)
 
-    async def handle_packet(self, packet: bytearray) -> None:
+    async def handle_packet(self, packet: Union[bytearray, bytes]) -> None:
         data = _handle_packet(packet)
         if data is None:
             return
@@ -94,14 +94,14 @@ class ProtocolThread(ProtocolAbc, Packetizer):
         super().__init__()
         self._queue = QueueWithPop()
 
-    def data_received(self, data):
+    def data_received(self, data: Union[bytearray, bytes]) -> None:
         """Buffer received data, find TERMINATOR, call handle_packet"""
         self.buffer.extend(data)
         while self.TERMINATOR in self.buffer:
             packet, self.buffer = self.buffer.split(self.TERMINATOR, 1)
             self.handle_packet(packet)
 
-    def handle_packet(self, packet):
+    def handle_packet(self, packet: Union[bytearray, bytes]) -> None:
         data = _handle_packet(packet)
         if data is None:
             return
