@@ -46,6 +46,21 @@ class ProtocolAbc(abc.ABC):
         pass
 
 
+def _handle_packet(packet):
+    try:
+        data = cobs.decode(packet)
+        data = process_byte_data(data)
+    except cobs.DecodeError:
+        logger.debug("Got an exception decoding serial packet", exc_info=True)
+        return None
+    except (struct.error, ValueError):
+        # Sometimes in the beginning we get garbage data
+        logger.debug("Got input data error", exc_info=True)
+        return None
+
+    return data
+
+
 class ProtocolAsyncio(ProtocolAbc, Packetizer):
     """Defines how to handle the bytes from the serial connection
 
@@ -64,17 +79,9 @@ class ProtocolAsyncio(ProtocolAbc, Packetizer):
             await self.handle_packet(packet)
 
     async def handle_packet(self, packet: bytearray) -> None:
-        try:
-            data = cobs.decode(packet)
-            data = process_byte_data(data)
-        except cobs.DecodeError:
-            logger.debug("Got an exception decoding serial packet", exc_info=True)
+        data = _handle_packet(packet)
+        if data is None:
             return
-        except (struct.error, ValueError):
-            # Sometimes in the beginning we get garbage data
-            logger.debug("Got input data error", exc_info=True)
-            return
-
         await self.queue.put(data)
 
     @property
@@ -95,15 +102,8 @@ class ProtocolThread(ProtocolAbc, Packetizer):
             self.handle_packet(packet)
 
     def handle_packet(self, packet):
-        try:
-            data = cobs.decode(packet)
-            data = process_byte_data(data)
-        except cobs.DecodeError:
-            logger.debug("Got an exception decoding serial packet", exc_info=True)
-            return
-        except (struct.error, ValueError):
-            # Sometimes in the beginning we get garbage data
-            logger.debug("Got input data error", exc_info=True)
+        data = _handle_packet(packet)
+        if data is None:
             return
         self.queue.put(data)
 
