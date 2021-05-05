@@ -20,7 +20,7 @@ async def producer_mock(protocol, comm, data):
     comm.is_cancel = lambda x: True
 
 
-@pytest.mark.parametrize("data", (BLUETOOTH_DATA, SERIAL_DATA))
+@pytest.mark.parametrize("data", (BLUETOOTH_DATA, SERIAL_DATA), ids=["bluetooth", "serial"])
 def test_run_asyncio(data):
     # An 'integration' test
     run_asyncio([ButtonAndDataPrint(5)], partial(producer_mock, data=data), ProtocolAsyncio())
