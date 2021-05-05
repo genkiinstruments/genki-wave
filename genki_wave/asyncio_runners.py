@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from functools import partial
-from typing import Union, List, Callable, Tuple
+from typing import Callable, List, Tuple, Union
 
 import serial
 from bleak import BleakClient
@@ -17,7 +17,7 @@ from genki_wave.data.organization import (
 )
 from genki_wave.data.writing import get_start_api_package
 from genki_wave.protocols import ProtocolAsyncio, ProtocolThread
-from genki_wave.utils import get_serial_port, get_or_create_event_loop
+from genki_wave.utils import get_or_create_event_loop, get_serial_port
 
 logging.basicConfig(format="%(levelname).4s:%(asctime)s [%(filename)s:%(lineno)d] - %(message)s ")
 logger = logging.getLogger(__name__)

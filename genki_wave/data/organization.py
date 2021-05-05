@@ -21,7 +21,7 @@ class ButtonAction(IntEnum):
     Long: a long press was detected (button down for 500ms or more)
     LongUp: a long press was released (I think you'll always receive an "up" event with this one)
     ExtraLong: an extra long press was detected (I think it's about 2000ms, you'll always receive a "long" event
-               before this one)
+    before this one)
     ExtraLongUp: button released after an "extra long" press
     Click: button was pressed down and released "quickly" (i.e. not triggering a long press)
     DoubleClick: not used
