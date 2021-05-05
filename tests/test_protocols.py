@@ -1,23 +1,14 @@
 import pytest
 
-from genki_wave.protocols import (
-    ProtocolThreadBluetooth,
-    ProtocolAsyncioBluetooth,
-    ProtocolThreadSerial,
-    ProtocolAsyncioSerial,
-)
-from tests.constants import SERIAL_DATA, SERIAL_EXPECTED, BLUETOOTH_EXPECTED, BLUETOOTH_DATA
+from genki_wave.protocols import ProtocolAsyncio, ProtocolThread
+from tests.constants import BLUETOOTH_DATA, BLUETOOH_EXPECTED, SERIAL_DATA, SERIAL_EXPECTED
 
 
 @pytest.mark.parametrize(
-    "data, expected, protocol_factory",
-    (
-        (SERIAL_DATA, SERIAL_EXPECTED, ProtocolThreadSerial),
-        (BLUETOOTH_DATA, BLUETOOTH_EXPECTED, ProtocolThreadBluetooth),
-    ),
+    "data, expected", ((BLUETOOTH_DATA, BLUETOOH_EXPECTED), (SERIAL_DATA, SERIAL_EXPECTED)), ids=["bluetooth", "serial"]
 )
-def test_protocol_thread_serial(data, expected, protocol_factory):
-    protocol = protocol_factory()
+def test_protocol_thread(data, expected):
+    protocol = ProtocolThread()
     for input_raw in data:
         protocol.data_received(input_raw)
     actual = protocol.queue.pop_all()
@@ -32,19 +23,17 @@ def test_protocol_thread_serial(data, expected, protocol_factory):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "data, expected, protocol_factory",
-    (
-        (SERIAL_DATA, SERIAL_EXPECTED, ProtocolAsyncioSerial),
-        (BLUETOOTH_DATA, BLUETOOTH_EXPECTED, ProtocolAsyncioBluetooth),
-    ),
+    "data, expected", ((BLUETOOTH_DATA, BLUETOOH_EXPECTED), (SERIAL_DATA, SERIAL_EXPECTED)), ids=["bluetooth", "serial"]
 )
-async def test_protocol_asyncio_serial(data, expected, protocol_factory):
-    protocol = protocol_factory()
+async def test_protocol_asyncio(data, expected):
+    protocol = ProtocolAsyncio()
     for input_raw in data:
         await protocol.data_received(input_raw)
 
     actual = []
-    for i in range(len(expected)):
+    # TODO(robert): This is wrong? Should not be len of expected
+    # for i in range(len(expected)):
+    while not protocol.queue.empty():
         actual.append(await protocol.queue.get())
 
     # pytest provides a much nicer output if we loop and compare each individually

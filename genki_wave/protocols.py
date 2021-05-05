@@ -3,13 +3,13 @@ import asyncio
 import logging
 import struct
 from queue import Queue
-from typing import Union
+from typing import Optional, Union
 
 from cobs import cobs
 from serial.threaded import Packetizer
 
 from genki_wave.data.data_structures import QueueWithPop
-from genki_wave.data.organization import process_byte_data
+from genki_wave.data.organization import ButtonEvent, DataPackage, process_byte_data
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -46,23 +46,22 @@ class ProtocolAbc(abc.ABC):
         pass
 
 
-class ProtocolAsyncioBluetooth(ProtocolAbc):
-    def __init__(self):
-        self._queue = asyncio.Queue()
+def _handle_packet(packet: Union[bytearray, bytes]) -> Optional[Union[ButtonEvent, DataPackage]]:
+    try:
+        data = cobs.decode(packet)
+        data = process_byte_data(data)
+    except cobs.DecodeError:
+        logger.debug("Got an exception decoding serial packet", exc_info=True)
+        return None
+    except (struct.error, ValueError):
+        # Sometimes in the beginning we get garbage data
+        logger.debug("Got input data error", exc_info=True)
+        return None
 
-    async def data_received(self, data: Union[bytearray, bytes]) -> None:
-        await self.handle_packet(data)
-
-    async def handle_packet(self, packet: Union[bytearray, bytes]) -> None:
-        data = process_byte_data(packet)
-        await self.queue.put(data)
-
-    @property
-    def queue(self):
-        return self._queue
+    return data
 
 
-class ProtocolAsyncioSerial(ProtocolAbc, Packetizer):
+class ProtocolAsyncio(ProtocolAbc, Packetizer):
     """Defines how to handle the bytes from the serial connection
 
     Note: This is a slight abuse of subclassing since we are pulling in more functionality than is needed
@@ -72,25 +71,17 @@ class ProtocolAsyncioSerial(ProtocolAbc, Packetizer):
         super().__init__()
         self._queue = asyncio.Queue()
 
-    async def data_received(self, data):
+    async def data_received(self, data: Union[bytearray, bytes]) -> None:
         """Buffer received data, find TERMINATOR, call handle_packet"""
         self.buffer.extend(data)
         while self.TERMINATOR in self.buffer:
             packet, self.buffer = self.buffer.split(self.TERMINATOR, 1)
             await self.handle_packet(packet)
 
-    async def handle_packet(self, packet: bytearray) -> None:
-        try:
-            data = cobs.decode(packet)
-            data = process_byte_data(data)
-        except cobs.DecodeError:
-            logger.debug("Got an exception decoding serial packet", exc_info=True)
+    async def handle_packet(self, packet: Union[bytearray, bytes]) -> None:
+        data = _handle_packet(packet)
+        if data is None:
             return
-        except (struct.error, ValueError):
-            # Sometimes in the beginning we get garbage data
-            logger.debug("Got input data error", exc_info=True)
-            return
-
         await self.queue.put(data)
 
     @property
@@ -98,47 +89,24 @@ class ProtocolAsyncioSerial(ProtocolAbc, Packetizer):
         return self._queue
 
 
-class ProtocolThreadSerial(ProtocolAbc, Packetizer):
+class ProtocolThread(ProtocolAbc, Packetizer):
     def __init__(self):
         super().__init__()
         self._queue = QueueWithPop()
 
-    def data_received(self, data):
+    def data_received(self, data: Union[bytearray, bytes]) -> None:
         """Buffer received data, find TERMINATOR, call handle_packet"""
         self.buffer.extend(data)
         while self.TERMINATOR in self.buffer:
             packet, self.buffer = self.buffer.split(self.TERMINATOR, 1)
             self.handle_packet(packet)
 
-    def handle_packet(self, packet):
-        try:
-            data = cobs.decode(packet)
-            data = process_byte_data(data)
-        except cobs.DecodeError:
-            logger.debug("Got an exception decoding serial packet", exc_info=True)
-            return
-        except (struct.error, ValueError):
-            # Sometimes in the beginning we get garbage data
-            logger.debug("Got input data error", exc_info=True)
+    def handle_packet(self, packet: Union[bytearray, bytes]) -> None:
+        data = _handle_packet(packet)
+        if data is None:
             return
         self.queue.put(data)
 
     @property
     def queue(self) -> Queue:
-        return self._queue
-
-
-class ProtocolThreadBluetooth(ProtocolAbc):
-    def __init__(self):
-        self._queue = QueueWithPop()
-
-    def data_received(self, data: Union[bytearray, bytes]) -> None:
-        self.handle_packet(data)
-
-    def handle_packet(self, packet):
-        data = process_byte_data(packet)
-        self.queue.put(data)
-
-    @property
-    def queue(self) -> QueueWithPop:
         return self._queue
