@@ -4,9 +4,9 @@ from genki_wave.protocols import ProtocolAsyncio, ProtocolThread
 from tests.constants import BLUETOOTH_DATA, BLUETOOH_EXPECTED, SERIAL_DATA, SERIAL_EXPECTED
 
 
-@pytest.mark.parametrize("data, expected, protocol_factory", ((DATA, EXPECTED, ProtocolThread),))
-def test_protocol_thread(data, expected, protocol_factory):
-    protocol = protocol_factory()
+@pytest.mark.parametrize("data, expected", ((BLUETOOTH_DATA, BLUETOOH_EXPECTED), (SERIAL_DATA, SERIAL_EXPECTED)), ids=["bluetooth", "serial"])
+def test_protocol_thread(data, expected):
+    protocol = ProtocolThread()
     for input_raw in data:
         protocol.data_received(input_raw)
     actual = protocol.queue.pop_all()
@@ -20,9 +20,9 @@ def test_protocol_thread(data, expected, protocol_factory):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("data, expected, protocol_factory", ((DATA, EXPECTED, ProtocolAsyncio),))
-async def test_protocol_asyncio(data, expected, protocol_factory):
-    protocol = protocol_factory()
+@pytest.mark.parametrize("data, expected", ((BLUETOOTH_DATA, BLUETOOH_EXPECTED), (SERIAL_DATA, SERIAL_EXPECTED)), ids=["bluetooth", "serial"])
+async def test_protocol_asyncio(data, expected):
+    protocol = ProtocolAsyncio()
     for input_raw in data:
         await protocol.data_received(input_raw)
 
