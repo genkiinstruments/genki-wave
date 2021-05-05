@@ -9,6 +9,13 @@ git clone git@github.com:genkiinstruments/genki-wave.git
 cd genki-wave
 python -m pip install .
 ```
+or
+```
+python -m pip install -e .
+```
+If you want to change the code after installing
+
+This package has only been tested in `python 3.8`
 
 ## Setting up the Wave ring
 TODO
