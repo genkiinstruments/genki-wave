@@ -15,11 +15,8 @@ from genki_wave.data.organization import (
     ButtonId,
     DataPackage,
 )
-from genki_wave.protocols import (
-    ProtocolAsyncioBluetooth,
-    ProtocolAsyncioSerial,
-    ProtocolThreadBluetooth,
-)
+from genki_wave.data.writing import get_start_api_package
+from genki_wave.protocols import ProtocolAsyncio, ProtocolThread
 from genki_wave.utils import get_serial_port, get_or_create_event_loop
 
 logging.basicConfig(format="%(levelname).4s:%(asctime)s [%(filename)s:%(lineno)d] - %(message)s ")
@@ -43,7 +40,7 @@ class CommunicateCancel:
         return button_event.button_id == ButtonId.TOP and button_event.action == ButtonAction.EXTRALONG
 
 
-def prepare_protocol_as_bleak_callback_asyncio(protocol: ProtocolAsyncioBluetooth) -> Callable:
+def prepare_protocol_as_bleak_callback_asyncio(protocol: ProtocolAsyncio) -> Callable:
     async def _inner(sender: str, data: bytearray) -> None:
         # NOTE: `bleak` expects a function with this signature
         await protocol.data_received(data)
@@ -51,7 +48,7 @@ def prepare_protocol_as_bleak_callback_asyncio(protocol: ProtocolAsyncioBluetoot
     return _inner
 
 
-def prepare_protocol_as_bleak_callback(protocol: ProtocolThreadBluetooth) -> Callable:
+def prepare_protocol_as_bleak_callback(protocol: ProtocolThread) -> Callable:
     def _inner(sender: str, data: bytearray) -> None:
         # NOTE: `bleak` expects a function with this signature
         protocol.data_received(data)
@@ -59,15 +56,16 @@ def prepare_protocol_as_bleak_callback(protocol: ProtocolThreadBluetooth) -> Cal
     return _inner
 
 
-def bleak_callback(protocol: Union[ProtocolAsyncioBluetooth, ProtocolThreadBluetooth]) -> Callable:
+def bleak_callback(protocol: ProtocolAsyncio) -> Callable:
     """Wraps our protocol as a callback with the correct signature bleak expects
 
-    NOTE: Bleak checks if a function is a co-routine and we need to take care that `asyncio.Queue` is correctly
-          handled so we have 2 different wrappers, one for a regular `queue.Queue` and one for `asyncio.Queue`.
+    NOTE: 1) Bleak checks if a function is a co-routine so we need to wrap the class method into an `async` function
+          and 2) we need to take care that `asyncio.Queue` is correctly handled so we have 2 different wrappers, one
+          for a regular `queue.Queue` and one for `asyncio.Queue`.
     """
-    if isinstance(protocol, ProtocolAsyncioBluetooth):
+    if isinstance(protocol, ProtocolAsyncio):
         callback = prepare_protocol_as_bleak_callback_asyncio(protocol)
-    elif isinstance(protocol, ProtocolThreadBluetooth):
+    elif isinstance(protocol, ProtocolThread):
         callback = prepare_protocol_as_bleak_callback(protocol)
     else:
         raise ValueError(f"Unknown protocol type {type(protocol)}")
@@ -75,7 +73,7 @@ def bleak_callback(protocol: Union[ProtocolAsyncioBluetooth, ProtocolThreadBluet
 
 
 async def producer_bluetooth(
-    protocol: Union[ProtocolAsyncioBluetooth, ProtocolThreadBluetooth], comm: CommunicateCancel, ble_address: str,
+    protocol: Union[ProtocolAsyncio, ProtocolThread], comm: CommunicateCancel, ble_address: str,
 ) -> None:
     """
 
@@ -90,6 +88,7 @@ async def producer_bluetooth(
     callback = bleak_callback(protocol)
     async with BleakClient(ble_address) as client:
         await client.start_notify(API_CHAR_UUID, callback)
+        await client.write_gatt_char(API_CHAR_UUID, get_start_api_package(), False)
 
         while True:
             # This `while` loop and `asyncio.sleep` statement is some magic that is required to continually fetch
@@ -103,7 +102,7 @@ async def producer_bluetooth(
         await client.stop_notify(API_CHAR_UUID)
 
 
-async def producer_serial(protocol: ProtocolAsyncioSerial, comm: CommunicateCancel, serial_port: str):
+async def producer_serial(protocol: ProtocolAsyncio, comm: CommunicateCancel, serial_port: str):
     """
 
     Args:
@@ -114,7 +113,8 @@ async def producer_serial(protocol: ProtocolAsyncioSerial, comm: CommunicateCanc
     Returns:
 
     """
-    reader, _ = await open_serial_connection(url=serial_port, baudrate=BAUDRATE, parity=serial.PARITY_EVEN)
+    reader, writer = await open_serial_connection(url=serial_port, baudrate=BAUDRATE, parity=serial.PARITY_EVEN)
+    writer.write(get_start_api_package())
     while True:
         # The number of bytes read here is an arbitrary power of 2 on the order of a size of a single package
         packet = await reader.read(n=128)
@@ -126,9 +126,7 @@ async def producer_serial(protocol: ProtocolAsyncioSerial, comm: CommunicateCanc
 
 
 async def consumer(
-    protocol: Union[ProtocolAsyncioBluetooth, ProtocolAsyncioSerial],
-    comm: CommunicateCancel,
-    callbacks: Union[List[WaveCallback], Tuple[WaveCallback]],
+    protocol: ProtocolAsyncio, comm: CommunicateCancel, callbacks: Union[List[WaveCallback], Tuple[WaveCallback]],
 ) -> None:
     """
 
@@ -152,9 +150,7 @@ async def consumer(
             callback(package)
 
 
-def run_asyncio(
-    callbacks: List[WaveCallback], producer: Callable, protocol: Union[ProtocolAsyncioBluetooth, ProtocolAsyncioSerial]
-):
+def run_asyncio(callbacks: List[WaveCallback], producer: Callable, protocol: ProtocolAsyncio):
     """Runs a producer and a consumer, hooking into the data using the supplied callbacks
 
     Args:
@@ -182,7 +178,7 @@ def run_asyncio_bluetooth(callbacks: List[WaveCallback], ble_address) -> None:
     Returns:
 
     """
-    run_asyncio(callbacks, partial(producer_bluetooth, ble_address=ble_address), ProtocolAsyncioBluetooth())
+    run_asyncio(callbacks, partial(producer_bluetooth, ble_address=ble_address), ProtocolAsyncio())
 
 
 def run_asyncio_serial(callbacks: List[WaveCallback], serial_port: str = None) -> None:
@@ -196,4 +192,5 @@ def run_asyncio_serial(callbacks: List[WaveCallback], serial_port: str = None) -
 
     """
     serial_port = get_serial_port() if serial_port is None else serial_port
-    run_asyncio(callbacks, partial(producer_serial, serial_port=serial_port), ProtocolAsyncioSerial())
+
+    run_asyncio(callbacks, partial(producer_serial, serial_port=serial_port), ProtocolAsyncio())

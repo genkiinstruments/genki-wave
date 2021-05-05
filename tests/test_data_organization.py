@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pytest
 
-from genki_wave.data.organization import flatten_nested_dataclass_fields, flatten_nested_dicts
+from genki_wave.data.organization import PackageMetadata, flatten_nested_dataclass_fields, flatten_nested_dicts
 
 
 @pytest.mark.parametrize(
@@ -45,3 +45,19 @@ class C:
 def test_flatten_nested_dataclass_fields(input_dataclass, expected):
     actual = flatten_nested_dataclass_fields(input_dataclass, None)
     assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "q_type, q_id, q_payload_size, expected", [[3, 1, 93, b"\x03\x01]\x00"], [1, 5, 1, b"\x01\x05\x01\x00"]]
+)
+def test_package_metadata_to_bytes(q_type, q_id, q_payload_size, expected):
+    p = PackageMetadata(type=q_type, id=q_id, payload_size=q_payload_size)
+    actual = p.to_bytes()
+    assert actual == expected
+
+
+@pytest.mark.parametrize("input_and_expected", [b"\x03\x01]\x00", b"\x01\x05\x01\x00"])
+def test_package_metadata_to_bytes_sanity_check(input_and_expected):
+    p = PackageMetadata.from_raw_bytes(input_and_expected)
+    actual = p.to_bytes()
+    assert actual == input_and_expected

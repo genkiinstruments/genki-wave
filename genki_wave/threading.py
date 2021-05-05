@@ -7,7 +7,7 @@ from serial import Serial
 from serial.threaded import ReaderThread
 
 from genki_wave.constants import BAUDRATE
-from genki_wave.protocols import ProtocolThreadSerial, ProtocolThreadBluetooth
+from genki_wave.protocols import ProtocolThread
 from genki_wave.utils import get_serial_port, get_or_create_event_loop
 from genki_wave.asyncio import producer_bluetooth, CommunicateCancel
 
@@ -22,7 +22,7 @@ class ReaderThreadSerial(ReaderThread):
     def from_port(cls, serial_port: Optional[str] = None) -> "ReaderThreadSerial":
         port = get_serial_port() if serial_port is None else serial_port
         serial_instance = Serial(port, BAUDRATE, parity=serial.PARITY_EVEN)
-        return cls(serial_instance, ProtocolThreadSerial)
+        return cls(serial_instance, ProtocolThread)
 
 
 class ReaderThreadBluetooth(threading.Thread):
@@ -45,7 +45,7 @@ class ReaderThreadBluetooth(threading.Thread):
 
     @classmethod
     def from_address(cls, ble_address: str) -> "ReaderThreadBluetooth":
-        return cls(ble_address, ProtocolThreadBluetooth)
+        return cls(ble_address, ProtocolThread)
 
     def stop(self):
         """Stop the reader thread"""
@@ -62,10 +62,11 @@ class ReaderThreadBluetooth(threading.Thread):
             ble_address: Address of the bluetooth device to connect to. E.g. 'D5:73:DB:85:B4:A1'. If `None` it
                          connects via serial
         """
+        loop = get_or_create_event_loop()
         producer = producer_bluetooth(protocol, comm, ble_address)
         # TODO(robert): Catch a keyboard interrupt and gracefully shut down. Non-trivial to implement.
         tasks = asyncio.gather(*[producer])
-        get_or_create_event_loop().run_until_complete(tasks)
+        loop.run_until_complete(tasks)
 
     def run(self):
         """Reader loop"""
