@@ -9,62 +9,172 @@ from genki_wave.data.organization import (
 )
 
 SERIAL_DATA = [
-    b"\r7,R\xc2\xa1V:\xc2\x16W\x9eB\x04`\x8e>\x04PR?0\x90\x11?\xf7\xa5_?n\x16\xe6>#\xb6\xb7\xbds\xaa\x1c>"
-    b"\xf7\xa5_?n\x16\xe6>#\xb6\xb7\xbds\xaa\x1c>\xd0\xe0j?0\xea\x98>\xad_I\xbe\x08m\x84\xbc\x08\xa1\x82=\x04"
-    b"\x93\x98\xbb\x01\x01\x01\x01\x05\x8c\xf0\xb9\x98\x01\x01\x01\x01\x00\x04\x03\x01]\r\xfc\x92\x91\xc2\x82"
-    b"\xd30\xc2\xeb\x05\x83B",
-    b"\x04`\x8f>\x04\x90J?0@\xfd>+\xbf_?\x1ai\xe5>\x1b=\xbb\xbd\xbbW\x1d>+\xbf_?\x1ai\xe5>\x1b=\xbb\xbd"
-    b"\xbbW\x1d>\x12\x14j?\x83\xaa\x9a>\x06\x8eI\xbe\x0c1\x8f\xbc\xd0\xf6\x13=p\x9e\xa4\xbd\x01\x01\x01\x01"
-    b"\x05P\xfa\xb9\x98\x01\x01\x01\x01\x00\x04\x02\x04\x08\x01\x02\x01\x01\x01\x04\x82\xbe@\x00\x04\x03"
-    b"\x01]\r\xadQj\xc2\xad$B\xc2\xd2i\x8cB\x01\x03\xad>\x04\xa06?\x01;\xf5>\x1d\xe5_",
-    b"?\x8a/\xe4>\xb0\xbb\xc2\xbd\xfe\xcf\x1e>\x1d\xe5_?\x8a/\xe4>\xb0\xbb\xc2\xbd\xfe\xcf\x1e>6\xa0h?"
-    b"\xa9s\x9e>\x8e\xe2I\xbe\xf8\x85\x08=\x10L\x16\xbd\xc0\x94\xcb\xbd\x01\x01\x01\x01\x05\xd8\r\xba\x98"
-    b"\x01\x01\x01\x01\x00\x04\x03\x01]\r*^h\xc2\xc0\xd9C\xc2\xe4\x1e\x89B\x04\x80\xaf>\x01\x03&?<\xc0\xf3>"
-    b"\x16\xf3_?\xdd\xa2\xe3><\x84\xc6\xbd\x13\x90\x1f>\x16\xf3_?\xdd\xa2\xe3><\x84\xc6\xbd\x13\x90\x1f>",
-    b"\xe7\xf8g?)b\xa0>\x04\tJ\xbe0\xd0\r=@:\xcb\xbd\xb8\n\xd3\xbd\x01\x01\x01\x01\x05\x9c\x17\xba\x98"
-    b"\x01\x01\x01\x01\x00\x04\x03\x01]\rV\xafe\xc2\xc0\xd9C\xc2V]\x84B\x04@\xb3>\x04`\x15?\x01;\xf4>j"
-    b"\x01`?\t\x15\xe3>\xadG\xca\xbd\xa0G >j\x01`?\t\x15\xe3>\xadG\xca\xbd\xa0G >\xd1Pg?}J\xa2>H%J\xbe"
-    b"\xf0M\x1d=L\xa5%\xbe8\x81\xd4\xbd\x01\x01\x01\x01\x05",
+    b"\x012\x807\x87b\xbfrL^\xbe\x12\t>\xbd\x8e\x8f\xcf\xbe7\x87b\xbfrL^\xbe\x12\t>\xbd\x8e\x8f\xcf\xbeQ\x15\xe0>3"
+    b"\x99\xc0=\x1e\xeaU\xbf8B\xf9\xbc\x08\x18;\xb9\xa0X\xe9\xbc\x01\x01\x01\x01\x05\xda\xcc\xc0\x01\x01\x01\x01\x01"
+    b"\x00\x04\x03\x01i\r\x90A\x8f\xc0\x86\xcd\xc7A\xe4\x0eJ\xc1\x01\x01\x02\xbc\x04@\xd9>\x04\xd0e?\x01\x01\x01\x01"
+    b"\x01\x01\x01\x01\x01\x016\x80\xec\xb1b\xbfG\x95\\\xbe0 G\xbd\xf8'",
+    b"\xcf\xbe\xec\xb1b\xbfG\x95\\\xbe0 G\xbd\xf8'\xcf\xbe\\i\xdf>\xad\xe5\xb4=\r\xbdU\xbf{"
+    b"\xa9\xc4\xbd\x80Rc;\x04\xea\x01;\x01\x01\x01\x01\x05\xea\xf3\xc0\x01\x01\x01\x01\x01\x00\x04\x02\x04\x08\x01"
+    b"\x02\x01\x01\x01\x04y\xeeA\x00\x04\x03\x01i\r\xf3q%A\x07\xb4CA<t\tA\x01\x03\x83=\x01\x03\xc4>\x04\xb0d?\x01\x01"
+    b"\x01\x01\x01\x01\x01\x01\x01\x016\x80\x11\xa2b\xbf\r\xda[\xbe\x98\x01U\xbd\xd9g\xcf\xbe\x11",
+    b"\xa2b\xbf\r\xda[\xbe\x98\x01U\xbd\xd9g\xcf\xbe\xea\x16\xe0>\xd7\xda\xa7=\x8d_V\xbf\xf8\xaa\x92\xbc "
+    b"\xa0!\xbd\x04\xa7\x19\xbb\x01\x01\x01\x01\x05\nB\xc1\x01\x01\x01\x01\x01\x00\x04\x03\x01i\r,"
+    b"\x91HA~\xa6\xdd@zz\x08A\x01\x03\xd0=\x04@\xc4>\x04\xc0r?\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01:\x80\xa3}b\xbf"
+    b"\x8d\\\\\xbe\xec\x9dX\xbd]\xd5\xcf\xbe\xa3}b\xbf\x8d\\\\\xbe\xec\x9dX\xbd]\xd5\xcf\xbe:\xe5",
+    b"\xe0>\x12V\xa6=,\xebV\xbf\xecb\xa7<\x08\x8b%\xbd\xe0\xe7Y=\x01\x01\x01\x01\x05\x1ai\xc1\x01\x01\x01\x01\x01\x00"
+    b"\x04\x03\x01i\r\x8az\x84A\xd0\xfb\x7f@\x86y#@\x01\x03\r>\x04`\xe0>\x04\xe0}?\x01\x01\x01\x01\x01\x01\x01\x01"
+    b"\x01\x01:\x80\xf5^b\xbf\xd0]]\xbe\xd9[[\xbd*\x0b\xd0\xbe\xf5^b\xbf\xd0]]\xbe\xd9[[\xbd*\x0b\xd0\xbe(\x19\xe2",
+    b">\xd3\x01\xa6=R3W\xbfdYh=\x80\x11K<\xb0\xfa\xc7=\x01\x01\x01\x01\x05*\x90\xc1\x01\x01\x01\x01\x01\x00\x04\x03"
+    b"\x01i\r,\xf1\x99A_\xf1\x98?\x7f\x92\x1f@\x04\x80\xff=\x04\x80\xf4>\x04\x90t?\x01\x01\x01\x01\x01\x01\x01\x01"
+    b"\x01\x01:\x80\xb8Bb\xbf\x18\xcc^\xbe8c^\xbdr\x17\xd0\xbe\xb8Bb\xbf\x18\xcc^\xbe8c^\xbdr\x17\xd0\xbe\x88\xbe\xe3"
+    b">I\xd5\xa5=5OW\xbf.\xb23=\x18\xe9G=",
+    b"\xa8I\x80=\x01\x01\x01\x01\x05:\xb7\xc1\x01\x01\x01\x01\x01\x00\x04\x03\x01i\r8_xA\xae\x10\x0e\xc0\xd6q\xfd"
+    b"@\x04\x80\xd8=\x04\x80\xeb>\x04\x10l?\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01:\x80\xe4\x1eb\xbf\xc6N`\xbe<\x17"
+    b"`\xbd\x04D\xd0\xbe\xe4\x1eb\xbf\xc6N`\xbe<\x17`\xbd\x04D\xd0\xbeVR\xe5>17\xa7=\xae\x84W\xbfh\xe1\xc5<pY\xe9"
+    b"<\xe0r\xfc<\x01\x01\x01\x01\x05J\xde\xc1\x01\x01\x01\x01\x01",
+    b"\x00\x04\x03\x01i\r\x06'1A\xf3\x97\xa8\xc0\xbfg3A\x04\x80\xa9=\x04\x80\xdf>\x04@b?\x01\x01\x01\x01\x01\x01\x01"
+    b"\x01\x01\x01.\x80!\xf8a\xbf\xfa\x8fa\xbe.\xdd_\xbd\x80\x96\xd0\xbe!\xf8a\xbf\xfa\x8fa\xbe.\xdd_\xbd\x80\x96\xd0"
+    b"\xbe\x9bs\xe6>\xe7*\xaa=\xd5\xd6W\xbf\x0c\x98q\xb9\x80uL;\x80T\xd3\xbb\x01\x01\x01\x01\x05Z\x05\xc2\x01\x01\x01"
+    b"\x01\x01\x00\x04\x03\x01i\rp\xbe\xb0@K\x07\x07\xc1\x12\xec\x8c",
+    b"A\x01\x03\x86=\x04\x80\xd7>\x04\xa0d?\x01\x01\x01\x01\x01\x01\x01\x01\x01\x016\x80H\xcea\xbf\xeayb\xbe\x0e\x9f"
+    b"]\xbd\xd0\x15\xd1\xbeH\xcea\xbf\xeayb\xbe\x0e\x9f]\xbd\xd0\x15\xd1\xbe\xb1\n\xe7>z\xac\xae=\xd5LX\xbf "
+    b"\xd9\xa1\xbc\x80{\\\xbc\x04.e;\x01\x01\x01\x01\x05j,"
+    b"\xc2\x01\x01\x01\x01\x01\x00\x04\x02\x04\x08\x01\x01\x01\x01\x01\x04\x1d\xefA\x00",
+    b"\x04\x02\x04\x08\x01\x02\x06\x01\x01\x04\x1d\xefA\x00\x04\x03\x01i\r\x01\xc0:\xc1\xc5\x06\xa7\xc1\n<\x12A\x01"
+    b"\x03\xd7=\x04\xa0\xca>\x04\xc0g?\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01:\x80+xa\xbfO\x9fc\xbe\xf3\x83I\xbd\xf8"
+    b"\x89\xd2\xbe+xa\xbfO\x9fc\xbe\xf3\x83I\xbd\xf8\x89\xd2\xbe!\xf4\xe5>("
+    b"9\xc5=\xfbQY\xbf\xc8\xa6\x10<\xc0\x89\x14\xbd\xa0x\x80<\x01\x01\x01\x01\x05\x9a\xa1\xc2\x01\x01\x01\x01\x01\x00"
+    b"\x04\x03\x01",
 ]
 SERIAL_EXPECTED = [
     DataPackage(
-        gyro=Point3d(x=-72.78707885742188, y=-44.20655059814453, z=65.51155853271484),
-        accel=Point3d(x=0.280029296875, y=0.791259765625, z=0.49462890625),
-        mag=Point3d(x=0.0, y=0.0, z=0.0),
-        raw_pose=Point4d(w=0.8740107417106628, x=0.44806748628616333, y=-0.09142514318227768, z=0.15365497767925262),
+        gyro=Point3d(x=-4.476753234863281, y=24.975353240966797, z=-12.62863540649414),
+        accel=Point3d(x=-0.0078125, y=0.42431640625, z=0.897705078125),
+        mag=Point3d(x=0.0, y=0.0, z=-0.0),
+        raw_pose=Point4d(w=-0.8855273723602295, x=-0.2154131978750229, y=-0.048614680767059326, z=-0.4046018123626709),
         current_pose=Point4d(
-            w=0.8740107417106628, x=0.44806748628616333, y=-0.09142514318227768, z=0.15365497767925262
+            w=-0.8855273723602295, x=-0.2154131978750229, y=-0.048614680767059326, z=-0.4046018123626709
         ),
-        euler=Euler3d(roll=0.914368748664856, pitch=0.3020821511745453, yaw=-0.1968308389186859),
-        linear=Point3d(x=-0.017479419708251953, y=0.03612405061721802, z=-0.08038032054901123),
+        euler=Euler3d(roll=0.4363507032394409, pitch=0.08832869678735733, yaw=-0.8349159359931946),
+        linear=Point3d(x=-0.09602638334035873, y=0.0034686625003814697, z=0.0019823312759399414),
         peak=False,
         peak_norm_velocity=0.0,
-        timestamp_us=2562325072,
+        timestamp_us=29422570,
     ),
     ButtonEvent(button_id=ButtonId.TOP, action=ButtonAction.DOWN),
     DataPackage(
-        gyro=Point3d(x=-58.57976150512695, y=-48.53581619262695, z=70.20668029785156),
-        accel=Point3d(x=0.337890625, y=0.71337890625, z=0.478515625),
-        mag=Point3d(x=0.0, y=0.0, z=0.0),
-        raw_pose=Point4d(w=0.874589741230011, x=0.44567519426345825, y=-0.095084547996521, z=0.1550903022289276),
-        current_pose=Point4d(w=0.874589741230011, x=0.44567519426345825, y=-0.095084547996521, z=0.1550903022289276),
-        euler=Euler3d(roll=0.9086946249008179, pitch=0.30947616696357727, yaw=-0.19715330004692078),
-        linear=Point3d(x=0.03333088755607605, y=-0.03669363260269165, z=-0.09940481185913086),
+        gyro=Point3d(x=10.340319633483887, y=12.231451988220215, z=8.590877532958984),
+        accel=Point3d(x=0.06396484375, y=0.3828125, z=0.893310546875),
+        mag=Point3d(x=0.0, y=0.0, z=-0.0),
+        raw_pose=Point4d(w=-0.8852854371070862, x=-0.21469898521900177, y=-0.05200347304344177, z=-0.4050891697406769),
+        current_pose=Point4d(
+            w=-0.8852854371070862, x=-0.21469898521900177, y=-0.05200347304344177, z=-0.4050891697406769
+        ),
+        euler=Euler3d(roll=0.4376748204231262, pitch=0.08196037262678146, yaw=-0.8373954892158508),
+        linear=Point3d(x=-0.01790378987789154, y=-0.03945934772491455, z=-0.0023445487022399902),
         peak=False,
         peak_norm_velocity=0.0,
-        timestamp_us=2562330072,
+        timestamp_us=29442570,
     ),
     DataPackage(
-        gyro=Point3d(x=-58.091957092285156, y=-48.962646484375, z=68.56033325195312),
-        accel=Point3d(x=0.3427734375, y=0.6484375, z=0.47607421875),
-        mag=Point3d(x=0.0, y=0.0, z=0.0),
-        raw_pose=Point4d(w=0.8748029470443726, x=0.4446019232273102, y=-0.09693190455436707, z=0.15582303702831268),
-        current_pose=Point4d(w=0.8748029470443726, x=0.4446019232273102, y=-0.09693190455436707, z=0.15582303702831268),
-        euler=Euler3d(roll=0.9061416983604431, pitch=0.3132489025592804, yaw=-0.1973000168800354),
-        linear=Point3d(x=0.034622371196746826, y=-0.09923219680786133, z=-0.10304778814315796),
+        gyro=Point3d(x=12.535442352294922, y=6.926573753356934, z=8.529901504516602),
+        accel=Point3d(x=0.1015625, y=0.38330078125, z=0.9482421875),
+        mag=Point3d(x=0.0, y=0.0, z=-0.0),
+        raw_pose=Point4d(w=-0.8847295641899109, x=-0.21519680321216583, y=-0.05288498103618622, z=-0.4059247076511383),
+        current_pose=Point4d(
+            w=-0.8847295641899109, x=-0.21519680321216583, y=-0.05288498103618622, z=-0.4059247076511383
+        ),
+        euler=Euler3d(roll=0.43924885988235474, pitch=0.08121885359287262, yaw=-0.8395259380340576),
+        linear=Point3d(x=0.020432911813259125, y=-0.040415793657302856, z=0.0531996488571167),
         peak=False,
         peak_norm_velocity=0.0,
-        timestamp_us=2562332572,
+        timestamp_us=29452570,
+    ),
+    DataPackage(
+        gyro=Point3d(x=16.559833526611328, y=3.999744415283203, z=2.5542922019958496),
+        accel=Point3d(x=0.1376953125, y=0.438232421875, z=0.99169921875),
+        mag=Point3d(x=0.0, y=0.0, z=-0.0),
+        raw_pose=Point4d(w=-0.884261429309845, x=-0.21617817878723145, y=-0.053554389625787735, z=-0.40633517503738403),
+        current_pose=Point4d(
+            w=-0.884261429309845, x=-0.21617817878723145, y=-0.053554389625787735, z=-0.40633517503738403
+        ),
+        euler=Euler3d(roll=0.44159817695617676, pitch=0.08105816692113876, yaw=-0.8406268358230591),
+        linear=Point3d(x=0.05672587454319, y=0.012394309043884277, z=0.09764611721038818),
+        peak=False,
+        peak_norm_velocity=0.0,
+        timestamp_us=29462570,
+    ),
+    DataPackage(
+        gyro=Point3d(x=19.242759704589844, y=1.1948660612106323, z=2.493316411972046),
+        accel=Point3d(x=0.124755859375, y=0.4775390625, z=0.955322265625),
+        mag=Point3d(x=0.0, y=0.0, z=-0.0),
+        raw_pose=Point4d(w=-0.8838305473327637, x=-0.21757543087005615, y=-0.05429384112358093, z=-0.40642887353897095),
+        current_pose=Point4d(
+            w=-0.8838305473327637, x=-0.21757543087005615, y=-0.05429384112358093, z=-0.40642887353897095
+        ),
+        euler=Euler3d(roll=0.4448130130767822, pitch=0.08097321540117264, yaw=-0.8410523533821106),
+        linear=Point3d(x=0.04387109726667404, y=0.04880627989768982, z=0.0626404881477356),
+        peak=False,
+        peak_norm_velocity=0.0,
+        timestamp_us=29472570,
+    ),
+    DataPackage(
+        gyro=Point3d(x=15.523246765136719, y=-2.2197680473327637, z=7.9201459884643555),
+        accel=Point3d(x=0.105712890625, y=0.4599609375, z=0.922119140625),
+        mag=Point3d(x=0.0, y=0.0, z=-0.0),
+        raw_pose=Point4d(w=-0.8832838535308838, x=-0.21905049681663513, y=-0.05470965802669525, z=-0.40676891803741455),
+        current_pose=Point4d(
+            w=-0.8832838535308838, x=-0.21905049681663513, y=-0.05470965802669525, z=-0.40676891803741455
+        ),
+        euler=Euler3d(roll=0.44789379835128784, pitch=0.08164823800325394, yaw=-0.8418682813644409),
+        linear=Point3d(x=0.024155333638191223, y=0.028485029935836792, z=0.030816495418548584),
+        peak=False,
+        peak_norm_velocity=0.0,
+        timestamp_us=29482570,
+    ),
+    DataPackage(
+        gyro=Point3d(x=11.072027206420898, y=-5.268548488616943, z=11.212828636169434),
+        accel=Point3d(x=0.082763671875, y=0.4365234375, z=0.8837890625),
+        mag=Point3d(x=0.0, y=0.0, z=-0.0),
+        raw_pose=Point4d(w=-0.8826923966407776, x=-0.22027578949928284, y=-0.05465429276227951, z=-0.4073982238769531),
+        current_pose=Point4d(
+            w=-0.8826923966407776, x=-0.22027578949928284, y=-0.05465429276227951, z=-0.4073982238769531
+        ),
+        euler=Euler3d(roll=0.45010074973106384, pitch=0.08308964222669601, yaw=-0.8431218266487122),
+        linear=Point3d(x=-0.00023040175437927246, y=0.0031197965145111084, z=-0.006449282169342041),
+        peak=False,
+        peak_norm_velocity=0.0,
+        timestamp_us=29492570,
+    ),
+    DataPackage(
+        gyro=Point3d(x=5.523246765136719, y=-8.43928050994873, z=17.61526870727539),
+        accel=Point3d(x=0.0654296875, y=0.4208984375, z=0.89306640625),
+        mag=Point3d(x=0.0, y=0.0, z=-0.0),
+        raw_pose=Point4d(w=-0.8820538520812988, x=-0.22116819024085999, y=-0.05410676449537277, z=-0.4083695411682129),
+        current_pose=Point4d(
+            w=-0.8820538520812988, x=-0.22116819024085999, y=-0.05410676449537277, z=-0.4083695411682129
+        ),
+        euler=Euler3d(roll=0.4512534439563751, pitch=0.08528991043567657, yaw=-0.8449223637580872),
+        linear=Point3d(x=-0.019756853580474854, y=-0.013457179069519043, z=0.003497004508972168),
+        peak=False,
+        peak_norm_velocity=0.0,
+        timestamp_us=29502570,
+    ),
+    ButtonEvent(button_id=ButtonId.TOP, action=ButtonAction.UP),
+    ButtonEvent(button_id=ButtonId.TOP, action=ButtonAction.CLICK),
+    DataPackage(
+        gyro=Point3d(x=-11.671875953674316, y=-20.878305435180664, z=9.139657974243164),
+        accel=Point3d(x=0.10498046875, y=0.395751953125, z=0.9052734375),
+        mag=Point3d(x=0.0, y=0.0, z=-0.0),
+        raw_pose=Point4d(w=-0.8807398676872253, x=-0.2222874015569687, y=-0.049198102205991745, z=-0.4112088680267334),
+        current_pose=Point4d(
+            w=-0.8807398676872253, x=-0.2222874015569687, y=-0.049198102205991745, z=-0.4112088680267334
+        ),
+        euler=Euler3d(roll=0.4491281807422638, pitch=0.09630042314529419, yaw=-0.8489071726799011),
+        linear=Point3d(x=0.008828826248645782, y=-0.03626418113708496, z=0.015682518482208252),
+        peak=False,
+        peak_norm_velocity=0.0,
+        timestamp_us=29532570,
     ),
 ]
 
