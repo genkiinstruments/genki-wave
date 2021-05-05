@@ -75,15 +75,17 @@ def bleak_callback(protocol: ProtocolAsyncio) -> Callable:
 async def producer_bluetooth(
     protocol: Union[ProtocolAsyncio, ProtocolThread], comm: CommunicateCancel, ble_address: str,
 ) -> None:
-    """
+    """Receives data from a serially connected wave ring and passes it to the `protocol`
 
     Args:
-        protocol:
-        comm:
-        ble_address:
+        protocol: An object that knows how to process the raw data sent from the Wave ring into a structured format
+                  and passes it along between `producer` and `consumer`.
+        comm: An object that allows `producer` and `consumer` to communicate when to cancel the process
+        ble_address: The bluetooth address of the wave ring to communicate with
 
-    Returns:
-
+    Note:
+        The producer doesn't return a value, but the data gets added to the `protocol` that can be accessed from other
+        parts of the program i.e. some `consumer`
     """
     callback = bleak_callback(protocol)
     async with BleakClient(ble_address) as client:
@@ -103,15 +105,17 @@ async def producer_bluetooth(
 
 
 async def producer_serial(protocol: ProtocolAsyncio, comm: CommunicateCancel, serial_port: str):
-    """
+    """Receives data from a serially connected wave ring and passes it to the `protocol`
 
     Args:
-        protocol:
-        comm:
-        serial_port:
+        protocol: An object that knows how to process the raw data sent from the Wave ring into a structured format
+                  and passes it along between `producer` and `consumer`.
+        comm: An object that allows `producer` and `consumer` to communicate when to cancel the process
+        serial_port: The serial port to read from
 
-    Returns:
-
+    Note:
+        The producer doesn't return a value, but the data gets added to the `protocol` that can be accessed from other
+        parts of the program i.e. some `consumer`
     """
     reader, writer = await open_serial_connection(url=serial_port, baudrate=BAUDRATE, parity=serial.PARITY_EVEN)
     writer.write(get_start_api_package())
@@ -128,15 +132,13 @@ async def producer_serial(protocol: ProtocolAsyncio, comm: CommunicateCancel, se
 async def consumer(
     protocol: ProtocolAsyncio, comm: CommunicateCancel, callbacks: Union[List[WaveCallback], Tuple[WaveCallback]],
 ) -> None:
-    """
+    """Consumes the data from a producer via a protocol
 
     Args:
-        protocol:
-        comm:
-        callbacks:
-
-    Returns:
-
+        protocol: An object that knows how to process the raw data sent from the Wave ring into a structured format
+                  and passes it along between `producer` and `consumer`.
+        comm: An object that allows `producer` and `consumer` to communicate when to cancel the process
+        callbacks: A list of callbacks that gets the processed data when available and does something with it
     """
     while True:
         package = await protocol.queue.get()
