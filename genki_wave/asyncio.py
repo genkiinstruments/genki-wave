@@ -152,13 +152,16 @@ async def consumer(
             callback(package)
 
 
-def run_asyncio(callbacks: List[WaveCallback], producer: Callable, protocol: ProtocolAsyncio) -> None:
+def run_asyncio(
+    callbacks: List[WaveCallback], producer: Union[producer_bluetooth, producer_serial], protocol: ProtocolAsyncio
+) -> None:
     """Runs a producer and a consumer, hooking into the data using the supplied callbacks
 
     Args:
         callbacks: See docs for `consumer`
-        producer:
-        protocol
+        producer: A callable that takes 2 arguments, a protocol and a communication object
+        protocol: An object that knows how to process the raw data sent from the Wave ring into a structured format
+                  and passes it along between `producer` and `consumer`.
     """
     # TODO(robert): Catch a keyboard interrupt and gracefully shut down. Non-trivial to implement.
 
