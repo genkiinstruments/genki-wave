@@ -7,6 +7,7 @@ from serial import Serial
 from serial.threaded import ReaderThread
 
 from genki_wave.constants import BAUDRATE
+from genki_wave.data.writing import get_start_api_package
 from genki_wave.protocols import ProtocolThread
 from genki_wave.utils import get_serial_port, get_or_create_event_loop
 from genki_wave.asyncio import producer_bluetooth, CommunicateCancel
@@ -17,6 +18,8 @@ class ReaderThreadSerial(ReaderThread):
 
     def __init__(self, serial_instance: Serial, protocol_factory: Callable):
         super().__init__(serial_instance, protocol_factory)
+        print("WRITING")
+        self.write(get_start_api_package())
 
     @classmethod
     def from_port(cls, serial_port: Optional[str] = None) -> "ReaderThreadSerial":
