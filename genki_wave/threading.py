@@ -18,7 +18,6 @@ class ReaderThreadSerial(ReaderThread):
 
     def __init__(self, serial_instance: Serial, protocol_factory: Callable):
         super().__init__(serial_instance, protocol_factory)
-        print("WRITING")
         self.write(get_start_api_package())
 
     @classmethod
