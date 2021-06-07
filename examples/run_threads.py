@@ -40,5 +40,6 @@ if __name__ == "__main__":
             print("No bluetooth address (--ble-address) supplied, searching for devices...")
             run_discover_bluetooth()
         else:
+            print("Turn off by holding the `TOP` button")
             reader_thread = ReaderThreadBluetooth.from_address(args.ble_address)
             main(reader_thread)

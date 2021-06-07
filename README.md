@@ -9,6 +9,13 @@ git clone git@github.com:genkiinstruments/genki-wave.git
 cd genki-wave
 python -m pip install .
 ```
+or
+```
+python -m pip install -e .
+```
+If you want to change the code after installing
+
+This package has only been tested in `python 3.8`
 
 ## Setting up the Wave ring
 TODO
@@ -25,3 +32,8 @@ Install the dependencies and run any of the examples e.g.
 ```bash
 python examples/run_asyncio.py
 ```
+
+# Known issues
+* When running via serial the Wave ring has to be turned off first, then connected and the script run
+* When connected via bluetooth and the program is not turned off "properly" e.g. with a keyboard interrupt,
+there is no proper cleanup that happens. Currently the only "clean" way is to hold the top button for a long time

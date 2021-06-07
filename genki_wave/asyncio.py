@@ -75,15 +75,17 @@ def bleak_callback(protocol: ProtocolAsyncio) -> Callable:
 async def producer_bluetooth(
     protocol: Union[ProtocolAsyncio, ProtocolThread], comm: CommunicateCancel, ble_address: str,
 ) -> None:
-    """
+    """Receives data from a serially connected wave ring and passes it to the `protocol`
 
     Args:
-        protocol:
-        comm:
-        ble_address:
+        protocol: An object that knows how to process the raw data sent from the Wave ring into a structured format
+                  and passes it along between `producer` and `consumer`.
+        comm: An object that allows `producer` and `consumer` to communicate when to cancel the process
+        ble_address: Address of the bluetooth device to connect to. E.g. 'D5:73:DB:85:B4:A1'
 
-    Returns:
-
+    Note:
+        The producer doesn't return a value, but the data gets added to the `protocol` that can be accessed from other
+        parts of the program i.e. some `consumer`
     """
     callback = bleak_callback(protocol)
     async with BleakClient(ble_address) as client:
@@ -103,15 +105,17 @@ async def producer_bluetooth(
 
 
 async def producer_serial(protocol: ProtocolAsyncio, comm: CommunicateCancel, serial_port: str):
-    """
+    """Receives data from a serially connected wave ring and passes it to the `protocol`
 
     Args:
-        protocol:
-        comm:
-        serial_port:
+        protocol: An object that knows how to process the raw data sent from the Wave ring into a structured format
+                  and passes it along between `producer` and `consumer`.
+        comm: An object that allows `producer` and `consumer` to communicate when to cancel the process
+        serial_port: The serial port to read from
 
-    Returns:
-
+    Note:
+        The producer doesn't return a value, but the data gets added to the `protocol` that can be accessed from other
+        parts of the program i.e. some `consumer`
     """
     reader, writer = await open_serial_connection(url=serial_port, baudrate=BAUDRATE, parity=serial.PARITY_EVEN)
     writer.write(get_start_api_package())
@@ -128,15 +132,13 @@ async def producer_serial(protocol: ProtocolAsyncio, comm: CommunicateCancel, se
 async def consumer(
     protocol: ProtocolAsyncio, comm: CommunicateCancel, callbacks: Union[List[WaveCallback], Tuple[WaveCallback]],
 ) -> None:
-    """
+    """Consumes the data from a producer via a protocol
 
     Args:
-        protocol:
-        comm:
-        callbacks:
-
-    Returns:
-
+        protocol: An object that knows how to process the raw data sent from the Wave ring into a structured format
+                  and passes it along between `producer` and `consumer`.
+        comm: An object that allows `producer` and `consumer` to communicate when to cancel the process
+        callbacks: A list/tuple of callbacks that handle the data passed from the wave ring when available
     """
     while True:
         package = await protocol.queue.get()
@@ -150,11 +152,16 @@ async def consumer(
             callback(package)
 
 
-def run_asyncio(callbacks: List[WaveCallback], producer: Callable, protocol: ProtocolAsyncio):
+def run_asyncio(
+    callbacks: List[WaveCallback], producer: Union[producer_bluetooth, producer_serial], protocol: ProtocolAsyncio
+) -> None:
     """Runs a producer and a consumer, hooking into the data using the supplied callbacks
 
     Args:
-        callbacks: A list/tuple of callbacks that handle the data passed from the wave ring
+        callbacks: See docs for `consumer`
+        producer: A callable that takes 2 arguments, a protocol and a communication object
+        protocol: An object that knows how to process the raw data sent from the Wave ring into a structured format
+                  and passes it along between `producer` and `consumer`.
     """
     # TODO(robert): Catch a keyboard interrupt and gracefully shut down. Non-trivial to implement.
 
@@ -168,28 +175,22 @@ def run_asyncio(callbacks: List[WaveCallback], producer: Callable, protocol: Pro
 
 
 def run_asyncio_bluetooth(callbacks: List[WaveCallback], ble_address) -> None:
-    """
+    """Runs an async `consumer-producer` loop using user supplied callbacks for a bluetooth device
 
     Args:
-        callbacks:
-        ble_address: Address of the bluetooth device to connect to. E.g. 'D5:73:DB:85:B4:A1'. If `None` it
-                     tries to connect via serial
-
-    Returns:
-
+        callbacks: A list/tuple of callbacks that handle the data passed from the wave ring
+        ble_address: Address of the bluetooth device to connect to. E.g. 'D5:73:DB:85:B4:A1'
     """
     run_asyncio(callbacks, partial(producer_bluetooth, ble_address=ble_address), ProtocolAsyncio())
 
 
 def run_asyncio_serial(callbacks: List[WaveCallback], serial_port: str = None) -> None:
-    """
+    """Runs an async `consumer-producer` loop using user supplied callbacks for a serial device
 
     Args:
-        callbacks:
-        serial_port:
-
-    Returns:
-
+        callbacks: A list/tuple of callbacks that handle the data passed from the wave ring
+        serial_port: The serial port to read from. If `None` will try to determine it automatically based on the
+                     operating system the script is running on
     """
     serial_port = get_serial_port() if serial_port is None else serial_port
 

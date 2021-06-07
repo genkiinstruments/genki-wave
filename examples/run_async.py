@@ -32,6 +32,7 @@ def main():
             print("No bluetooth address (--ble-address) supplied, searching for devices...")
             run_discover_bluetooth()
         else:
+            print("Turn off by holding the `TOP` button")
             run_asyncio_bluetooth(callbacks, args.ble_address)
 
 
