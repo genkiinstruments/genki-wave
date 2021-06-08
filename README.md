@@ -31,7 +31,7 @@ for a detailed overview of how to use and interface with the API.
 
 # Quickstart
 ## General
-Turn Wave on and make sure it is not connected. Then run the following.
+Turn Wave on and make sure it is not connected. To find the Bluetooth address of the nearest Wave, run the following
 
 ```python
 from genki_wave.discover import run_discover_bluetooth
@@ -39,7 +39,8 @@ from genki_wave.discover import run_discover_bluetooth
 run_discover_bluetooth()
 ```
 
-To find the Bluetooth address of the nearest Wave, run the following.
+And the following example uses a callback that prints out which button has been pressed, along with the sensor reading
+every 5 seconds.
 
 ```python
 from genki_wave.asyncio import run_asyncio_bluetooth
@@ -50,13 +51,12 @@ ble_address = ""  # Address of the Wave ring, found in the previous step
 run_asyncio_bluetooth(callbacks, ble_address)
 ```
 
-This example uses a callback that prints out which button has been pressed, along with the sensor reading every 5 seconds.
-
 Further examples are in the [examples](examples) folder.
 
 ## MIDI
 The simples way to start is connecting Wave as a BLE MIDI device and running [examples/run_midi.py](examples/run_midi.py). 
-This example only depends on [pygame](https://www.pygame.org) and allows you to receive data from Wave in [standalone mode](https://genkiinstrumentshelp.zendesk.com/hc/en-us/sections/360003976117-Standalone-mode).
+This example only depends on [pygame](https://www.pygame.org) and allows you to receive data from Wave in
+[standalone mode](https://genkiinstrumentshelp.zendesk.com/hc/en-us/sections/360003976117-Standalone-mode).
 
 # Known issues
 * [bleak](https://github.com/hbldh/bleak) the Python Bluetooth library, can only connect to devices that are *not*
