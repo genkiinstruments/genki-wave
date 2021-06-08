@@ -1,4 +1,4 @@
-# Wave
+# Wave by Genki
 This repository contains a simple Python API interface for [Wave by Genki](https://genkiinstruments.com/wave).
 The API provides easy access to Wave's onboard sensor data, as well as processed motion data using proprietary
 algorithms in a very small form factor. 
