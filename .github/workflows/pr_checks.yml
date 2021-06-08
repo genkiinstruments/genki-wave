@@ -15,10 +15,13 @@ jobs:
         with:
           python-version: '3.8'
           architecture: 'x64' # (x64 or x86)
-      - run: pip install black==19.10b0 flake8
+      - run: pip install black==20.8b1 flake8
       # Just checks all the files in the repo. Could be improved by only checking for files that were changed
       - run: black -l 120 --check .
-      - run: flake8 --max-line-length=120 --ignore=E203 .
+      - name: flake8
+        # Run even if black fails
+        if: always()
+        run: flake8 --max-line-length=120 --ignore=E203 .
 
   large-file-size-warning:
     runs-on: ubuntu-latest
