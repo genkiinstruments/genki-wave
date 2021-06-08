@@ -73,7 +73,9 @@ def bleak_callback(protocol: ProtocolAsyncio) -> Callable:
 
 
 async def producer_bluetooth(
-    protocol: Union[ProtocolAsyncio, ProtocolThread], comm: CommunicateCancel, ble_address: str,
+    protocol: Union[ProtocolAsyncio, ProtocolThread],
+    comm: CommunicateCancel,
+    ble_address: str,
 ) -> None:
     """Receives data from a serially connected wave ring and passes it to the `protocol`
 
@@ -130,7 +132,9 @@ async def producer_serial(protocol: ProtocolAsyncio, comm: CommunicateCancel, se
 
 
 async def consumer(
-    protocol: ProtocolAsyncio, comm: CommunicateCancel, callbacks: Union[List[WaveCallback], Tuple[WaveCallback]],
+    protocol: ProtocolAsyncio,
+    comm: CommunicateCancel,
+    callbacks: Union[List[WaveCallback], Tuple[WaveCallback]],
 ) -> None:
     """Consumes the data from a producer via a protocol
 
