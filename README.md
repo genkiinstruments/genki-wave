@@ -51,10 +51,11 @@ ble_address = ""  # Address of the Wave ring, found in the previous step
 run_asyncio_bluetooth(callbacks, ble_address)
 ```
 
-Further examples are in the [examples](examples) folder.
+Further examples are in the [examples](https://github.com/genkiinstruments/genki-wave/blob/master/examples) folder.
 
 ## MIDI
-The simples way to start is connecting Wave as a BLE MIDI device and running [examples/run_midi.py](examples/run_midi.py). 
+The simples way to start is connecting Wave as a BLE MIDI device and running
+[examples/run_midi.py](https://github.com/genkiinstruments/genki-wave/blob/master/examples/run_midi.py).
 This example only depends on [pygame](https://www.pygame.org) and allows you to receive data from Wave in
 [standalone mode](https://genkiinstrumentshelp.zendesk.com/hc/en-us/sections/360003976117-Standalone-mode).
 
