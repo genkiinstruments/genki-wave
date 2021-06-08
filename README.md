@@ -61,7 +61,8 @@ This example only depends on [pygame](https://www.pygame.org) and allows you to 
 # Known issues
 * [bleak](https://github.com/hbldh/bleak) the Python Bluetooth library, can only connect to devices that are *not*
   connected to the computer. After pairing Wave to a Linux machine Wave tends to connect automatically quite
-  aggressively and cannot be accessed via bleak. One "solution" is to use `bluetoothctl` to disconnect before pairing using `genki-wave`.
+  aggressively and cannot be accessed via bleak. One solution is to use `bluetoothctl` to disconnect before pairing
+  with `genki-wave`.
 * Wave needs to be off and disconnected before receiving any data via the serial port.
 * There is an error when you have Wave connected via Bluetooth and use `asyncio` to receive data.
   If you kill the program, e.g., with a keyboard interrupt, Wave stays connected and has an invalid state.
