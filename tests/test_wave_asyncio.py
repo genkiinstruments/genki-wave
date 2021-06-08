@@ -5,7 +5,7 @@ import pytest
 
 from genki_wave.callbacks import ButtonAndDataPrint
 from genki_wave.protocols import ProtocolAsyncio
-from genki_wave.asyncio import run_asyncio
+from genki_wave.asyncio import _run_asyncio
 from tests.constants import BLUETOOTH_DATA, SERIAL_DATA
 
 
@@ -23,4 +23,4 @@ async def producer_mock(protocol, comm, data):
 @pytest.mark.parametrize("data", (BLUETOOTH_DATA, SERIAL_DATA), ids=["bluetooth", "serial"])
 def test_run_asyncio(data):
     # An 'integration' test
-    run_asyncio([ButtonAndDataPrint(5)], partial(producer_mock, data=data), ProtocolAsyncio())
+    _run_asyncio([ButtonAndDataPrint(5)], partial(producer_mock, data=data), ProtocolAsyncio())

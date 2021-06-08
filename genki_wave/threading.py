@@ -22,13 +22,22 @@ class ReaderThreadSerial(ReaderThread):
 
     @classmethod
     def from_port(cls, serial_port: Optional[str] = None) -> "ReaderThreadSerial":
+        """Create a `ReaderThreadSerial` object from a serial port
+
+        Args:
+            serial_port: The serial port to read from. If `None` will automatically determine the port based on the
+                operating system.
+
+        Returns:
+            An instance of `ReaderThreadSerial` with the specified port
+        """
         port = get_serial_port() if serial_port is None else serial_port
         serial_instance = Serial(port, BAUDRATE, parity=serial.PARITY_EVEN)
         return cls(serial_instance, ProtocolThread)
 
 
 class ReaderThreadBluetooth(threading.Thread):
-    """An (not fully worked out) imitation of `serial.threaded.ReaderThread` for the bluetooth interface
+    """An imitation of `serial.threaded.ReaderThread` for the bluetooth interface
 
     Note: Methods that clean up the connection are not fully worked out
 
@@ -56,11 +65,12 @@ class ReaderThreadBluetooth(threading.Thread):
 
     @staticmethod
     def run_producer(protocol, comm, ble_address) -> None:
-        """Runs a producer
+        """Runs a producer fetching the data
 
         Args:
-            comm:
-            protocol:
+            comm: An object that allows `producer` and `consumer` to communicate when to cancel a process
+            protocol: An object that knows how to process the raw data sent from the Wave ring into a structured format
+                  and passes it along
             ble_address: Address of the bluetooth device to connect to. E.g. 'D5:73:DB:85:B4:A1'. If `None` it
                          connects via serial
         """

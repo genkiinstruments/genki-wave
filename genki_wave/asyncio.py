@@ -152,7 +152,7 @@ async def consumer(
             callback(package)
 
 
-def run_asyncio(
+def _run_asyncio(
     callbacks: List[WaveCallback], producer: Union[producer_bluetooth, producer_serial], protocol: ProtocolAsyncio
 ) -> None:
     """Runs a producer and a consumer, hooking into the data using the supplied callbacks
@@ -181,7 +181,7 @@ def run_asyncio_bluetooth(callbacks: List[WaveCallback], ble_address) -> None:
         callbacks: A list/tuple of callbacks that handle the data passed from the wave ring
         ble_address: Address of the bluetooth device to connect to. E.g. 'D5:73:DB:85:B4:A1'
     """
-    run_asyncio(callbacks, partial(producer_bluetooth, ble_address=ble_address), ProtocolAsyncio())
+    _run_asyncio(callbacks, partial(producer_bluetooth, ble_address=ble_address), ProtocolAsyncio())
 
 
 def run_asyncio_serial(callbacks: List[WaveCallback], serial_port: str = None) -> None:
@@ -194,4 +194,4 @@ def run_asyncio_serial(callbacks: List[WaveCallback], serial_port: str = None) -
     """
     serial_port = get_serial_port() if serial_port is None else serial_port
 
-    run_asyncio(callbacks, partial(producer_serial, serial_port=serial_port), ProtocolAsyncio())
+    _run_asyncio(callbacks, partial(producer_serial, serial_port=serial_port), ProtocolAsyncio())
