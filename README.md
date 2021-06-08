@@ -8,7 +8,7 @@ algorithms in an accessible form factor.
 For more details, please refer to the
 [technical documentation](https://www.notion.so/genkiinstruments/Wave-API-8a91bd3553ee4529878342dec477d93f).
 
-![Wave](wave.png)
+![Wave](assets/wave.png)
 
 # Installation
 This package has been tested with `python 3.8` on both macOS and Linux. Installation is straight forward.
