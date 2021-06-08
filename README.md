@@ -67,6 +67,6 @@ provide two-way communication with Wave.
   connected to the computer. After pairing Wave to a Ubuntu machine, the ring tends to connect automatically quite
   aggressively and when that happens can not be accessed via bleak. One "solution" is to use `bluetoothctl`
 * When running via serial the Wave ring has to be turned off first, then connected and the script run
-* When connected via bluetooth and the program is not turned off "properly" e.g. with a keyboard interrupt,
-  there is no proper cleanup that happens for the bluetooth connection. Currently the only "clean" way is to use the
-  hard-coded method, by holding the top button for a few seconds while the program is running
+* When connected via bluetooth using asyncio (not threads) and the program is not turned off "properly" e.g. with a
+  keyboard interrupt, there is no proper cleanup that happens for the bluetooth connection. Currently the only "clean"
+  way is to use the hard-coded method, by holding the top button for a few seconds while the program is running
