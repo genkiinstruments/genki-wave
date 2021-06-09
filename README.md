@@ -43,7 +43,7 @@ And the following example uses a callback that prints out which button has been 
 every 5 seconds.
 
 ```python
-from genki_wave.asyncio import run_asyncio_bluetooth
+from genki_wave.asyncio_runner import run_asyncio_bluetooth
 from genki_wave.callbacks import ButtonAndDataPrint
 
 callbacks = [ButtonAndDataPrint(print_data_every_n_seconds=5)]
