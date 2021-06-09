@@ -4,7 +4,7 @@ from typing import Union
 
 from genki_wave.data.organization import ButtonEvent
 from genki_wave.discover import run_discover_bluetooth
-from genki_wave.threading import ReaderThreadBluetooth, ReaderThreadSerial
+from genki_wave.threading_runner import ReaderThreadBluetooth, ReaderThreadSerial
 
 
 class Sleeper:
