@@ -8,7 +8,7 @@ requires = ["bleak", "cobs", "pyserial", "pyserial-asyncio"]
 
 setup(
     name="genki-wave",
-    version="0.1.1",
+    version="0.1.2",
     description="Python API for Wave by Genki",
     long_description=readme,
     long_description_content_type="text/markdown",
