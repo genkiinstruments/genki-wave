@@ -126,12 +126,12 @@ class DataPackage:
     _raw_len = 105
 
     gyro: Point3d
-    accel: Point3d
+    acc: Point3d
     mag: Point3d
     raw_pose: Point4d
     current_pose: Point4d
     euler: Euler3d
-    linear: Point3d
+    linacc: Point3d
     peak: bool
     peak_norm_velocity: float
     timestamp_us: int
@@ -143,12 +143,12 @@ class DataPackage:
         # These parameters encode how to read the bytes from the stream
         return cls(
             gyro=Point3d(*unpack_from("<3f", data, 0)),
-            accel=Point3d(*unpack_from("<3f", data, 12)),
+            acc=Point3d(*unpack_from("<3f", data, 12)),
             mag=Point3d(*unpack_from("<3f", data, 24)),
             raw_pose=Point4d(*unpack_from("<4f", data, 36)),
             current_pose=Point4d(*unpack_from("<4f", data, 52)),
             euler=Euler3d(*unpack_from("<3f", data, 68)),
-            linear=Point3d(*unpack_from("<3f", data, 80)),
+            linacc=Point3d(*unpack_from("<3f", data, 80)),
             peak=unpack_from("?", data, 92)[0],
             peak_norm_velocity=unpack_from("<f", data, 93)[0],
             timestamp_us=unpack_from("<Q", data, 97)[0],
