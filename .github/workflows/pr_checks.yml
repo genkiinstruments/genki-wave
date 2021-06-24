@@ -44,8 +44,10 @@ jobs:
           python-version: '3.8'
           architecture: 'x64' # (x64 or x86)
       # Needed for bleak tests
+      - name: apt update
+        run: sudo apt-get update
       - name: Install Bluez on Ubuntu
-        run: sudo apt install -y bluez
+        run: sudo apt-get install -y bluez
       - name: pip install
         run: pip install -r requirements.txt
       - name: Run tests
