@@ -1,5 +1,5 @@
 import struct
-from dataclasses import Field, asdict, dataclass
+from dataclasses import Field, asdict, dataclass, field
 from enum import IntEnum
 from struct import unpack_from
 from typing import Optional, Union
@@ -42,6 +42,9 @@ class Point3d:
     x: float
     y: float
     z: float
+
+    def __sub__(self, other):
+        return Point3d(x=self.x - other.x, y=self.y - other.y, z=self.z - other.z)
 
 
 @dataclass(frozen=True)
@@ -135,6 +138,11 @@ class DataPackage:
     peak: bool
     peak_norm_velocity: float
     timestamp_us: int
+    grav: Point3d = field(init=False)
+
+    def __post_init__(self):
+        # A way to initialize a derived field in a frozen dataclass
+        super().__setattr__("grav", self.acc - self.linacc)
 
     @classmethod
     def from_raw_bytes(cls, data: Union[bytearray, bytes]) -> "DataPackage":
