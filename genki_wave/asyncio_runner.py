@@ -94,6 +94,7 @@ async def producer_bluetooth(
         await client.start_notify(API_CHAR_UUID, callback)
         await client.write_gatt_char(API_CHAR_UUID, get_start_api_package(), False)
 
+        print("Connected to Wave")
         while True:
             # This `while` loop and `asyncio.sleep` statement is some magic that is required to continually fetch
             # the data from the bluetooth device.
