@@ -93,7 +93,6 @@ async def producer_bluetooth(
     print(f"Connecting to wave at address {ble_address}")
     callback = bleak_callback(protocol)
     async with BleakClient(ble_address) as client:
-
         await client.start_notify(API_CHAR_UUID, callback)
         await client.write_gatt_char(API_CHAR_UUID, get_start_api_package(), False)
 
@@ -162,8 +161,10 @@ async def consumer(
 
 def make_sigint_handler(comm: CommunicateCancel):
     """Create a signal handler to cancel an asyncio loop using signals."""
+
     def handler(*args):
         comm.cancel = True
+
     return handler
 
 
