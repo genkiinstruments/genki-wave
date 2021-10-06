@@ -79,6 +79,7 @@ def make_disconnect_callback(comm: CommunicateCancel):
         if not comm.cancel:
             print(f"Client {client.address} disconnected unexpectedly, exiting")
             sys.exit(1)
+
     return cb
 
 
