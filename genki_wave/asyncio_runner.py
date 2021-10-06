@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import signal
+import sys
 from functools import partial
 from typing import Union, List, Callable, Tuple
 
@@ -73,6 +74,14 @@ def bleak_callback(protocol: ProtocolAsyncio) -> Callable:
     return callback
 
 
+def make_disconnect_callback(comm: CommunicateCancel):
+    def cb(client):
+        if not comm.cancel:
+            print(f"Client {client.address} disconnected unexpectedly, exiting")
+            sys.exit(1)
+    return cb
+
+
 async def producer_bluetooth(
     protocol: Union[ProtocolAsyncio, ProtocolThread],
     comm: CommunicateCancel,
@@ -92,7 +101,7 @@ async def producer_bluetooth(
     """
     print(f"Connecting to wave at address {ble_address}")
     callback = bleak_callback(protocol)
-    async with BleakClient(ble_address) as client:
+    async with BleakClient(ble_address, disconnected_callback=make_disconnect_callback(comm)) as client:
         await client.start_notify(API_CHAR_UUID, callback)
         await client.write_gatt_char(API_CHAR_UUID, get_start_api_package(), False)
 
