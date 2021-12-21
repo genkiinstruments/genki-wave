@@ -8,10 +8,10 @@ from serial.threaded import ReaderThread
 
 from genki_wave.constants import BAUDRATE
 from genki_wave.data.writing import get_start_api_package
-from genki_wave.protocols import ProtocolThread, ProtocolAsyncio
+from genki_wave.protocols import ProtocolThread, ProtocolAsyncio, wave_task
 
 from genki_wave.utils import get_serial_port, get_or_create_event_loop
-from genki_wave.asyncio_runner import producer_bluetooth, CommunicateCancel
+from genki_wave.asyncio_runner import producer_bluetooth, CommunicateCancel, consumer
 
 
 class ReaderThreadSerial(ReaderThread):
@@ -108,13 +108,9 @@ class WaveListener(threading.Thread):
 
     def run(self):
         self.comm = CommunicateCancel()
-        protocol = ProtocolAsyncio()
-        tasks = asyncio.gather(
-            producer_bluetooth(protocol, self.comm, self.ble_address)
-            consumer(protocol, self.comm, self.callbacks)
-        )
+        task = wave_task(self.ble_address, self.comm, self.callbacks)
         loop = get_or_create_event_loop()
-        loop.run_until_complete(tasks)
+        loop.run_until_complete(task)
 
     def stop(self):
         self.comm.cancel = True
@@ -125,5 +121,3 @@ class WaveListener(threading.Thread):
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
         self.stop()
-
-

@@ -112,3 +112,27 @@ class ProtocolThread(ProtocolAbc, Packetizer):
     @property
     def queue(self) -> Queue:
         return self._queue
+
+
+async def wave_task(ble_address: str, comm: CommunicateCancel, callbacks: List[Callable]) -> None:
+    protocol = ProtocolAsyncio()
+    callback = prepare_protocol_as_bleak_callback_asyncio(protocol)
+    print(f"Connecting to wave at address {ble_address}")
+    async with BleakClient(ble_address) as client:
+        await client.connect()
+        await client.start_notify(API_CHAR_UUID, callback)
+        await client.write_gatt_char(API_CHAR_UUID, get_start_api_package(), False)
+
+        print("Connected to Wave")
+        while True:
+            package = await protocol.queue.get()
+
+            if comm.is_cancel(package) or comm.cancel:
+                print("Got a cancel message, exiting.")
+                comm.cancel = True
+                break
+
+            for callback in callbacks:
+                callback(package)
+
+        await client.stop_notify(API_CHAR_UUID)
