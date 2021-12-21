@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import signal
 import sys
 from functools import partial
 from typing import Union, List, Callable, Tuple
@@ -99,6 +100,7 @@ async def producer_bluetooth(
         The producer doesn't return a value, but the data gets added to the `protocol` that can be accessed from other
         parts of the program i.e. some `consumer`
     """
+    print(f"Connecting to wave at address {ble_address}")
     callback = bleak_callback(protocol)
     async with BleakClient(ble_address, disconnected_callback=make_disconnect_callback(comm)) as client:
         await client.start_notify(API_CHAR_UUID, callback)
@@ -158,13 +160,22 @@ async def consumer(
     while True:
         package = await protocol.queue.get()
 
-        if comm.is_cancel(package):
+        if comm.is_cancel(package) or comm.cancel:
             print("Got a cancel message. Exiting consumer loop...")
             comm.cancel = True
             break
 
         for callback in callbacks:
             callback(package)
+
+
+def make_sigint_handler(comm: CommunicateCancel):
+    """Create a signal handler to cancel an asyncio loop using signals."""
+
+    def handler(*args):
+        comm.cancel = True
+
+    return handler
 
 
 def _run_asyncio(
@@ -178,15 +189,14 @@ def _run_asyncio(
         protocol: An object that knows how to process the raw data sent from the Wave ring into a structured format
                   and passes it along between `producer` and `consumer`.
     """
-    # TODO(robert): Catch a keyboard interrupt and gracefully shut down. Non-trivial to implement.
-
-    # A singleton that sends messages about whether the data transfer has been canceled. A slightly hacky fix
-    # to the problem of not handling keyboard interrupts
+    # A singleton that sends messages about whether the data transfer has been canceled.
     comm = CommunicateCancel()
+    loop = get_or_create_event_loop()
+    loop.add_signal_handler(signal.SIGINT, make_sigint_handler(comm))
 
     # Note: The consumer and the producer send the data via the instance of `protocol`
-    tasks = asyncio.gather(*[producer(protocol, comm), consumer(protocol, comm, callbacks)])
-    get_or_create_event_loop().run_until_complete(tasks)
+    tasks = asyncio.gather(producer(protocol, comm), consumer(protocol, comm, callbacks))
+    loop.run_until_complete(tasks)
 
 
 def run_asyncio_bluetooth(callbacks: List[WaveCallback], ble_address) -> None:

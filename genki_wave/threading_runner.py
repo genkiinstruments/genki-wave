@@ -77,7 +77,6 @@ class ReaderThreadBluetooth(threading.Thread):
         """
         loop = get_or_create_event_loop()
         producer = producer_bluetooth(protocol, comm, ble_address)
-        # TODO(robert): Catch a keyboard interrupt and gracefully shut down. Non-trivial to implement.
         tasks = asyncio.gather(*[producer])
         loop.run_until_complete(tasks)
 
