@@ -10,6 +10,7 @@ from serial.threaded import Packetizer
 
 from genki_wave.data.data_structures import QueueWithPop
 from genki_wave.data.organization import ButtonEvent, DataPackage, process_byte_data
+from genki_wave.utils import get_or_create_event_loop
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -69,6 +70,7 @@ class ProtocolAsyncio(ProtocolAbc, Packetizer):
 
     def __init__(self):
         super().__init__()
+        get_or_create_event_loop()
         self._queue = asyncio.Queue()
 
     async def data_received(self, data: Union[bytearray, bytes]) -> None:
