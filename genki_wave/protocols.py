@@ -3,17 +3,34 @@ import asyncio
 import logging
 import struct
 from queue import Queue
-from typing import Optional, Union
+from typing import Optional, Union, List, Callable
 
 from cobs import cobs
 from serial.threaded import Packetizer
 
 from genki_wave.data.data_structures import QueueWithPop
-from genki_wave.data.organization import ButtonEvent, DataPackage, process_byte_data
+from genki_wave.data.writing import get_start_api_package
+from genki_wave.data.organization import ButtonEvent, ButtonId, ButtonAction, DataPackage, process_byte_data
 from genki_wave.utils import get_or_create_event_loop
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
+
+class CommunicateCancel:
+    """
+    Class that handles how to cancel asyncio loops with a button press and how to communicate it. Usually defined as
+    a global and sends messages to each part of the script
+    """
+
+    cancel = False
+
+    @staticmethod
+    def is_cancel(button_event: Union[ButtonEvent, DataPackage]) -> bool:
+        """Checks for a hard coded cancel event"""
+        if isinstance(button_event, DataPackage):
+            return False
+        return button_event.button_id == ButtonId.TOP and button_event.action == ButtonAction.EXTRALONG
 
 
 class ProtocolAbc(abc.ABC):
@@ -114,12 +131,11 @@ class ProtocolThread(ProtocolAbc, Packetizer):
         return self._queue
 
 
-async def wave_task(ble_address: str, comm: CommunicateCancel, callbacks: List[Callable]) -> None:
+async def bluetooth_task(ble_address: str, comm: CommunicateCancel, callbacks: List[Callable]) -> None:
     protocol = ProtocolAsyncio()
     callback = prepare_protocol_as_bleak_callback_asyncio(protocol)
     print(f"Connecting to wave at address {ble_address}")
     async with BleakClient(ble_address) as client:
-        await client.connect()
         await client.start_notify(API_CHAR_UUID, callback)
         await client.write_gatt_char(API_CHAR_UUID, get_start_api_package(), False)
 

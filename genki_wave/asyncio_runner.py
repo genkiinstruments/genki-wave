@@ -18,28 +18,12 @@ from genki_wave.data.organization import (
     DataPackage,
 )
 from genki_wave.data.writing import get_start_api_package
-from genki_wave.protocols import ProtocolAsyncio, ProtocolThread
+from genki_wave.protocols import ProtocolAsyncio, ProtocolThread, CommunicateCancel
 from genki_wave.utils import get_serial_port, get_or_create_event_loop
 
 logging.basicConfig(format="%(levelname).4s:%(asctime)s [%(filename)s:%(lineno)d] - %(message)s ")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
-
-class CommunicateCancel:
-    """
-    Class that handles how to cancel asyncio loops with a button press and how to communicate it. Usually defined as
-    a global and sends messages to each part of the script
-    """
-
-    cancel = False
-
-    @staticmethod
-    def is_cancel(button_event: Union[ButtonEvent, DataPackage]) -> bool:
-        """Checks for a hard coded cancel event"""
-        if isinstance(button_event, DataPackage):
-            return False
-        return button_event.button_id == ButtonId.TOP and button_event.action == ButtonAction.EXTRALONG
 
 
 def prepare_protocol_as_bleak_callback_asyncio(protocol: ProtocolAsyncio) -> Callable:
