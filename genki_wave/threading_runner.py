@@ -8,7 +8,7 @@ from serial.threaded import ReaderThread
 
 from genki_wave.constants import BAUDRATE
 from genki_wave.data.writing import get_start_api_package
-from genki_wave.protocols import ProtocolThread, ProtocolAsyncio, bluetooth_task, CommunicateCancel
+from genki_wave.protocols import ProtocolThread, bluetooth_task, CommunicateCancel
 
 
 from genki_wave.utils import get_serial_port, get_or_create_event_loop

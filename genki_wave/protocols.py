@@ -138,6 +138,7 @@ def prepare_protocol_as_bleak_callback_asyncio(protocol: ProtocolAsyncio) -> Cal
     async def _inner(sender: str, data: bytearray) -> None:
         # NOTE: `bleak` expects a function with this signature
         await protocol.data_received(data)
+
     return _inner
 
 
