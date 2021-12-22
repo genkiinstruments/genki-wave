@@ -8,9 +8,11 @@ from serial.threaded import ReaderThread
 
 from genki_wave.constants import BAUDRATE
 from genki_wave.data.writing import get_start_api_package
-from genki_wave.protocols import ProtocolThread
+from genki_wave.protocols import ProtocolThread, bluetooth_task, CommunicateCancel
+
+
 from genki_wave.utils import get_serial_port, get_or_create_event_loop
-from genki_wave.asyncio_runner import producer_bluetooth, CommunicateCancel
+from genki_wave.asyncio_runner import producer_bluetooth
 
 
 class ReaderThreadSerial(ReaderThread):
@@ -97,3 +99,26 @@ class ReaderThreadBluetooth(threading.Thread):
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Leave context: close port"""
         self.close()
+
+
+class WaveListener(threading.Thread):
+    def __init__(self, ble_address, callbacks):
+        self.ble_address = ble_address
+        self.callbacks = callbacks
+        super().__init__()
+
+    def run(self):
+        self.comm = CommunicateCancel()
+        task = bluetooth_task(self.ble_address, self.comm, self.callbacks)
+        loop = get_or_create_event_loop()
+        loop.run_until_complete(task)
+
+    def stop(self):
+        self.comm.cancel = True
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.stop()
