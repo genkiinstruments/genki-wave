@@ -7,11 +7,14 @@ from typing import Optional, Union, List, Callable
 
 from cobs import cobs
 from serial.threaded import Packetizer
+from bleak import BleakClient
 
 from genki_wave.data.data_structures import QueueWithPop
+from genki_wave.constants import API_CHAR_UUID
 from genki_wave.data.writing import get_start_api_package
 from genki_wave.data.organization import ButtonEvent, ButtonId, ButtonAction, DataPackage, process_byte_data
 from genki_wave.utils import get_or_create_event_loop
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -129,6 +132,13 @@ class ProtocolThread(ProtocolAbc, Packetizer):
     @property
     def queue(self) -> Queue:
         return self._queue
+
+
+def prepare_protocol_as_bleak_callback_asyncio(protocol: ProtocolAsyncio) -> Callable:
+    async def _inner(sender: str, data: bytearray) -> None:
+        # NOTE: `bleak` expects a function with this signature
+        await protocol.data_received(data)
+    return _inner
 
 
 async def bluetooth_task(ble_address: str, comm: CommunicateCancel, callbacks: List[Callable]) -> None:
