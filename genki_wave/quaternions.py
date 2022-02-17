@@ -32,7 +32,7 @@ class Quaternion:
         return Quaternion(self.w, -self.x, -self.y, -self.z)
 
     def normalize(self):
-        norm = math.sqrt(sum([el**2 for el in [self.w, self.x, self.y, self.z]]))
+        norm = math.sqrt(sum([el ** 2 for el in [self.w, self.x, self.y, self.z]]))
         return Quaternion(self.w / norm, self.x / norm, self.y / norm, self.z / norm)
 
 
@@ -42,4 +42,3 @@ def rotate_vector(p: Point3d, q: Quaternion) -> Point3d:
     p = Quaternion.from_point3d(p)
     p_rot = q * p * q.conjugate()
     return p_rot.to_point3d()
-

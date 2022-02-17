@@ -16,7 +16,7 @@ from genki_wave.quaternions import Quaternion, rotate_vector
             [-0.5517578125, 0.34814453125, 0.763916015625],
             [0.9369975328445436, 0.1840094625949859, 0.2790369093418121, -0.0833195820450782],
             [0.009867312032426412, 0.049273887555624396, 1.0033362832973065],
-        ]
+        ],
     ],
 )
 def test_rotation(point, quat, expected):
@@ -41,7 +41,7 @@ def test_quaternion_norm():
     q0 = Quaternion(1.0, 2.0, 3.0, -4.0).normalize()
     q1 = Quaternion(0.01, -0.556, -3.0, -0.002).normalize()
     for q in [q0, q1]:
-        assert sum([el**2 for el in [q.w, q.x, q.y, q.z]])
+        assert sum([el ** 2 for el in [q.w, q.x, q.y, q.z]])
 
 
 def test_quaternion_to_and_from_point():
