@@ -49,14 +49,14 @@ class Point3d:
 
 
 @dataclass(frozen=True)
-class Point4d:
+class Quaternion:
     w: float
     x: float
     y: float
     z: float
 
     @classmethod
-    def from_point3d(cls, p: Point3d) -> "Point4d":
+    def from_point3d(cls, p: Point3d) -> "Quaternion":
         return cls(0, p.x, p.y, p.z)
 
     def to_point3d(self):
@@ -70,20 +70,20 @@ class Point4d:
         x = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2
         y = w1 * y2 + y1 * w2 + z1 * x2 - x1 * z2
         z = w1 * z2 + z1 * w2 + x1 * y2 - y1 * x2
-        return Point4d(w, x, y, z)
+        return Quaternion(w, x, y, z)
 
     def conjugate(self):
-        return Point4d(self.w, -self.x, -self.y, -self.z)
+        return Quaternion(self.w, -self.x, -self.y, -self.z)
 
     def normalize(self):
         norm = math.sqrt(sum([el**2 for el in [self.w, self.x, self.y, self.z]]))
-        return Point4d(self.w / norm, self.x / norm, self.y / norm, self.z / norm)
+        return Quaternion(self.w / norm, self.x / norm, self.y / norm, self.z / norm)
 
 
-def rotate_vector(p: Point3d, q: Point4d) -> Point3d:
+def rotate_vector(p: Point3d, q: Quaternion) -> Point3d:
     """Rotate point p by quaternion q"""
     q = q.normalize()
-    p = Point4d.from_point3d(p)
+    p = Quaternion.from_point3d(p)
     p_rot = q * p * q.conjugate()
     return p_rot.to_point3d()
 
@@ -164,8 +164,8 @@ class DataPackage:
     gyro: Point3d
     acc: Point3d
     mag: Point3d
-    raw_pose: Point4d
-    current_pose: Point4d
+    raw_pose: Quaternion
+    current_pose: Quaternion
     euler: Euler3d
     linacc: Point3d
     peak: bool
@@ -190,8 +190,8 @@ class DataPackage:
             gyro=Point3d(*unpack_from("<3f", data, 0)),
             acc=Point3d(*unpack_from("<3f", data, 12)),
             mag=Point3d(*unpack_from("<3f", data, 24)),
-            raw_pose=Point4d(*unpack_from("<4f", data, 36)).normalize(),
-            current_pose=Point4d(*unpack_from("<4f", data, 52)).normalize(),
+            raw_pose=Quaternion(*unpack_from("<4f", data, 36)).normalize(),
+            current_pose=Quaternion(*unpack_from("<4f", data, 52)).normalize(),
             euler=Euler3d(*unpack_from("<3f", data, 68)),
             linacc=Point3d(*unpack_from("<3f", data, 80)),
             peak=unpack_from("?", data, 92)[0],
