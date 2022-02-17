@@ -1,3 +1,4 @@
+import math
 import struct
 from dataclasses import Field, asdict, dataclass, field
 from enum import IntEnum
@@ -53,6 +54,27 @@ class Point4d:
     x: float
     y: float
     z: float
+
+    def __mul__(self, other):
+        w1, x1, y1, z1 = self.w, self.x, self.y, self.z
+        w2, x2, y2, z2 = other.w, other.x, other.y, other.z
+
+        w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2
+        x = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2
+        y = w1 * y2 + y1 * w2 + z1 * x2 - x1 * z2
+        z = w1 * z2 + z1 * w2 + x1 * y2 - y1 * x2
+        return Point4d(w, x, y, z)
+
+    def conjugate(self):
+        return Point4d(self.w, -self.x, -self.y, -self.z)
+
+    def normalize(self):
+        norm = math.sqrt(sum([el**2 for el in [self.w, self.x, self.y, self.z]]))
+        return Point4d(self.w / norm, self.x / norm, self.y / norm, self.z / norm)
+
+
+def rotate_vector(x: Point3d, q: Point4d) -> Point3d:
+    pass
 
 
 @dataclass(frozen=True)
@@ -139,10 +161,14 @@ class DataPackage:
     peak_norm_velocity: float
     timestamp_us: int
     grav: Point3d = field(init=False)
+    acc_glob: Point3d = field(init=False)
+    linacc_glob: Point3d = field(init=False)
 
     def __post_init__(self):
         # A way to initialize a derived field in a frozen dataclass
         super().__setattr__("grav", self.acc - self.linacc)
+        super().__setattr__("acc_glob", ...)
+        super().__setattr__("linacc_glob", ...)
 
     @classmethod
     def from_raw_bytes(cls, data: Union[bytearray, bytes]) -> "DataPackage":
