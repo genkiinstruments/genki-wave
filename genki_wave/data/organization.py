@@ -55,12 +55,12 @@ class Point4d:
     y: float
     z: float
 
-    def __post_init__(self):
-        norm = math.sqrt(sum([el**2 for el in [self.w, self.x, self.y, self.z]]))
-        object.__setattr__(self, 'w', self.w / norm)
-        object.__setattr__(self, 'x', self.x / norm)
-        object.__setattr__(self, 'y', self.y / norm)
-        object.__setattr__(self, 'z', self.z / norm)
+    @classmethod
+    def from_point3d(cls, p: Point3d) -> "Point4d":
+        return cls(0, p.x, p.y, p.z)
+
+    def to_point3d(self):
+        return Point3d(self.x, self.y, self.z)
 
     def __mul__(self, other):
         w1, x1, y1, z1 = self.w, self.x, self.y, self.z
@@ -80,8 +80,12 @@ class Point4d:
         return Point4d(self.w / norm, self.x / norm, self.y / norm, self.z / norm)
 
 
-def rotate_vector(x: Point3d, q: Point4d) -> Point3d:
-    pass
+def rotate_vector(p: Point3d, q: Point4d) -> Point3d:
+    """Rotate point p by quaternion q"""
+    q = q.normalize()
+    p = Point4d.from_point3d(p)
+    p_rot = q * p * q.conjugate()
+    return p_rot.to_point3d()
 
 
 @dataclass(frozen=True)
@@ -186,8 +190,8 @@ class DataPackage:
             gyro=Point3d(*unpack_from("<3f", data, 0)),
             acc=Point3d(*unpack_from("<3f", data, 12)),
             mag=Point3d(*unpack_from("<3f", data, 24)),
-            raw_pose=Point4d(*unpack_from("<4f", data, 36)),
-            current_pose=Point4d(*unpack_from("<4f", data, 52)),
+            raw_pose=Point4d(*unpack_from("<4f", data, 36)).normalize(),
+            current_pose=Point4d(*unpack_from("<4f", data, 52)).normalize(),
             euler=Euler3d(*unpack_from("<3f", data, 68)),
             linacc=Point3d(*unpack_from("<3f", data, 80)),
             peak=unpack_from("?", data, 92)[0],
