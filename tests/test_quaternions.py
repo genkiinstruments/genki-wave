@@ -28,3 +28,10 @@ def test_rotation(point, quat, expected):
     pytest.approx(expected.x, actual.x)
     pytest.approx(expected.y, actual.y)
     pytest.approx(expected.z, actual.z)
+
+    # Make sure the rotation uses unit normalized quaternions
+    q2 = Quaternion(*[el * 2 for el in quat])
+    actual = rotate_vector(p, q2)
+    pytest.approx(expected.x, actual.x)
+    pytest.approx(expected.y, actual.y)
+    pytest.approx(expected.z, actual.z)
