@@ -5,7 +5,7 @@ from struct import unpack_from
 from typing import Optional, Union
 
 from genki_wave.data.organization_elements import Point3d
-from genki_wave.quaternions import Quaternion
+from genki_wave.quaternions import Quaternion, rotate_vector
 
 
 class ButtonId(IntEnum):
@@ -130,8 +130,8 @@ class DataPackage:
     def __post_init__(self):
         # A way to initialize a derived field in a frozen dataclass
         super().__setattr__("grav", self.acc - self.linacc)
-        super().__setattr__("acc_glob", ...)
-        super().__setattr__("linacc_glob", ...)
+        super().__setattr__("acc_glob", rotate_vector(self.acc, self.current_pose))
+        super().__setattr__("linacc_glob", rotate_vector(self.linacc, self.current_pose))
 
     @classmethod
     def from_raw_bytes(cls, data: Union[bytearray, bytes]) -> "DataPackage":

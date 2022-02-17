@@ -35,3 +35,17 @@ def test_rotation(point, quat, expected):
     pytest.approx(expected.x, actual.x)
     pytest.approx(expected.y, actual.y)
     pytest.approx(expected.z, actual.z)
+
+
+def test_quaternion_norm():
+    q0 = Quaternion(1.0, 2.0, 3.0, -4.0).normalize()
+    q1 = Quaternion(0.01, -0.556, -3.0, -0.002).normalize()
+    for q in [q0, q1]:
+        assert sum([el**2 for el in [q.w, q.x, q.y, q.z]])
+
+
+def test_quaternion_to_and_from_point():
+    p = Point3d(-0.556, -3.0, -0.002)
+    q = Quaternion.from_point3d(p)
+    assert q == Quaternion(0.0, -0.556, -3.0, -0.002)
+    assert p == q.to_point3d()
