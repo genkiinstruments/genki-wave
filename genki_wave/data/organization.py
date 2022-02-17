@@ -55,6 +55,13 @@ class Point4d:
     y: float
     z: float
 
+    def __post_init__(self):
+        norm = math.sqrt(sum([el**2 for el in [self.w, self.x, self.y, self.z]]))
+        object.__setattr__(self, 'w', self.w / norm)
+        object.__setattr__(self, 'x', self.x / norm)
+        object.__setattr__(self, 'y', self.y / norm)
+        object.__setattr__(self, 'z', self.z / norm)
+
     def __mul__(self, other):
         w1, x1, y1, z1 = self.w, self.x, self.y, self.z
         w2, x2, y2, z2 = other.w, other.x, other.y, other.z
