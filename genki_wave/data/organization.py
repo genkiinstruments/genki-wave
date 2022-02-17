@@ -4,6 +4,9 @@ from enum import IntEnum
 from struct import unpack_from
 from typing import Optional, Union
 
+from genki_wave.data.organization_elements import Point3d
+from genki_wave.quaternions import Quaternion, rotate_vector
+
 
 class ButtonId(IntEnum):
     """Which button is a package representing"""
@@ -35,24 +38,6 @@ class ButtonAction(IntEnum):
     EXTRALONGUP = 5
     CLICK = 6
     DOUBLECLICK = 7
-
-
-@dataclass(frozen=True)
-class Point3d:
-    x: float
-    y: float
-    z: float
-
-    def __sub__(self, other):
-        return Point3d(x=self.x - other.x, y=self.y - other.y, z=self.z - other.z)
-
-
-@dataclass(frozen=True)
-class Point4d:
-    w: float
-    x: float
-    y: float
-    z: float
 
 
 @dataclass(frozen=True)
@@ -131,18 +116,22 @@ class DataPackage:
     gyro: Point3d
     acc: Point3d
     mag: Point3d
-    raw_pose: Point4d
-    current_pose: Point4d
+    raw_pose: Quaternion
+    current_pose: Quaternion
     euler: Euler3d
     linacc: Point3d
     peak: bool
     peak_norm_velocity: float
     timestamp_us: int
     grav: Point3d = field(init=False)
+    acc_glob: Point3d = field(init=False)
+    linacc_glob: Point3d = field(init=False)
 
     def __post_init__(self):
         # A way to initialize a derived field in a frozen dataclass
         super().__setattr__("grav", self.acc - self.linacc)
+        super().__setattr__("acc_glob", rotate_vector(self.acc, self.current_pose))
+        super().__setattr__("linacc_glob", rotate_vector(self.linacc, self.current_pose))
 
     @classmethod
     def from_raw_bytes(cls, data: Union[bytearray, bytes]) -> "DataPackage":
@@ -153,8 +142,8 @@ class DataPackage:
             gyro=Point3d(*unpack_from("<3f", data, 0)),
             acc=Point3d(*unpack_from("<3f", data, 12)),
             mag=Point3d(*unpack_from("<3f", data, 24)),
-            raw_pose=Point4d(*unpack_from("<4f", data, 36)),
-            current_pose=Point4d(*unpack_from("<4f", data, 52)),
+            raw_pose=Quaternion(*unpack_from("<4f", data, 36)),
+            current_pose=Quaternion(*unpack_from("<4f", data, 52)),
             euler=Euler3d(*unpack_from("<3f", data, 68)),
             linacc=Point3d(*unpack_from("<3f", data, 80)),
             peak=unpack_from("?", data, 92)[0],
