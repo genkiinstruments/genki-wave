@@ -12,6 +12,13 @@ class Point3d:
         return Point3d(x=self.x - other.x, y=self.y - other.y, z=self.z - other.z)
 
 
+@dataclass(frozen=True)
+class Euler3d:
+    roll: float
+    pitch: float
+    yaw: float
+
+
 class PackageId(IntEnum):
     DATASTREAM = 1
     BATTERY_STATUS = 2
@@ -66,10 +73,3 @@ class ButtonAction(IntEnum):
     EXTRALONGUP = 5
     CLICK = 6
     DOUBLECLICK = 7
-
-
-@dataclass(frozen=True)
-class Euler3d:
-    roll: float
-    pitch: float
-    yaw: float

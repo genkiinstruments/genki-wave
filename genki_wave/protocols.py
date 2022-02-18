@@ -9,7 +9,7 @@ from cobs import cobs
 from serial.threaded import Packetizer
 from bleak import BleakClient
 
-from genki_wave.data.data_structures import QueueWithPop
+from genki_wave.data.structures import QueueWithPop
 from genki_wave.constants import API_CHAR_UUID
 from genki_wave.data.writing import get_start_api_package
 from genki_wave.data.organization import ButtonEvent, DataPackage, process_byte_data
