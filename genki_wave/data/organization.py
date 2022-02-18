@@ -4,7 +4,7 @@ from struct import unpack_from
 from typing import Optional, Union
 
 from genki_wave.data.organization_elements import ButtonAction, ButtonId, Euler3d, PackageId, PackageType, Point3d
-from genki_wave.quaternions import Quaternion, rotate_vector
+from genki_wave.data.quaternions import Quaternion, rotate_vector
 
 
 @dataclass(frozen=True)
