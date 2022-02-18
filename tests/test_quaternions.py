@@ -1,7 +1,7 @@
 import pytest
 
-from genki_wave.data.enums import Point3d
-from genki_wave.data.quaternions import Quaternion, rotate_vector
+from genki_wave.data import Point3d
+from genki_wave.data.points import Quaternion, rotate_vector
 
 
 @pytest.mark.parametrize(

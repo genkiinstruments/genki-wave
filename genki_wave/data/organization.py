@@ -3,8 +3,8 @@ from dataclasses import Field, asdict, dataclass, field
 from struct import unpack_from
 from typing import Optional, Union
 
-from genki_wave.data.enums import ButtonAction, ButtonId, Euler3d, PackageId, PackageType, Point3d
-from genki_wave.data.quaternions import Quaternion, rotate_vector
+from genki_wave.data.enums import ButtonAction, ButtonId, PackageId, PackageType
+from genki_wave.data.points import Euler3d, Point3d, Quaternion, rotate_vector
 
 
 @dataclass(frozen=True)

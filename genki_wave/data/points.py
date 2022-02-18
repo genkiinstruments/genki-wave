@@ -1,7 +1,22 @@
 import math
 from dataclasses import dataclass
 
-from genki_wave.data.enums import Point3d
+
+@dataclass(frozen=True)
+class Point3d:
+    x: float
+    y: float
+    z: float
+
+    def __sub__(self, other):
+        return Point3d(x=self.x - other.x, y=self.y - other.y, z=self.z - other.z)
+
+
+@dataclass(frozen=True)
+class Euler3d:
+    roll: float
+    pitch: float
+    yaw: float
 
 
 @dataclass(frozen=True)
