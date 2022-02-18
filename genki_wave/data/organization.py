@@ -3,7 +3,7 @@ from dataclasses import Field, asdict, dataclass, field
 from struct import unpack_from
 from typing import Optional, Union
 
-from genki_wave.data.organization_elements import ButtonAction, ButtonId, Euler3d, PackageId, PackageType, Point3d
+from genki_wave.data.enums import ButtonAction, ButtonId, Euler3d, PackageId, PackageType, Point3d
 from genki_wave.data.quaternions import Quaternion, rotate_vector
 
 

@@ -1,7 +1,7 @@
 import math
 from dataclasses import dataclass
 
-from genki_wave.data.organization_elements import Point3d
+from genki_wave.data.enums import Point3d
 
 
 @dataclass(frozen=True)
