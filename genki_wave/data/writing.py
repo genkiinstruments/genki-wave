@@ -2,7 +2,8 @@ import struct
 
 from cobs import cobs
 
-from genki_wave.data.organization import DeviceMode, PackageId, PackageMetadata, PackageType
+from genki_wave.data.organization import PackageMetadata
+from genki_wave.data.enums import DeviceMode, PackageId, PackageType
 
 
 def pad_with_zero_byte(b: bytes) -> bytes:
