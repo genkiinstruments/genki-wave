@@ -38,6 +38,9 @@ class PackageMetadata:
     def is_button(self):
         return self.id == PackageId.BUTTON_EVENT
 
+    def is_raw_gyro_accel(self):
+        return self.id == PackageId.RAW_DATA
+
 
 @dataclass(frozen=True)
 class DataPackage:
@@ -48,6 +51,7 @@ class DataPackage:
     """
 
     _raw_len = 105
+    _raw_gyro_accel_len = 32
 
     gyro: Point3d
     acc: Point3d
@@ -85,6 +89,24 @@ class DataPackage:
             peak=unpack_from("?", data, 92)[0],
             peak_norm_velocity=unpack_from("<f", data, 93)[0],
             timestamp_us=unpack_from("<Q", data, 97)[0],
+        )
+
+    @classmethod
+    def from_raw_gyro_accel_bytes(cls, data: Union[bytearray, bytes]) -> "DataPackage":
+        # Explanation for the byte structure: https://docs.python.org/3/library/struct.html
+        assert len(data) == cls._raw_gyro_accel_len, f"Expected the raw gyro/accel data to have len={cls._raw_len}, got len={len(data)}"
+        # These parameters encode how to read the bytes from the stream
+        return cls(
+            gyro=Point3d(*unpack_from("<3f", data, 0)),
+            acc=Point3d(*unpack_from("<3f", data, 12)),
+            mag=Point3d(0, 0, 0),
+            raw_pose=Quaternion(1, 0, 0, 0),
+            current_pose=Quaternion(1, 0, 0, 0),
+            euler=Euler3d(0, 0, 0),
+            linacc=Point3d(0, 0, 0),
+            peak=False,
+            peak_norm_velocity=0,
+            timestamp_us=unpack_from("<Q", data, 24)[0],
         )
 
     def as_flat_dict(self) -> dict:
@@ -200,6 +222,14 @@ def process_byte_data(raw_bytes: Union[bytearray, bytes]) -> Union[ButtonEvent, 
         package = DataPackage.from_raw_bytes(raw_bytes_data)
     elif q.is_button():
         package = ButtonEvent.from_raw_bytes(raw_bytes_data)
+    elif q.is_raw_gyro_accel():
+        # TODO: Might actually want to return a package variant instead of just zeroing out a bunch of fields here
+        package = DataPackage.from_raw_gyro_accel_bytes(raw_bytes_data)
+
+        g, a, ts = package
+
+        print(f'{ts}, {g}, {a}')
+
     else:
         raise ValueError(f"Unknown value for q.id={q.id}")
 
