@@ -27,7 +27,7 @@ class PackageMetadata:
 
     @classmethod
     def split_out_data_from_metadata(cls, raw_bytes: Union[bytearray, bytes]) -> Union[bytearray, bytes]:
-        return raw_bytes[struct.calcsize(cls._fmt) :]
+        return raw_bytes[struct.calcsize(cls._fmt):]
 
     def to_bytes(self) -> bytes:
         return struct.pack(self._fmt, self.type, self.id, self.payload_size)
@@ -225,11 +225,6 @@ def process_byte_data(raw_bytes: Union[bytearray, bytes]) -> Union[ButtonEvent, 
     elif q.is_raw_gyro_accel():
         # TODO: Might actually want to return a package variant instead of just zeroing out a bunch of fields here
         package = DataPackage.from_raw_gyro_accel_bytes(raw_bytes_data)
-
-        g, a, ts = package
-
-        print(f'{ts}, {g}, {a}')
-
     else:
         raise ValueError(f"Unknown value for q.id={q.id}")
 
