@@ -94,7 +94,9 @@ class DataPackage:
     @classmethod
     def from_raw_gyro_accel_bytes(cls, data: Union[bytearray, bytes]) -> "DataPackage":
         # Explanation for the byte structure: https://docs.python.org/3/library/struct.html
-        assert len(data) == cls._raw_gyro_accel_len, f"Expected the raw gyro/accel data to have len={cls._raw_len}, got len={len(data)}"
+        if len(data) != cls._raw_gyro_accel_len:
+            raise ValueError(f"Expected the raw gyro/accel data to have len={cls._raw_len}, got len={len(data)}", data)
+
         # These parameters encode how to read the bytes from the stream
         return cls(
             gyro=Point3d(*unpack_from("<3f", data, 0)),
