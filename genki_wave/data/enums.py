@@ -10,6 +10,7 @@ class PackageId(IntEnum):
     IDENTIFY = 6
     RECENTER = 7
     DISPLAY_FRAME = 8
+    RAW_DATA = 9
 
 
 class PackageType(IntEnum):

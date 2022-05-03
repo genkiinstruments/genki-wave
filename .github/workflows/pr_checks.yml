@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: '3.8'
           architecture: 'x64' # (x64 or x86)
-      - run: pip install black==20.8b1 flake8
+      - run: pip install black==22.3.0 flake8
       # Just checks all the files in the repo. Could be improved by only checking for files that were changed
       - run: black -l 120 --check .
       - name: flake8

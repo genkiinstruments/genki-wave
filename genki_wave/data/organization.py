@@ -38,6 +38,9 @@ class PackageMetadata:
     def is_button(self):
         return self.id == PackageId.BUTTON_EVENT
 
+    def is_raw_gyro_accel(self):
+        return self.id == PackageId.RAW_DATA
+
 
 @dataclass(frozen=True)
 class DataPackage:
@@ -48,6 +51,7 @@ class DataPackage:
     """
 
     _raw_len = 105
+    _raw_gyro_accel_len = 32
 
     gyro: Point3d
     acc: Point3d
@@ -85,6 +89,40 @@ class DataPackage:
             peak=unpack_from("?", data, 92)[0],
             peak_norm_velocity=unpack_from("<f", data, 93)[0],
             timestamp_us=unpack_from("<Q", data, 97)[0],
+        )
+
+    def as_flat_dict(self) -> dict:
+        # Recursively unpack into dicts
+        d = asdict(self)
+        d = flatten_nested_dicts(d, None)
+        return d
+
+    @classmethod
+    def flat_keys(cls) -> tuple:
+        return tuple(flatten_nested_dataclass_fields(cls, None))
+
+
+@dataclass(frozen=True)
+class RawDataPackage:
+    """Represents a package of raw data (just acc, gyro, and timestamp) sent from wave"""
+
+    _raw_len = 32
+
+    gyro: Point3d
+    acc: Point3d
+    timestamp_us: int
+
+    @classmethod
+    def from_raw_bytes(cls, data: Union[bytearray, bytes]) -> "RawDataPackage":
+        # Explanation for the byte structure: https://docs.python.org/3/library/struct.html
+        if len(data) != cls._raw_len:
+            raise ValueError(f"Expected the raw gyro/accel data to have len={cls._raw_len}, got len={len(data)}", data)
+
+        # These parameters encode how to read the bytes from the stream
+        return cls(
+            gyro=Point3d(*unpack_from("<3f", data, 0)),
+            acc=Point3d(*unpack_from("<3f", data, 12)),
+            timestamp_us=unpack_from("<Q", data, 24)[0],
         )
 
     def as_flat_dict(self) -> dict:
@@ -184,7 +222,7 @@ def flatten_nested_dataclass_fields(d: Union[Field, type], name: Optional[str]) 
     return results
 
 
-def process_byte_data(raw_bytes: Union[bytearray, bytes]) -> Union[ButtonEvent, DataPackage]:
+def process_byte_data(raw_bytes: Union[bytearray, bytes]) -> Union[ButtonEvent, DataPackage, RawDataPackage]:
     """Factory function that takes raw bytes and translates into a button event or data
 
     Args:
@@ -200,6 +238,8 @@ def process_byte_data(raw_bytes: Union[bytearray, bytes]) -> Union[ButtonEvent, 
         package = DataPackage.from_raw_bytes(raw_bytes_data)
     elif q.is_button():
         package = ButtonEvent.from_raw_bytes(raw_bytes_data)
+    elif q.is_raw_gyro_accel():
+        package = RawDataPackage.from_raw_bytes(raw_bytes_data)
     else:
         raise ValueError(f"Unknown value for q.id={q.id}")
 

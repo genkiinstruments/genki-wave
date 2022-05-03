@@ -49,7 +49,7 @@ class ButtonAndDataPrint(WaveCallback):
         if self._last_time is None:
             self._last_time = data.timestamp_us
 
-        if (data.timestamp_us - self._last_time) > self._print_data_every_n_seconds * 10 ** 6:  # s to us
+        if (data.timestamp_us - self._last_time) > self._print_data_every_n_seconds * 10**6:  # s to us
             print(data)
             self._last_time = data.timestamp_us
 
