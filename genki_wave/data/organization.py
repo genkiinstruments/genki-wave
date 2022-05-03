@@ -66,12 +66,14 @@ class DataPackage:
     grav: Point3d = field(init=False)
     acc_glob: Point3d = field(init=False)
     linacc_glob: Point3d = field(init=False)
+    timestamp: float = field(init=False)
 
     def __post_init__(self):
         # A way to initialize a derived field in a frozen dataclass
         super().__setattr__("grav", self.acc - self.linacc)
         super().__setattr__("acc_glob", rotate_vector(self.acc, self.current_pose))
         super().__setattr__("linacc_glob", rotate_vector(self.linacc, self.current_pose))
+        super().__setattr__("timestamp", self.timestamp_us / 1e6)
 
     @classmethod
     def from_raw_bytes(cls, data: Union[bytearray, bytes]) -> "DataPackage":
@@ -111,6 +113,11 @@ class RawDataPackage:
     gyro: Point3d
     acc: Point3d
     timestamp_us: int
+    timestamp: float = field(init=False)
+
+    def __post_init__(self):
+        # A way to initialize a derived field in a frozen dataclass
+        super().__setattr__("timestamp", self.timestamp_us / 1e6)
 
     @classmethod
     def from_raw_bytes(cls, data: Union[bytearray, bytes]) -> "RawDataPackage":
