@@ -47,7 +47,7 @@ class Quaternion:
         return Quaternion(self.w, -self.x, -self.y, -self.z)
 
     def normalize(self):
-        norm = math.sqrt(sum([el ** 2 for el in [self.w, self.x, self.y, self.z]]))
+        norm = math.sqrt(sum([el**2 for el in [self.w, self.x, self.y, self.z]]))
         return Quaternion(self.w / norm, self.x / norm, self.y / norm, self.z / norm)
 
 

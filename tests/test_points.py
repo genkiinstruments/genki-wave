@@ -41,7 +41,7 @@ def test_quaternion_norm():
     q0 = Quaternion(1.0, 2.0, 3.0, -4.0).normalize()
     q1 = Quaternion(0.01, -0.556, -3.0, -0.002).normalize()
     for q in [q0, q1]:
-        assert sum([el ** 2 for el in [q.w, q.x, q.y, q.z]])
+        assert sum([el**2 for el in [q.w, q.x, q.y, q.z]])
 
 
 def test_quaternion_to_and_from_point():

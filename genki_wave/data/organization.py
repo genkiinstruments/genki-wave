@@ -27,7 +27,7 @@ class PackageMetadata:
 
     @classmethod
     def split_out_data_from_metadata(cls, raw_bytes: Union[bytearray, bytes]) -> Union[bytearray, bytes]:
-        return raw_bytes[struct.calcsize(cls._fmt):]
+        return raw_bytes[struct.calcsize(cls._fmt) :]
 
     def to_bytes(self) -> bytes:
         return struct.pack(self._fmt, self.type, self.id, self.payload_size)
@@ -104,8 +104,7 @@ class DataPackage:
 
 @dataclass(frozen=True)
 class RawDataPackage:
-    """Represents a package of raw data (just acc, gyro, and timestamp) sent from wave
-    """
+    """Represents a package of raw data (just acc, gyro, and timestamp) sent from wave"""
 
     _raw_len = 32
 
