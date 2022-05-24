@@ -17,7 +17,6 @@ from genki_wave.data.writing import get_start_api_package
 from genki_wave.utils import get_or_create_event_loop
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 
 class CommunicateCancel:

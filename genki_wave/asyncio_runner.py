@@ -15,9 +15,7 @@ from genki_wave.data.writing import get_start_api_package
 from genki_wave.protocols import ProtocolAsyncio, ProtocolThread, CommunicateCancel
 from genki_wave.utils import get_serial_port, get_or_create_event_loop
 
-logging.basicConfig(format="%(levelname).4s:%(asctime)s [%(filename)s:%(lineno)d] - %(message)s ")
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 
 def prepare_protocol_as_bleak_callback_asyncio(protocol: ProtocolAsyncio) -> Callable:
@@ -114,7 +112,13 @@ async def producer_serial(protocol: ProtocolAsyncio, comm: CommunicateCancel, se
     writer.write(get_start_api_package())
     while True:
         # The number of bytes read here is an arbitrary power of 2 on the order of a size of a single package
-        packet = await reader.read(n=128)
+        try:
+            packet = await asyncio.wait_for(reader.read(n=128), timeout=10)
+        except asyncio.TimeoutError:
+            print("Failed to read any data for 10 seconds, exiting producer")
+            comm.cancel = True
+            break
+
         await protocol.data_received(packet)
 
         if comm.cancel:
@@ -136,7 +140,12 @@ async def consumer(
         callbacks: A list/tuple of callbacks that handle the data passed from the wave ring when available
     """
     while True:
-        package = await protocol.queue.get()
+        try:
+            package = await asyncio.wait_for(protocol.queue.get(), timeout=10)
+        except asyncio.TimeoutError:
+            print("Failed to receive valid package in 10 seconds, exiting consumer")
+            comm.cancel = True
+            break
 
         if comm.is_cancel(package) or comm.cancel:
             print("Got a cancel message. Exiting consumer loop...")
@@ -151,6 +160,7 @@ def make_sigint_handler(comm: CommunicateCancel):
     """Create a signal handler to cancel an asyncio loop using signals."""
 
     def handler(*args):
+        logger.debug("SIGINT handler called in main thread")
         comm.cancel = True
 
     return handler

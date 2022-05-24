@@ -1,5 +1,7 @@
 import argparse
 from pathlib import Path
+import logging
+
 
 from genki_wave.callbacks import ButtonAndDataPrint, CsvOutput
 from genki_wave.asyncio_runner import run_asyncio_bluetooth, run_asyncio_serial
@@ -14,7 +16,10 @@ def main():
     parser.add_argument(
         "--csv", type=str, default=None, help="Path to the output csv. If none is given no csv is written"
     )
+    parser.add_argument("--log", type=str, default=None)
     args = parser.parse_args()
+    log_level = getattr(logging, args.log.upper() if args.log else "WARNING", logging.WARNING)
+    logging.basicConfig(format="%(levelname).4s:%(asctime)s [%(filename)s:%(lineno)d] - %(message)s ", level=log_level)
 
     callbacks = []
     if args.button:
