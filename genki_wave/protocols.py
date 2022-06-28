@@ -26,7 +26,7 @@ class CommunicateCancel:
     """
 
     cancel = False
-    wave_is_connected = False
+    is_connected = False
 
     @staticmethod
     def is_cancel(button_event: Union[ButtonEvent, DataPackage]) -> bool:
@@ -151,7 +151,7 @@ async def bluetooth_task(ble_address: str, comm: CommunicateCancel, callbacks: L
         await client.write_gatt_char(API_CHAR_UUID, get_start_api_package(), False)
 
         print("Connected to Wave")
-        comm.wave_is_connected = True
+        comm.is_connected = True
         while True:
             package = await protocol.queue.get()
 
