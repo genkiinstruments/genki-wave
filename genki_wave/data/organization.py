@@ -125,11 +125,23 @@ class RawDataPackage:
             timestamp_us=unpack_from("<Q", data, 24)[0],
         )
 
+    def as_dict(self) -> dict:
+        return {
+            "gyro": {"x": self.gyro.x, "y": self.gyro.y, "z": self.gyro.z},
+            "acc": {"x": self.acc.x, "y": self.acc.y, "z": self.acc.z},
+            "timestamp_us": self.timestamp_us,
+        }
+
     def as_flat_dict(self) -> dict:
-        # Recursively unpack into dicts
-        d = asdict(self)
-        d = flatten_nested_dicts(d, None)
-        return d
+        return {
+            "gyro_x": self.gyro.x,
+            "gyro_y": self.gyro.y,
+            "gyro_z": self.gyro.z,
+            "acc_x": self.acc.x,
+            "acc_y": self.acc.y,
+            "acc_z": self.acc.z,
+            "timestamp_us": self.timestamp_us,
+        }
 
     @classmethod
     def flat_keys(cls) -> tuple:
