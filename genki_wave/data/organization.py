@@ -91,26 +91,7 @@ class DataPackage:
             timestamp_us=unpack_from("<Q", data, 97)[0],
         )
 
-    def as_dict_v0(self) -> dict:
-        return {
-            "gyro": {"x": self.gyro.x, "y": self.gyro.y, "z": self.gyro.z},
-            "acc": {"x": self.acc.x, "y": self.acc.y, "z": self.acc.z},
-            "mag": {"x": self.mag.x, "y": self.mag.y, "z": self.mag.z},
-            "raw_pose": {"w": self.raw_pose.w, "x": self.raw_pose.x, "y": self.raw_pose.y, "z": self.raw_pose.z},
-            "current_pose": {
-                "w": self.current_pose.w,
-                "x": self.current_pose.x,
-                "y": self.current_pose.y,
-                "z": self.current_pose.z,
-            },
-            "euler": {"roll": self.euler.roll, "pitch": self.euler.pitch, "yaw": self.euler.yaw},
-            "linacc": {"x": self.linacc.x, "y": self.linacc.y, "z": self.linacc.z},
-            "peak": self.peak,
-            "peak_norm_velocity": self.peak_norm_velocity,
-            "timestamp_us": self.timestamp_us,
-        }
-
-    def as_dict_v1(self) -> dict:
+    def as_dict(self) -> dict:
         return {
             "gyro": self.gyro.as_dict(),
             "acc": self.acc.as_dict(),
@@ -125,10 +106,18 @@ class DataPackage:
         }
 
     def as_flat_dict(self) -> dict:
-        # Recursively unpack into dicts
-        d = asdict(self)
-        d = flatten_nested_dicts(d, None)
-        return d
+        return {
+            **self.gyro.as_dict("gyro_"),
+            **self.acc.as_dict("acc_"),
+            **self.mag.as_dict("mag_"),
+            **self.raw_pose.as_dict("raw_pose_"),
+            **self.current_pose.as_dict("current_pose_"),
+            **self.euler.as_dict("euler_"),
+            **self.linacc.as_dict("linacc_"),
+            "peak": self.peak,
+            "peak_norm_velocity": self.peak_norm_velocity,
+            "timestamp_us": self.timestamp_us,
+        }
 
     @classmethod
     def flat_keys(cls) -> tuple:
@@ -159,22 +148,10 @@ class RawDataPackage:
         )
 
     def as_dict(self) -> dict:
-        return {
-            "gyro": {"x": self.gyro.x, "y": self.gyro.y, "z": self.gyro.z},
-            "acc": {"x": self.acc.x, "y": self.acc.y, "z": self.acc.z},
-            "timestamp_us": self.timestamp_us,
-        }
+        return {"gyro": self.gyro.as_dict(), "acc": self.acc.as_dict(), "timestamp_us": self.timestamp_us}
 
     def as_flat_dict(self) -> dict:
-        return {
-            "gyro_x": self.gyro.x,
-            "gyro_y": self.gyro.y,
-            "gyro_z": self.gyro.z,
-            "acc_x": self.acc.x,
-            "acc_y": self.acc.y,
-            "acc_z": self.acc.z,
-            "timestamp_us": self.timestamp_us,
-        }
+        return {**self.gyro.as_dict("gyro"), **self.acc.as_dict("acc"), "timestamp_us": self.timestamp_us}
 
     @classmethod
     def flat_keys(cls) -> tuple:
