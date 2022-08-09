@@ -1,5 +1,5 @@
 import struct
-from dataclasses import Field, asdict, dataclass, field
+from dataclasses import Field, dataclass, field
 from struct import unpack_from
 from typing import Optional, Union
 
@@ -91,11 +91,43 @@ class DataPackage:
             timestamp_us=unpack_from("<Q", data, 97)[0],
         )
 
+    def as_dict(self) -> dict:
+        # This is (and should be) equivalent to `asdict(self)`, but is about 20-30x faster since it doesn't have
+        # to recursively expand all dataclass fields
+        return {
+            "gyro": self.gyro.as_dict(),
+            "acc": self.acc.as_dict(),
+            "mag": self.mag.as_dict(),
+            "raw_pose": self.raw_pose.as_dict(),
+            "current_pose": self.current_pose.as_dict(),
+            "euler": self.euler.as_dict(),
+            "linacc": self.linacc.as_dict(),
+            "peak": self.peak,
+            "peak_norm_velocity": self.peak_norm_velocity,
+            "timestamp_us": self.timestamp_us,
+            "grav": self.grav.as_dict(),
+            "acc_glob": self.acc_glob.as_dict(),
+            "linacc_glob": self.linacc_glob.as_dict(),
+        }
+
     def as_flat_dict(self) -> dict:
-        # Recursively unpack into dicts
-        d = asdict(self)
-        d = flatten_nested_dicts(d, None)
-        return d
+        # This is (and should be) equivalent to `flatten_nested_dicts(asdict(self))`, but is about 20-30x faster since
+        # it doesn't have to recursively expand all dataclass fields
+        return {
+            **self.gyro.as_dict("gyro_"),
+            **self.acc.as_dict("acc_"),
+            **self.mag.as_dict("mag_"),
+            **self.raw_pose.as_dict("raw_pose_"),
+            **self.current_pose.as_dict("current_pose_"),
+            **self.euler.as_dict("euler_"),
+            **self.linacc.as_dict("linacc_"),
+            "peak": self.peak,
+            "peak_norm_velocity": self.peak_norm_velocity,
+            "timestamp_us": self.timestamp_us,
+            **self.grav.as_dict("grav_"),
+            **self.acc_glob.as_dict("acc_glob_"),
+            **self.linacc_glob.as_dict("linacc_glob_"),
+        }
 
     @classmethod
     def flat_keys(cls) -> tuple:
@@ -125,11 +157,15 @@ class RawDataPackage:
             timestamp_us=unpack_from("<Q", data, 24)[0],
         )
 
+    def as_dict(self) -> dict:
+        # This is (and should be) equivalent to `asdict(self)`, but is about 20-30x faster since it doesn't have
+        # to recursively expand all dataclass fields
+        return {"gyro": self.gyro.as_dict(), "acc": self.acc.as_dict(), "timestamp_us": self.timestamp_us}
+
     def as_flat_dict(self) -> dict:
-        # Recursively unpack into dicts
-        d = asdict(self)
-        d = flatten_nested_dicts(d, None)
-        return d
+        # This is (and should be) equivalent to `flatten_nested_dicts(asdict(self))`, but is about 20-30x faster since
+        # it doesn't have to recursively expand all dataclass fields
+        return {**self.gyro.as_dict("gyro_"), **self.acc.as_dict("acc_"), "timestamp_us": self.timestamp_us}
 
     @classmethod
     def flat_keys(cls) -> tuple:
@@ -152,34 +188,6 @@ class ButtonEvent:
         assert len(data) == cls._raw_len, f"Expected to get {cls._raw_len} bytes, got {len(data)}"
         button_id, action = unpack_from("<BB", data, 0)
         return cls(button_id=ButtonId(button_id), action=ButtonAction(action))
-
-
-def flatten_nested_dicts(d: dict, name: Optional[str]) -> dict:
-    """Recursively flattens dicts of dicts into a dict with keys concatenated
-
-    Args:
-        d: The dictionary to flatten
-        name: The prefix to this level, or more specifically, the key for the next higher level. If `None`, no prefix
-              is used
-
-    Returns:
-        A flat dict where the keys have been concatenated
-
-    Examples:
-        >>> flatten_nested_dicts({"a": {"b": {"c": 1}, "d": 2}, "e": 3}, None)
-        {'a_b_c': 1, 'a_d': 2, 'e': 3}
-    """
-    d_results = {}
-    if isinstance(d, dict):
-        for k, v in d.items():
-            curr_name = f"{name}_{k}" if name is not None else k
-            curr_val = flatten_nested_dicts(v, curr_name)
-            d_results.update(curr_val)
-    else:
-        curr_val = {name: d}
-        d_results.update(curr_val)
-
-    return d_results
 
 
 def flatten_nested_dataclass_fields(d: Union[Field, type], name: Optional[str]) -> list:
