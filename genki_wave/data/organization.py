@@ -103,6 +103,9 @@ class DataPackage:
             "peak": self.peak,
             "peak_norm_velocity": self.peak_norm_velocity,
             "timestamp_us": self.timestamp_us,
+            "grav": self.grav.as_dict(),
+            "acc_glob": self.acc_glob.as_dict(),
+            "linacc_glob": self.linacc_glob.as_dict(),
         }
 
     def as_flat_dict(self) -> dict:
@@ -117,6 +120,9 @@ class DataPackage:
             "peak": self.peak,
             "peak_norm_velocity": self.peak_norm_velocity,
             "timestamp_us": self.timestamp_us,
+            **self.grav.as_dict("grav_"),
+            **self.acc_glob.as_dict("acc_glob_"),
+            **self.linacc_glob.as_dict("linacc_glob_"),
         }
 
     @classmethod
@@ -151,7 +157,7 @@ class RawDataPackage:
         return {"gyro": self.gyro.as_dict(), "acc": self.acc.as_dict(), "timestamp_us": self.timestamp_us}
 
     def as_flat_dict(self) -> dict:
-        return {**self.gyro.as_dict("gyro"), **self.acc.as_dict("acc"), "timestamp_us": self.timestamp_us}
+        return {**self.gyro.as_dict("gyro_"), **self.acc.as_dict("acc_"), "timestamp_us": self.timestamp_us}
 
     @classmethod
     def flat_keys(cls) -> tuple:
@@ -174,34 +180,6 @@ class ButtonEvent:
         assert len(data) == cls._raw_len, f"Expected to get {cls._raw_len} bytes, got {len(data)}"
         button_id, action = unpack_from("<BB", data, 0)
         return cls(button_id=ButtonId(button_id), action=ButtonAction(action))
-
-
-def flatten_nested_dicts(d: dict, name: Optional[str]) -> dict:
-    """Recursively flattens dicts of dicts into a dict with keys concatenated
-
-    Args:
-        d: The dictionary to flatten
-        name: The prefix to this level, or more specifically, the key for the next higher level. If `None`, no prefix
-              is used
-
-    Returns:
-        A flat dict where the keys have been concatenated
-
-    Examples:
-        >>> flatten_nested_dicts({"a": {"b": {"c": 1}, "d": 2}, "e": 3}, None)
-        {'a_b_c': 1, 'a_d': 2, 'e': 3}
-    """
-    d_results = {}
-    if isinstance(d, dict):
-        for k, v in d.items():
-            curr_name = f"{name}_{k}" if name is not None else k
-            curr_val = flatten_nested_dicts(v, curr_name)
-            d_results.update(curr_val)
-    else:
-        curr_val = {name: d}
-        d_results.update(curr_val)
-
-    return d_results
 
 
 def flatten_nested_dataclass_fields(d: Union[Field, type], name: Optional[str]) -> list:
