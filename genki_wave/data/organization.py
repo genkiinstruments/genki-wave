@@ -1,5 +1,5 @@
 import struct
-from dataclasses import Field, asdict, dataclass, field
+from dataclasses import Field, dataclass, field
 from struct import unpack_from
 from typing import Optional, Union
 
