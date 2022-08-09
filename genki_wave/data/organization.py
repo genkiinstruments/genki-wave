@@ -92,6 +92,8 @@ class DataPackage:
         )
 
     def as_dict(self) -> dict:
+        # This is (and should be) equivalent to `return asdict(self)`, but is about 20-30x faster since it doesn't have
+        # to recursively expand all dataclass fields
         return {
             "gyro": self.gyro.as_dict(),
             "acc": self.acc.as_dict(),
@@ -109,6 +111,8 @@ class DataPackage:
         }
 
     def as_flat_dict(self) -> dict:
+        # This is (and should be) equivalent to `return flatten_dict(asdict(self))`, but is about 20-30x faster since
+        # it doesn't have to recursively expand all dataclass fields
         return {
             **self.gyro.as_dict("gyro_"),
             **self.acc.as_dict("acc_"),
@@ -154,9 +158,13 @@ class RawDataPackage:
         )
 
     def as_dict(self) -> dict:
+        # This is (and should be) equivalent to `return asdict(self)`, but is about 20-30x faster since it doesn't have
+        # to recursively expand all dataclass fields
         return {"gyro": self.gyro.as_dict(), "acc": self.acc.as_dict(), "timestamp_us": self.timestamp_us}
 
     def as_flat_dict(self) -> dict:
+        # This is (and should be) equivalent to `return flatten_dict(asdict(self))`, but is about 20-30x faster since
+        # it doesn't have to recursively expand all dataclass fields
         return {**self.gyro.as_dict("gyro_"), **self.acc.as_dict("acc_"), "timestamp_us": self.timestamp_us}
 
     @classmethod
