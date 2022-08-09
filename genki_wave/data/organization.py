@@ -91,6 +91,39 @@ class DataPackage:
             timestamp_us=unpack_from("<Q", data, 97)[0],
         )
 
+    def as_dict_v0(self) -> dict:
+        return {
+            "gyro": {"x": self.gyro.x, "y": self.gyro.y, "z": self.gyro.z},
+            "acc": {"x": self.acc.x, "y": self.acc.y, "z": self.acc.z},
+            "mag": {"x": self.mag.x, "y": self.mag.y, "z": self.mag.z},
+            "raw_pose": {"w": self.raw_pose.w, "x": self.raw_pose.x, "y": self.raw_pose.y, "z": self.raw_pose.z},
+            "current_pose": {
+                "w": self.current_pose.w,
+                "x": self.current_pose.x,
+                "y": self.current_pose.y,
+                "z": self.current_pose.z,
+            },
+            "euler": {"roll": self.euler.roll, "pitch": self.euler.pitch, "yaw": self.euler.yaw},
+            "linacc": {"x": self.linacc.x, "y": self.linacc.y, "z": self.linacc.z},
+            "peak": self.peak,
+            "peak_norm_velocity": self.peak_norm_velocity,
+            "timestamp_us": self.timestamp_us,
+        }
+
+    def as_dict_v1(self) -> dict:
+        return {
+            "gyro": self.gyro.as_dict(),
+            "acc": self.acc.as_dict(),
+            "mag": self.mag.as_dict(),
+            "raw_pose": self.raw_pose.as_dict(),
+            "current_pose": self.current_pose.as_dict(),
+            "euler": self.euler.as_dict(),
+            "linacc": self.linacc.as_dict(),
+            "peak": self.peak,
+            "peak_norm_velocity": self.peak_norm_velocity,
+            "timestamp_us": self.timestamp_us,
+        }
+
     def as_flat_dict(self) -> dict:
         # Recursively unpack into dicts
         d = asdict(self)

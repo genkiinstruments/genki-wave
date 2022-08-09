@@ -11,12 +11,18 @@ class Point3d:
     def __sub__(self, other):
         return Point3d(x=self.x - other.x, y=self.y - other.y, z=self.z - other.z)
 
+    def as_dict(self, prefix: str = ""):
+        return {f"{prefix}x": self.x, f"{prefix}y": self.y, f"{prefix}z": self.z}
+
 
 @dataclass(frozen=True)
 class Euler3d:
     roll: float
     pitch: float
     yaw: float
+
+    def as_dict(self, prefix: str = ""):
+        return {f"{prefix}roll": self.roll, f"{prefix}pitch": self.pitch, f"{prefix}yaw": self.yaw}
 
 
 @dataclass(frozen=True)
@@ -49,6 +55,9 @@ class Quaternion:
     def normalize(self):
         norm = math.sqrt(sum([el**2 for el in [self.w, self.x, self.y, self.z]]))
         return Quaternion(self.w / norm, self.x / norm, self.y / norm, self.z / norm)
+
+    def as_dict(self, prefix: str = ""):
+        return {f"{prefix}w": self.w, f"{prefix}x": self.x, f"{prefix}y": self.y, f"{prefix}z": self.z}
 
 
 def rotate_vector(p: Point3d, q: Quaternion) -> Point3d:
