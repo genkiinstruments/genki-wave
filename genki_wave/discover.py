@@ -5,7 +5,7 @@ import bleak
 
 async def discover_bluetooth(device_str: str):
     print("Searching for bluetooth devices...")
-    devices = await bleak.discover()
+    devices = await bleak.BleakScanner.discover()
     wave_devices = [device for device in devices if device_str in device.name]
     print("Found the following devices" if wave_devices else "Found no devices")
     for device in wave_devices:
