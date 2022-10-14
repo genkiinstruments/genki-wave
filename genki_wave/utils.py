@@ -32,9 +32,6 @@ def get_serial_port() -> str:
     return serial_ports[0]
 
 
-DEFAULT_BLE_ADDRESS = {LINUX: "D5:73:DB:85:B4:A1", DARWIN: "b171e34e-9454-4d6d-b3d0-8740b703b66e"}[get_system_name()]
-
-
 def get_or_create_event_loop():
     """Gets the running event loop or creates a new one and returns it
 
