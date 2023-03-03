@@ -292,4 +292,8 @@ using Rangei = Range<int>;
 
 enum class Orientation : uint8_t { Left, Right };
 
+static constexpr size_t LedColumns = 9;
+static constexpr size_t LedRows    = 5;
+using LedFrame = std::array<std::array<uint8_t, LedColumns>, LedRows>;
+
 } // namespace genki::Wave

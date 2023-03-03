@@ -1,5 +1,8 @@
 #include <atomic>
 #include <csignal>
+#include <range/v3/view.hpp>
+#include <range/v3/algorithm.hpp>
+#include <string>
 
 #include "ble_transport.h"
 #include "wave_api_device.h"
@@ -74,12 +77,57 @@ int main()
 
                             if (evt.id == genki::Wave::ButtonId::B && evt.action == genki::Wave::ButtonAction::Click)
                             {
-//                                using namespace genki::Wave::Api;
-//                                wave->send(Query{Query::Type::Request, Query::Id::Recenter});
+                                wave->recenter();
                             }
+                        }
+                        else if (id == Id::DeviceInfo)
+                        {
+                            const auto [ver, board, mac, serial] = genki::copy<genki::Wave::DeviceInfo>(payload);
+
+                            const auto mac_str = mac.data
+                                                 | ranges::views::transform([](uint8_t b) { return fmt::format("{:02X}", b); })
+                                                 | ranges::views::reverse
+                                                 | ranges::views::join(':')
+                                                 | ranges::to<std::string>();
+
+                            DBG(fmt::format("Device info:\n"
+                                            "  Firmware version: {}.{}.{}\n"
+                                            "  Board version: {}\n"
+                                            "  MAC address: {}\n"
+                                            "  Serial number: {}",
+                                    ver.major, ver.minor, ver.patch,
+                                    board.c_str(),
+                                    mac_str,
+                                    serial.c_str()));
+                        }
+                        else if (id == Id::BatteryStatus)
+                        {
+                            const auto bs = genki::copy<genki::Wave::BatteryStatus>(payload);
+
+                            DBG(fmt::format("Battery status: {}%{}\n",
+                                    static_cast<int>(bs.percentage), bs.is_charging ? " (charging)" : ""));
                         }
                     }
             );
+
+            // Assume Wave has been successfully connected after a short while.
+            // Ideally you'd want to keep track of the connection state and send commands once connection has been
+            // established and the characteristics discovered.
+            juce::Timer::callAfterDelay(1000, [&]
+            {
+                wave->request_info();
+                wave->read_battery();
+
+                wave->update_display({
+                        {
+                                {0x00, 0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00},
+                                {0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0x00},
+                                {0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00},
+                                {0x00, 0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0x00, 0x00},
+                                {0x00, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00},
+                        }
+                });
+            });
 
             adapter.scan(false);
         }
