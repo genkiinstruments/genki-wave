@@ -241,7 +241,7 @@ using SpectrogramPrecision = FLOAT_PRECISION(SPECTROGRAM_PRECISION); // float16_
 struct GCC_PACK SpectrogramDatastream
 {
     constexpr static auto num_channels = 6;
-    constexpr static auto num_bins = 16;
+    constexpr static auto num_bins     = 16;
 
     using Column = std::array<SpectrogramPrecision, num_bins>;
     struct GCC_PACK Data
@@ -251,9 +251,9 @@ struct GCC_PACK SpectrogramDatastream
 
     union GCC_PACK
     {
-        Data columns;
+        Data                             columns;
         std::array<Column, num_channels> flat;
-    } data;
+    }                     data;
 
     uint64_t timestamp_us;
 };

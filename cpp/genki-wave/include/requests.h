@@ -4,14 +4,11 @@
 #include <vector>
 
 #include "wave_public_types.h"
-#include "format"
 
 namespace genki {
 template<typename Comm, typename Q, typename... Args>
 [[maybe_unused]] bool send_query(Comm& comm, const Q& query, const Args& ... args)
 {
-    DBG(fmt::format("Send query: {}\n", query));
-
     const auto sz = byte_size(query, args...);
     jassert(query.payload_size == sz - sizeof(query));
 

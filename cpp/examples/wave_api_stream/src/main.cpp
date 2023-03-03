@@ -1,7 +1,6 @@
 #include <atomic>
 #include <csignal>
 #include <range/v3/view.hpp>
-#include <range/v3/algorithm.hpp>
 #include <string>
 
 #include "ble_transport.h"
