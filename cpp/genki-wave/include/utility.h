@@ -119,3 +119,13 @@ constexpr auto unpack(gsl::span<const gsl::byte> s)
 }
 
 } // namespace genki
+
+namespace gsl {
+    template<typename It>
+    auto make_span(It begin, It end)
+    {
+        static_assert(std::is_same_v<typename std::iterator_traits<It>::iterator_category, std::random_access_iterator_tag>);
+
+        return gsl::make_span(&(*begin), static_cast<size_t>(std::distance(begin, end)));
+    }
+}

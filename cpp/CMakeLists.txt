@@ -11,7 +11,7 @@ fetch_from_git(gsl https://github.com/microsoft/GSL.git GIT_TAG main)
 fetch_from_git(etl https://github.com/ETLCPP/etl.git)
 fetch_from_git(fmt https://github.com/fmtlib/fmt.git)
 fetch_from_git(range-v3 https://github.com/ericniebler/range-v3.git)
-fetch_from_git(sml https://github.com/boost-ext/sml.git GIT_TAG v1.1.3 SOURCE_DIRECTORY_VAR sml_source_dir)
+fetch_from_git(sml https://github.com/boost-ext/sml.git SOURCE_DIRECTORY_VAR sml_source_dir)
 
 add_subdirectory(genki-wave)
 

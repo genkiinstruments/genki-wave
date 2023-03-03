@@ -223,41 +223,6 @@ struct GCC_PACK Datastream
     uint64_t timestamp_us;
 };
 
-#if defined(_MSC_VER)
-using float16_t = __bfloat16;
-#elif defined(__arm__)
-using float16_t = __fp16;
-#endif
-
-using float32_t = float;
-
-#define SPECTROGRAM_PRECISION 32
-
-#define _FLOAT_PRECISION(precision) float ## precision ## _t
-#define FLOAT_PRECISION(precision) _FLOAT_PRECISION(precision)
-
-using SpectrogramPrecision = FLOAT_PRECISION(SPECTROGRAM_PRECISION); // float16_t or float32_t
-
-struct GCC_PACK SpectrogramDatastream
-{
-    constexpr static auto num_channels = 6;
-    constexpr static auto num_bins     = 16;
-
-    using Column = std::array<SpectrogramPrecision, num_bins>;
-    struct GCC_PACK Data
-    {
-        Column acc_x, acc_y, acc_z, gyro_x, gyro_y, gyro_z;
-    };
-
-    union GCC_PACK
-    {
-        Data                             columns;
-        std::array<Column, num_channels> flat;
-    }                     data;
-
-    uint64_t timestamp_us;
-};
-
 #ifdef _MSC_VER
 __pragma( pack(pop) )
 #endif

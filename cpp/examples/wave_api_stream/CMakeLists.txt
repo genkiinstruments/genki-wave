@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
-set(CMAKE_CXX_STANDARD 17)
+
+if (WIN32)
+    set(CMAKE_CXX_STANDARD 20)
+else()
+    set(CMAKE_CXX_STANDARD 17)
+endif()
 
 project(wave_api_stream VERSION 0.1.0)
 set(target ${PROJECT_NAME})
