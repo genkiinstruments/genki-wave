@@ -43,6 +43,10 @@ struct WaveApiDevice : private juce::ValueTree::Listener
         transport->state().addListener(this);
     }
 
+    ~WaveApiDevice() override
+    {
+        transport->disconnect();
+    }
 
     //======================================================================================================================
     template<typename... Args>
