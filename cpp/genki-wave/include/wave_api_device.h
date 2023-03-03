@@ -8,6 +8,7 @@
 #include "format.h"
 #include "utility.h"
 #include "wave_public_types.h"
+#include "requests.h"
 
 namespace genki {
 
@@ -41,6 +42,25 @@ struct WaveApiDevice : private juce::ValueTree::Listener
 
         transport->state().addListener(this);
     }
+
+
+    //======================================================================================================================
+    template<typename... Args>
+    bool send(const Wave::Api::Query& query, const Args& ... args) const
+    {
+        return ble_packetizer != nullptr && send_query(*ble_packetizer, query, args...);
+    }
+
+    template<typename... Args, typename Q = Wave::Api::Query>
+    [[maybe_unused]] bool request(typename Q::Id qid, const Args& ... args) const
+    {
+        return ble_packetizer != nullptr && genki::request(*ble_packetizer, qid, args...);
+    }
+
+    bool request_info() const { return request(Wave::Api::Query::Id::DeviceInfo); }
+    bool read_battery() const { return request(Wave::Api::Query::Id::BatteryStatus); }
+    bool recenter() const { return request(Wave::Api::Query::Id::Recenter); }
+    bool update_display(const Wave::LedFrame& frame) const { return request(Wave::Api::Query::Id::DisplayFrame, frame); }
 
 private:
     //==================================================================================================================
