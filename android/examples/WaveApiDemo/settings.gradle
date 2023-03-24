@@ -16,4 +16,4 @@ rootProject.name = "Wave Api Demo"
 include ':app'
 
 include ':genki-wave'
-project(':genki-wave').projectDir = new File('../genki-wave/library')
+project(':genki-wave').projectDir = new File('../../genki-wave/library')
