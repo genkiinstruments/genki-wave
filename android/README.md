@@ -10,16 +10,19 @@ Depending on your current Android Studio configuration, you might have to instal
 
 ## Build
 
-It's easiest to start with the examle app found in the [examples folder](examples/WaveApiDemo).
+It's easiest to start with the examle app found in the [examples folder](examples/WaveApiDemo). The example can be opened as a project in Android Studio by navigating to File -> Open and selecting the `examples/WaveApiDemo` folder.
 
 To integrate genki-wave into your app you need to take the following steps
 
-1. In your app's root, locate `gradle.settings` and put the following 
+1. In your app's root, locate `gradle.settings` and put the following
+
 ```
 include ':genki-wave'
 project(':genki-wave').projectDir = new File('path/to/genki-wave/library')
 ```
+
 2. In your app's `build.gradle` (not the top-level one), locate the dependencies section, and add
+
 ```
 dependencies {
     ...
@@ -98,7 +101,7 @@ this.leScanner.startScan(new ScanCallback() {
             wave = new WaveApiDevice(context, device, apiListener);
         }
     }
-    
+
     // Typically, the context and the listener refer to the same instance, but not required
     private ScanCallback withContext(Context ctx, WaveApiListener apiListener) {
         this.context = ctx;
