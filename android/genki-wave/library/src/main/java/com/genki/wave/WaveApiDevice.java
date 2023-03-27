@@ -44,6 +44,10 @@ public class WaveApiDevice {
         manager.packetHandler.sendQuery(new Query(Query.Type.Request, Query.Id.BatteryStatus, (short) 0));
     }
 
+    public void recenter() {
+        manager.packetHandler.sendQuery(new Query(Query.Type.Request, Query.Id.Recenter, (short) 0));
+    }
+
     private static class ConnectionManager extends BleManager {
         private List<BluetoothGattCharacteristic> deviceCharacteristics = new ArrayList<>();
         public PacketHandler packetHandler;
