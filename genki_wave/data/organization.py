@@ -304,3 +304,6 @@ def process_byte_data(raw_bytes: Union[bytearray, bytes]) -> Union[ButtonEvent, 
         raise ValueError(f"Unknown value for q.id={q.id}")
 
     return package
+
+
+Package = Union[DataPackage, RawDataPackage, SpectrogramDataPackage]
