@@ -3,7 +3,7 @@ import struct
 from cobs import cobs
 
 from genki_wave.data.organization import PackageMetadata
-from genki_wave.data.enums import DeviceMode, PackageId, PackageType
+from genki_wave.data.enums import DeviceMode, PackageId, PackageType, DatastreamType
 
 
 def pad_with_zero_byte(b: bytes) -> bytes:
@@ -28,4 +28,20 @@ def get_start_api_package():
     return create_package_to_write(
         PackageMetadata(type=PackageType.REQUEST, id=PackageId.DEVICE_MODE, payload_size=1),
         struct.pack("<B", DeviceMode.API.value),
+    )
+
+
+def get_start_spectrogram_package():
+    """"""
+    return create_package_to_write(
+        PackageMetadata(type=PackageType.REQUEST, id=PackageId.MODIFY_API_CONFIG, payload_size=8),
+        struct.pack("<BBxxf", DatastreamType.NONE.value, True, 2000.0),
+    )
+
+
+def get_default_api_config_package():
+    """"""
+    return create_package_to_write(
+        PackageMetadata(type=PackageType.REQUEST, id=PackageId.MODIFY_API_CONFIG, payload_size=8),
+        struct.pack("<BBxxf", DatastreamType.MOTION_DATA.value, False, 400.0),
     )

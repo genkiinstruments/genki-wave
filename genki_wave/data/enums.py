@@ -11,6 +11,8 @@ class PackageId(IntEnum):
     RECENTER = 7
     DISPLAY_FRAME = 8
     RAW_DATA = 9
+    SPECTROGRAM = 10
+    MODIFY_API_CONFIG = 11
 
 
 class PackageType(IntEnum):
@@ -32,6 +34,12 @@ class ButtonId(IntEnum):
     TOP = 0
     MIDDLE = 1
     BOTTOM = 2
+
+
+class DatastreamType(IntEnum):
+    NONE = 0
+    MOTION_DATA = 1
+    RAW_DATA = 2
 
 
 class ButtonAction(IntEnum):

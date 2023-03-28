@@ -3,7 +3,7 @@ import csv
 from pathlib import Path
 from typing import Union, Optional, TextIO
 
-from genki_wave.data import ButtonEvent, DataPackage
+from genki_wave.data import ButtonEvent, DataPackage, RawDataPackage, SpectrogramDataPackage
 
 
 class WaveCallback(abc.ABC):
@@ -15,11 +15,23 @@ class WaveCallback(abc.ABC):
     def _data_handler(self, data: DataPackage) -> None:
         pass
 
+    @abc.abstractmethod
+    def _raw_data_handler(self, data: RawDataPackage) -> None:
+        pass
+
+    @abc.abstractmethod
+    def _spectrogram_handler(self, data: SpectrogramDataPackage) -> None:
+        pass
+
     def __call__(self, data: Union[ButtonEvent, DataPackage]) -> None:
         if isinstance(data, ButtonEvent):
             self._button_handler(data)
         elif isinstance(data, DataPackage):
             self._data_handler(data)
+        elif isinstance(data, RawDataPackage):
+            self._raw_data_handler(data)
+        elif isinstance(data, SpectrogramDataPackage):
+            self._spectrogram_handler(data)
         else:
             raise ValueError(f"Got data of unexpected type {type(data)}")
 
