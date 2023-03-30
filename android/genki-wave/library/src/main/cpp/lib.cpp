@@ -1,5 +1,7 @@
 #if __ANDROID__
 #include <jni.h>
+#include <android/log.h>
+#include <fmt/format.h>
 
 #include "cobs_codec.h"
 #include "native_array.h"
@@ -15,7 +17,33 @@ struct PacketHandler {
             : transport(*this,
                         [this](gsl::span<const gsl::byte> bytes)
             {
+                if (bytes.size() < sizeof(genki::Wave::Api::Query))
+                {
+                    __android_log_write(
+                        ANDROID_LOG_ERROR,
+                        "PacketHandler",
+                        fmt::format("Corrupt packet, expected at least {} bytes for query, got: {}\n",
+                            sizeof(genki::Wave::Api::Query),
+                            bytes.size()).c_str()
+                    );
+
+                    return;
+                }
+
                 const auto [query, payload] = genki::unpack<genki::Wave::Api::Query>(bytes);
+
+                if (payload.size() != query.payload_size)
+                {
+                    __android_log_write(
+                        ANDROID_LOG_ERROR,
+                        "PacketHandler",
+                        fmt::format("Corrupt payload, expected {} bytes, got: {}\n",
+                            query.payload_size,
+                            payload.size()).c_str()
+                    );
+
+                    return;
+                }
 
                 auto [jnienv, jniobj] = get_jni_ctx();
 

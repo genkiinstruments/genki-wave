@@ -17,7 +17,7 @@ fetch_from_git(etl https://github.com/ETLCPP/etl.git)
 fetch_from_git(fmt https://github.com/fmtlib/fmt.git)
 fetch_from_git(sml https://github.com/boost-ext/sml.git SOURCE_DIRECTORY_VAR sml_source_dir)
 
-#find_library(log-lib log)
+find_library(log-lib log)
 
 add_library(${CMAKE_PROJECT_NAME} SHARED
         lib.cpp
@@ -29,7 +29,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         )
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
-#        ${log-lib}
+        ${log-lib}
         etl
         fmt
         GSL
