@@ -193,7 +193,7 @@ def _run_asyncio(
     loop.run_until_complete(tasks)
 
 
-def run_asyncio_bluetooth(callbacks: List[WaveCallback], ble_address, enable_spectrogram) -> None:
+def run_asyncio_bluetooth(callbacks: List[WaveCallback], ble_address, enable_spectrogram=False) -> None:
     """Runs an async `consumer-producer` loop using user supplied callbacks for a bluetooth device
 
     Args:

@@ -13,7 +13,7 @@ from genki_wave.constants import API_CHAR_UUID
 from genki_wave.data import ButtonAction, ButtonEvent, ButtonId, DataPackage
 from genki_wave.data.organization import process_byte_data
 from genki_wave.data.structures import QueueWithPop
-from genki_wave.data.writing import get_start_api_package
+from genki_wave.data.writing import get_start_api_package, get_start_spectrogram_package, get_default_api_config_package
 from genki_wave.utils import get_or_create_event_loop
 
 logger = logging.getLogger(__name__)
@@ -140,13 +140,18 @@ def prepare_protocol_as_bleak_callback_asyncio(protocol: ProtocolAsyncio) -> Cal
     return _inner
 
 
-async def bluetooth_task(ble_address: str, comm: CommunicateCancel, callbacks: List[Callable]) -> None:
+async def bluetooth_task(ble_address: str, comm: CommunicateCancel, callbacks: List[Callable], enable_spectrogram=False) -> None:
     protocol = ProtocolAsyncio()
     callback = prepare_protocol_as_bleak_callback_asyncio(protocol)
     print(f"Connecting to wave at address {ble_address}")
     async with BleakClient(ble_address) as client:
         await client.start_notify(API_CHAR_UUID, callback)
         await client.write_gatt_char(API_CHAR_UUID, get_start_api_package(), False)
+
+        if enable_spectrogram:
+            await client.write_gatt_char(API_CHAR_UUID, get_start_spectrogram_package(), False)
+        else:
+            await client.write_gatt_char(API_CHAR_UUID, get_default_api_config_package(), False)
 
         print("Connected to Wave")
         comm.is_connected = True
