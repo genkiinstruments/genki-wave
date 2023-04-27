@@ -32,9 +32,9 @@ class CommunicateCancel:
     def is_cancel(button_event: Union[ButtonEvent, DataPackage]) -> bool:
         """Checks for a hard coded cancel event"""
         return (
-            isinstance(button_event, ButtonEvent) and  # noqa: W504
-            button_event.button_id == ButtonId.TOP and  # noqa: W504
-            button_event.action == ButtonAction.EXTRALONG
+            isinstance(button_event, ButtonEvent)
+            and button_event.button_id == ButtonId.TOP  # noqa: W503
+            and button_event.action == ButtonAction.EXTRALONG  # noqa: W503
         )
 
 
