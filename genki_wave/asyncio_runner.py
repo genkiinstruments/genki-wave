@@ -201,7 +201,11 @@ def run_asyncio_bluetooth(callbacks: List[WaveCallback], ble_address, enable_spe
         ble_address: Address of the bluetooth device to connect to. E.g. 'D5:73:DB:85:B4:A1'
         enable_spectrogram: Enable on-device FFT and spectrogram binning
     """
-    _run_asyncio(callbacks, partial(producer_bluetooth, ble_address=ble_address, enable_spectrogram=enable_spectrogram), ProtocolAsyncio())
+    _run_asyncio(
+        callbacks,
+        partial(producer_bluetooth, ble_address=ble_address, enable_spectrogram=enable_spectrogram),
+        ProtocolAsyncio(),
+    )
 
 
 def run_asyncio_serial(callbacks: List[WaveCallback], serial_port: str = None) -> None:

@@ -44,6 +44,7 @@ class PackageMetadata:
     def is_spectrogram(self):
         return self.id == PackageId.SPECTROGRAM
 
+
 @dataclass(frozen=True)
 class DataPackage:
     """Represents a data package sent from wave
@@ -228,14 +229,12 @@ class SpectrogramDataPackage:
         # This is (and should be) equivalent to `asdict(self)`, but is about 20-30x faster since it doesn't have
         # to recursively expand all dataclass fields
         return {
-            "acc_x" : self._channel_slice(0),
-            "acc_y" : self._channel_slice(1),
-            "acc_z" : self._channel_slice(2),
-
+            "acc_x": self._channel_slice(0),
+            "acc_y": self._channel_slice(1),
+            "acc_z": self._channel_slice(2),
             "gyro_x": self._channel_slice(3),
             "gyro_y": self._channel_slice(4),
             "gyro_z": self._channel_slice(5),
-
             "timestamp_us": self.timestamp_us,
         }
 

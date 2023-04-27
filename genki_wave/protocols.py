@@ -31,7 +31,11 @@ class CommunicateCancel:
     @staticmethod
     def is_cancel(button_event: Union[ButtonEvent, DataPackage]) -> bool:
         """Checks for a hard coded cancel event"""
-        return isinstance(button_event, ButtonEvent) and button_event.button_id == ButtonId.TOP and button_event.action == ButtonAction.EXTRALONG
+        return (
+            isinstance(button_event, ButtonEvent)
+            and button_event.button_id == ButtonId.TOP
+            and button_event.action == ButtonAction.EXTRALONG
+        )
 
 
 class ProtocolAbc(abc.ABC):
@@ -140,7 +144,9 @@ def prepare_protocol_as_bleak_callback_asyncio(protocol: ProtocolAsyncio) -> Cal
     return _inner
 
 
-async def bluetooth_task(ble_address: str, comm: CommunicateCancel, callbacks: List[Callable], enable_spectrogram=False) -> None:
+async def bluetooth_task(
+    ble_address: str, comm: CommunicateCancel, callbacks: List[Callable], enable_spectrogram=False
+) -> None:
     protocol = ProtocolAsyncio()
     callback = prepare_protocol_as_bleak_callback_asyncio(protocol)
     print(f"Connecting to wave at address {ble_address}")
