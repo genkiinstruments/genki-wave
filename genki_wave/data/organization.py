@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import struct
 from dataclasses import Field, dataclass, field
 from struct import unpack_from
