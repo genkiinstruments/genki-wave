@@ -102,14 +102,15 @@ class ReaderThreadBluetooth(threading.Thread):
 
 
 class WaveListener(threading.Thread):
-    def __init__(self, ble_address, callbacks):
+    def __init__(self, ble_address, callbacks, enable_spectrogram=False):
         self.ble_address = ble_address
         self.callbacks = callbacks
+        self.enable_spectrogram = enable_spectrogram
         super().__init__()
 
     def run(self):
         self.comm = CommunicateCancel()
-        task = bluetooth_task(self.ble_address, self.comm, self.callbacks)
+        task = bluetooth_task(self.ble_address, self.comm, self.callbacks, self.enable_spectrogram)
         loop = get_or_create_event_loop()
         loop.run_until_complete(task)
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import struct
 from dataclasses import Field, dataclass, field
 from struct import unpack_from
@@ -38,8 +40,14 @@ class PackageMetadata:
     def is_button(self):
         return self.id == PackageId.BUTTON_EVENT
 
+    def is_device_info(self):
+        return self.id == PackageId.DEVICE_INFO
+
     def is_raw_gyro_accel(self):
         return self.id == PackageId.RAW_DATA
+
+    def is_spectrogram(self):
+        return self.id == PackageId.SPECTROGRAM
 
 
 @dataclass(frozen=True)
@@ -190,6 +198,81 @@ class ButtonEvent:
         return cls(button_id=ButtonId(button_id), action=ButtonAction(action))
 
 
+@dataclass(frozen=True)
+class DeviceInfo:
+    """Represents a button event sent from wave"""
+
+    _raw_len = 35
+
+    version: str
+    board_version: str
+    mac_address: str
+    serial_number: str
+
+    @classmethod
+    def from_raw_bytes(cls, data: Union[bytearray, bytes]) -> "DeviceInfo":
+        """Decomposes raw bytes into its components and returns them as a :class:`ButtonEvent`"""
+        assert len(data) == cls._raw_len, f"Expected to get {cls._raw_len} bytes, got {len(data)}"
+
+        version = unpack_from("<3B", data[0:3])
+        board_version = unpack_from("9s", data[3:12])
+        mac_address = unpack_from("<6B", data[12:18])
+        serial_number = unpack_from("17s", data[18:35])
+
+        return cls(
+            version=".".join(f"{x}" for x in version),
+            board_version=board_version[0].decode("utf-8").rstrip("\x00"),
+            mac_address=":".join(f"{b:02x}" for b in mac_address).strip().upper(),
+            serial_number=serial_number[0].decode("utf-8").rstrip("\x00"),
+        )
+
+
+@dataclass(frozen=True)
+class SpectrogramDataPackage:
+    """Represents a column in a spectrogram sent from wave"""
+
+    _num_bins_per_channel = 16
+    _num_channels = 6
+    _num_floats = _num_bins_per_channel * _num_channels
+
+    _data_len = _num_floats * 4
+    _timestamp_bytes = 8
+    _raw_len = _data_len + _timestamp_bytes
+
+    _data_format_str = f"<{_num_floats}f"
+
+    data: list[float]
+    timestamp_us: int
+
+    @classmethod
+    def from_raw_bytes(cls, data: Union[bytearray, bytes]) -> "SpectrogramDataPackage":
+        if len(data) != cls._raw_len:
+            raise ValueError(f"Expected spectrogram data to have len={cls._raw_len}, got len={len(data)}", data)
+
+        return cls(
+            data=[x for x in unpack_from(cls._data_format_str, data, 0)],
+            timestamp_us=unpack_from("<Q", data, cls._data_len)[0],
+        )
+
+    def _channel_slice(self, index) -> list:
+        start = index * self._num_bins_per_channel
+        s = slice(start, start + self._num_bins_per_channel, None)
+        return self.data[s]
+
+    def as_dict(self) -> dict:
+        # This is (and should be) equivalent to `asdict(self)`, but is about 20-30x faster since it doesn't have
+        # to recursively expand all dataclass fields
+        return {
+            "acc_x": self._channel_slice(0),
+            "acc_y": self._channel_slice(1),
+            "acc_z": self._channel_slice(2),
+            "gyro_x": self._channel_slice(3),
+            "gyro_y": self._channel_slice(4),
+            "gyro_z": self._channel_slice(5),
+            "timestamp_us": self.timestamp_us,
+        }
+
+
 def flatten_nested_dataclass_fields(d: Union[Field, type], name: Optional[str]) -> list:
     """Analogous to `flatten_nested_dicts`, but returns the key names and works on the static class, not an instance
 
@@ -246,9 +329,16 @@ def process_byte_data(raw_bytes: Union[bytearray, bytes]) -> Union[ButtonEvent, 
         package = DataPackage.from_raw_bytes(raw_bytes_data)
     elif q.is_button():
         package = ButtonEvent.from_raw_bytes(raw_bytes_data)
+    elif q.is_device_info():
+        package = DeviceInfo.from_raw_bytes(raw_bytes_data)
     elif q.is_raw_gyro_accel():
         package = RawDataPackage.from_raw_bytes(raw_bytes_data)
+    elif q.is_spectrogram():
+        package = SpectrogramDataPackage.from_raw_bytes(raw_bytes_data)
     else:
         raise ValueError(f"Unknown value for q.id={q.id}")
 
     return package
+
+
+Package = Union[DataPackage, RawDataPackage, SpectrogramDataPackage]

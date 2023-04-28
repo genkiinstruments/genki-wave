@@ -11,7 +11,12 @@ from serial_asyncio import open_serial_connection
 
 from genki_wave.callbacks import WaveCallback
 from genki_wave.constants import API_CHAR_UUID, BAUDRATE
-from genki_wave.data.writing import get_start_api_package
+from genki_wave.data.writing import (
+    get_device_info_request,
+    get_start_api_package,
+    get_start_spectrogram_package,
+    get_default_api_config_package,
+)
 from genki_wave.protocols import ProtocolAsyncio, ProtocolThread, CommunicateCancel
 from genki_wave.utils import get_serial_port, get_or_create_event_loop
 
@@ -63,6 +68,7 @@ async def producer_bluetooth(
     protocol: Union[ProtocolAsyncio, ProtocolThread],
     comm: CommunicateCancel,
     ble_address: str,
+    enable_spectrogram: bool = False,
 ) -> None:
     """Receives data from a serially connected wave ring and passes it to the `protocol`
 
@@ -80,7 +86,13 @@ async def producer_bluetooth(
     callback = bleak_callback(protocol)
     async with BleakClient(ble_address, disconnected_callback=make_disconnect_callback(comm)) as client:
         await client.start_notify(API_CHAR_UUID, callback)
+        await client.write_gatt_char(API_CHAR_UUID, get_device_info_request(), False)
         await client.write_gatt_char(API_CHAR_UUID, get_start_api_package(), False)
+
+        if enable_spectrogram:
+            await client.write_gatt_char(API_CHAR_UUID, get_start_spectrogram_package(), False)
+        else:
+            await client.write_gatt_char(API_CHAR_UUID, get_default_api_config_package(), False)
 
         print("Connected to Wave")
         while True:
@@ -187,14 +199,19 @@ def _run_asyncio(
     loop.run_until_complete(tasks)
 
 
-def run_asyncio_bluetooth(callbacks: List[WaveCallback], ble_address) -> None:
+def run_asyncio_bluetooth(callbacks: List[WaveCallback], ble_address, enable_spectrogram=False) -> None:
     """Runs an async `consumer-producer` loop using user supplied callbacks for a bluetooth device
 
     Args:
         callbacks: A list/tuple of callbacks that handle the data passed from the wave ring
         ble_address: Address of the bluetooth device to connect to. E.g. 'D5:73:DB:85:B4:A1'
+        enable_spectrogram: Enable on-device FFT and spectrogram binning
     """
-    _run_asyncio(callbacks, partial(producer_bluetooth, ble_address=ble_address), ProtocolAsyncio())
+    _run_asyncio(
+        callbacks,
+        partial(producer_bluetooth, ble_address=ble_address, enable_spectrogram=enable_spectrogram),
+        ProtocolAsyncio(),
+    )
 
 
 def run_asyncio_serial(callbacks: List[WaveCallback], serial_port: str = None) -> None:

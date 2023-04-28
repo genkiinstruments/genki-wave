@@ -3,7 +3,8 @@ import csv
 from pathlib import Path
 from typing import Union, Optional, TextIO
 
-from genki_wave.data import ButtonEvent, DataPackage
+from genki_wave.data import DeviceInfo, ButtonEvent, Package, DataPackage, RawDataPackage, SpectrogramDataPackage
+from genki_wave.constants import FIRMWARE_VERSION
 
 
 class WaveCallback(abc.ABC):
@@ -12,14 +13,17 @@ class WaveCallback(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def _data_handler(self, data: DataPackage) -> None:
+    def _data_handler(self, data: Package) -> None:
         pass
 
-    def __call__(self, data: Union[ButtonEvent, DataPackage]) -> None:
+    def __call__(self, data: Union[ButtonEvent, Package]) -> None:
         if isinstance(data, ButtonEvent):
             self._button_handler(data)
-        elif isinstance(data, DataPackage):
+        elif isinstance(data, (DataPackage, RawDataPackage, SpectrogramDataPackage)):
             self._data_handler(data)
+        elif isinstance(data, DeviceInfo):
+            if data.version != FIRMWARE_VERSION:
+                raise ValueError(f"Firmware not up to date, required: {FIRMWARE_VERSION}, device has: {data.version}")
         else:
             raise ValueError(f"Got data of unexpected type {type(data)}")
 
@@ -41,12 +45,12 @@ class ButtonAndDataPrint(WaveCallback):
         # We use `str` to force the `enum` to print the long version of the name e.g. `ButtonId.MIDDLE` instead of `1`
         print(f"Button: {str(data.button_id)}, Action: {str(data.action)}")
 
-    def _data_handler(self, data: DataPackage) -> None:
+    def _data_handler(self, data: Package) -> None:
         """If there are more than `_print_data_every_n_seconds` seconds since something was printed out, print it"""
         if self._print_data_every_n_seconds is None:
             return
 
-        if self._last_time is None:
+        if self._last_time is None or self._last_time > data.timestamp_us:
             self._last_time = data.timestamp_us
 
         if (data.timestamp_us - self._last_time) > self._print_data_every_n_seconds * 10**6:  # s to us
@@ -86,7 +90,10 @@ class CsvOutput(WaveCallback):
     def _button_handler(self, data: ButtonEvent) -> None:
         pass
 
-    def _data_handler(self, data: DataPackage) -> None:
+    def _data_handler(self, data: Package) -> None:
+        if not isinstance(data, DataPackage):
+            return
+
         """Receives the data and writes it out if enough data points have been collected"""
         self._events.append(data)
 

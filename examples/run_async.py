@@ -14,6 +14,9 @@ def main():
     parser.add_argument("--use-serial", action="store_true")
     parser.add_argument("--button", action="store_true", help="Handler that prints the button and the action")
     parser.add_argument(
+        "--enable-spectrogram", action="store_true", help="Enable on-device FFT and spectrogram binning"
+    )
+    parser.add_argument(
         "--csv", type=str, default=None, help="Path to the output csv. If none is given no csv is written"
     )
     parser.add_argument("--log", type=str, default=None)
@@ -38,7 +41,7 @@ def main():
             run_discover_bluetooth()
         else:
             print("Turn off by holding the `TOP` button")
-            run_asyncio_bluetooth(callbacks, args.ble_address)
+            run_asyncio_bluetooth(callbacks, args.ble_address, args.enable_spectrogram)
 
 
 if __name__ == "__main__":
