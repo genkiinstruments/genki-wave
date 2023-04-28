@@ -49,6 +49,4 @@ def get_default_api_config_package():
 
 def get_device_info_request():
     """Get the package that requests device info when it's sent to the device"""
-    return create_package_to_write(
-        PackageMetadata(type=PackageType.REQUEST, id=PackageId.DEVICE_INFO, payload_size=0)
-    )
+    return create_package_to_write(PackageMetadata(type=PackageType.REQUEST, id=PackageId.DEVICE_INFO, payload_size=0))

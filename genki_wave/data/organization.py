@@ -220,10 +220,10 @@ class DeviceInfo:
         serial_number = unpack_from("17s", data[18:35])
 
         return cls(
-            version = '.'.join(f'{x}' for x in version),
-            board_version = board_version[0].decode("utf-8").rstrip("\x00"),
-            mac_address = ':'.join(f'{b:02x}' for b in mac_address).strip().upper(),
-            serial_number = serial_number[0].decode("utf-8").rstrip("\x00")
+            version=".".join(f"{x}" for x in version),
+            board_version=board_version[0].decode("utf-8").rstrip("\x00"),
+            mac_address=":".join(f"{b:02x}" for b in mac_address).strip().upper(),
+            serial_number=serial_number[0].decode("utf-8").rstrip("\x00"),
         )
 
 
@@ -342,4 +342,3 @@ def process_byte_data(raw_bytes: Union[bytearray, bytes]) -> Union[ButtonEvent, 
 
 
 Package = Union[DataPackage, RawDataPackage, SpectrogramDataPackage]
-

@@ -11,7 +11,12 @@ from serial_asyncio import open_serial_connection
 
 from genki_wave.callbacks import WaveCallback
 from genki_wave.constants import API_CHAR_UUID, BAUDRATE
-from genki_wave.data.writing import get_device_info_request, get_start_api_package, get_start_spectrogram_package, get_default_api_config_package
+from genki_wave.data.writing import (
+    get_device_info_request,
+    get_start_api_package,
+    get_start_spectrogram_package,
+    get_default_api_config_package,
+)
 from genki_wave.protocols import ProtocolAsyncio, ProtocolThread, CommunicateCancel
 from genki_wave.utils import get_serial_port, get_or_create_event_loop
 
