@@ -3,7 +3,8 @@ import csv
 from pathlib import Path
 from typing import Union, Optional, TextIO
 
-from genki_wave.data import ButtonEvent, Package, DataPackage, RawDataPackage, SpectrogramDataPackage
+from genki_wave.data import DeviceInfo, ButtonEvent, Package, DataPackage, RawDataPackage, SpectrogramDataPackage
+from genki_wave.constants import FIRMWARE_VERSION
 
 
 class WaveCallback(abc.ABC):
@@ -20,6 +21,9 @@ class WaveCallback(abc.ABC):
             self._button_handler(data)
         elif isinstance(data, (DataPackage, RawDataPackage, SpectrogramDataPackage)):
             self._data_handler(data)
+        elif isinstance(data, DeviceInfo):
+            if data.version != FIRMWARE_VERSION:
+                raise ValueError(f"Firmware not up to date, required: {FIRMWARE_VERSION}, device has: {data.version}")
         else:
             raise ValueError(f"Got data of unexpected type {type(data)}")
 

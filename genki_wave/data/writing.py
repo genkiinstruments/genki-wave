@@ -10,7 +10,7 @@ def pad_with_zero_byte(b: bytes) -> bytes:
     return b + struct.pack("<B", 0)
 
 
-def create_package_to_write(p: PackageMetadata, data: bytes) -> bytes:
+def create_package_to_write(p: PackageMetadata, data: bytes = bytearray()) -> bytes:
     """Package the data in the correct format before sending it to a Wave ring"""
     # TODO(robert): `data` should probably be a class that has a `to_bytes` method
     if p.payload_size != len(data):
@@ -44,4 +44,11 @@ def get_default_api_config_package():
     return create_package_to_write(
         PackageMetadata(type=PackageType.REQUEST, id=PackageId.MODIFY_API_CONFIG, payload_size=8),
         struct.pack("<BBxxf", DatastreamType.MOTION_DATA.value, False, 400.0),
+    )
+
+
+def get_device_info_request():
+    """Get the package that requests device info when it's sent to the device"""
+    return create_package_to_write(
+        PackageMetadata(type=PackageType.REQUEST, id=PackageId.DEVICE_INFO, payload_size=0)
     )

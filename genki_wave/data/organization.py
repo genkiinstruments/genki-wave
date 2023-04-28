@@ -40,6 +40,9 @@ class PackageMetadata:
     def is_button(self):
         return self.id == PackageId.BUTTON_EVENT
 
+    def is_device_info(self):
+        return self.id == PackageId.DEVICE_INFO
+
     def is_raw_gyro_accel(self):
         return self.id == PackageId.RAW_DATA
 
@@ -196,6 +199,35 @@ class ButtonEvent:
 
 
 @dataclass(frozen=True)
+class DeviceInfo:
+    """Represents a button event sent from wave"""
+
+    _raw_len = 35
+
+    version: str
+    board_version: str
+    mac_address: str
+    serial_number: str
+
+    @classmethod
+    def from_raw_bytes(cls, data: Union[bytearray, bytes]) -> "DeviceInfo":
+        """Decomposes raw bytes into its components and returns them as a :class:`ButtonEvent`"""
+        assert len(data) == cls._raw_len, f"Expected to get {cls._raw_len} bytes, got {len(data)}"
+
+        version = unpack_from("<3B", data[0:3])
+        board_version = unpack_from("9s", data[3:12])
+        mac_address = unpack_from("<6B", data[12:18])
+        serial_number = unpack_from("17s", data[18:35])
+
+        return cls(
+            version = '.'.join(f'{x}' for x in version),
+            board_version = board_version[0].decode("utf-8").rstrip("\x00"),
+            mac_address = ':'.join(f'{b:02x}' for b in mac_address).strip().upper(),
+            serial_number = serial_number[0].decode("utf-8").rstrip("\x00")
+        )
+
+
+@dataclass(frozen=True)
 class SpectrogramDataPackage:
     """Represents a column in a spectrogram sent from wave"""
 
@@ -297,6 +329,8 @@ def process_byte_data(raw_bytes: Union[bytearray, bytes]) -> Union[ButtonEvent, 
         package = DataPackage.from_raw_bytes(raw_bytes_data)
     elif q.is_button():
         package = ButtonEvent.from_raw_bytes(raw_bytes_data)
+    elif q.is_device_info():
+        package = DeviceInfo.from_raw_bytes(raw_bytes_data)
     elif q.is_raw_gyro_accel():
         package = RawDataPackage.from_raw_bytes(raw_bytes_data)
     elif q.is_spectrogram():
@@ -308,3 +342,4 @@ def process_byte_data(raw_bytes: Union[bytearray, bytes]) -> Union[ButtonEvent, 
 
 
 Package = Union[DataPackage, RawDataPackage, SpectrogramDataPackage]
+
