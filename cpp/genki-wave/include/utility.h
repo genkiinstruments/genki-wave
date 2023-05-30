@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <gsl/span>
-#include <juce_data_structures/juce_data_structures.h>
 #include <type_traits>
 
 namespace genki {

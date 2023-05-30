@@ -10,7 +10,7 @@ template<typename Comm, typename Q, typename... Args>
 [[maybe_unused]] bool send_query(Comm& comm, const Q& query, const Args& ... args)
 {
     const auto sz = byte_size(query, args...);
-    jassert(query.payload_size == sz - sizeof(query));
+    assert(query.payload_size == sz - sizeof(query));
 
     std::vector<gsl::byte> buf{};
     buf.reserve(sz);

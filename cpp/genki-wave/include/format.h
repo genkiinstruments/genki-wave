@@ -22,7 +22,7 @@ struct fmt::formatter<juce::String>
     constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) { return ctx.begin(); }
 
     template<typename FormatContext>
-    auto format(const juce::String& str, FormatContext& ctx) -> decltype(ctx.out()) { return fmt::format_to(ctx.out(), "{}", str.getCharPointer()); }
+    auto format(const juce::String& str, FormatContext& ctx) -> decltype(ctx.out()) { return fmt::format_to(ctx.out(), "{}", str.getCharPointer().getAddress()); }
 };
 
 template<>

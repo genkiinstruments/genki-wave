@@ -69,6 +69,7 @@ struct Config
     DatastreamType datastream_type;
     bool           spectrogram_enabled;
     float          sample_rate;
+    float          tap_sensitivity;
 };
 
 } // namespace Api
