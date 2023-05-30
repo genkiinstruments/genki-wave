@@ -1,1 +1,2 @@
 add_subdirectory(wave_api_stream)
+add_subdirectory(wave_api_tap)
