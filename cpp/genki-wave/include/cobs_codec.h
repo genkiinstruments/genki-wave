@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <etl/queue.h>
 #include <gsl/span>
 

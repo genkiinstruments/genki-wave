@@ -65,6 +65,7 @@ struct WaveApiDevice : private juce::ValueTree::Listener
     bool read_battery() const { return request(Wave::Api::Query::Id::BatteryStatus); }
     bool recenter() const { return request(Wave::Api::Query::Id::Recenter); }
     bool update_display(const Wave::LedFrame& frame) const { return request(Wave::Api::Query::Id::DisplayFrame, frame); }
+    bool updateConfig(const Wave::Api::Config& cfg) { return request(Wave::Api::Query::Id::ModifyApiConfig, cfg); }
 
 private:
     //==================================================================================================================

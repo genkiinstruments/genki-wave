@@ -22,7 +22,7 @@ struct fmt::formatter<juce::String>
     constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) { return ctx.begin(); }
 
     template<typename FormatContext>
-    auto format(const juce::String& str, FormatContext& ctx) -> decltype(ctx.out()) { return fmt::format_to(ctx.out(), "{}", str.getCharPointer()); }
+    auto format(const juce::String& str, FormatContext& ctx) -> decltype(ctx.out()) { return fmt::format_to(ctx.out(), "{}", str.getCharPointer().getAddress()); }
 };
 
 template<>
@@ -63,3 +63,16 @@ struct fmt::formatter<genki::Wave::Api::Query>
         return fmt::format_to(ctx.out(), "{{ type: {}, id: {}, payload_size: {} }}", (int) q.type, (int) q.id, (int) q.payload_size);
     }
 };
+
+template<>
+struct fmt::formatter<genki::Wave::Version>
+{
+    constexpr auto parse(fmt::format_parse_context& ctx) -> decltype(ctx.begin()) { return ctx.begin(); }
+
+    template<typename FormatContext>
+    auto format(const genki::Wave::Version& v, FormatContext& ctx) -> decltype(ctx.out())
+    {
+        return fmt::format_to(ctx.out(), "{}.{}.{}", v.major, v.minor, v.patch);
+    }
+};
+
