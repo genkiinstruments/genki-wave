@@ -3,6 +3,7 @@
 #include <vector>
 #include <etl/queue.h>
 #include <gsl/span>
+#include <vector>
 
 #include "cobs.h"
 #include "sml_wrapper.h"
