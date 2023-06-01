@@ -172,7 +172,7 @@ JNI_IMPL(bool, SendQueryNative)(JNIEnv* env, jobject self, jlong nativeHandle, j
 
     auto& handler = getHandler(env, self, nativeHandle);
 
-    return genki::send_query(handler, query);
+    return genki::send_query(handler, query, native_payload.data);
 }
 
 JNI_IMPL(void, OnWriteCompleteNative)(JNIEnv* env, jobject self, jlong nativeHandle, jboolean jsuccess) {

@@ -88,6 +88,9 @@ struct fsm
         {
             auto& [transport, mtu, tx_bytes, buffer] = s;
 
+            if (tx_bytes.capacity() == 0)
+                return;
+
             assert(tx_bytes.size() >= d.count);
 
             const auto num_bytes = std::accumulate(tx_bytes.cbegin(), tx_bytes.cbegin() + static_cast<long>(d.count), 0);
