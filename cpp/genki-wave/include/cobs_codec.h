@@ -37,7 +37,7 @@ struct CobsCodec
 
     void startTransfer() { sm.process_event(fsm::events::transmit{}); }
 
-    void onTxComplete(size_t count = 1) { sm.process_event(fsm::events::tx_done{count}); }
+    void onTxComplete(size_t count = 1) { if (state.tx_bytes.capacity() > 0) sm.process_event(fsm::events::tx_done{count}); }
 
     void receivePacket(gsl::span<const gsl::byte> data)
     {

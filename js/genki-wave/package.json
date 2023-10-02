@@ -1,0 +1,28 @@
+{
+	"name": "genki-wave",
+	"version": "0.1.0",
+	"type": "module",
+	"main": "./dist/genki-wave.umd.cjs",
+	"module": "./dist/genki-wave.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/genki-wave.js",
+			"require": "./dist/genki-wave.umd.cjs"
+		}
+	},
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview"
+	},
+	"files": [
+		"dist"
+	],
+	"devDependencies": {
+		"@types/node": "^20.8.0",
+		"typescript": "^5.0.2",
+		"vite": "^4.4.5",
+		"vite-plugin-dts": "^3.6.0"
+	}
+}
