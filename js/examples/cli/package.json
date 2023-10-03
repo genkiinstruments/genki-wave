@@ -5,15 +5,27 @@
 	"main": "src/index.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"buil": "tsx"
+		"build": "node-gyp build && pnpx tsx src/index.ts"
 	},
 	"keywords": [],
 	"dependencies": {
-		"genki-wave": "file:../../genki-wave"
+		"@abandonware/noble": "1.9.2-23",
+		"genki-wave": "file:../../genki-wave",
+		"noble": "^1.9.1",
+		"webbluetooth": "^3.1.0",
+		"xpc-connection": "^0.1.4",
+		"bindings": "latest",
+		"node-addon-api": "latest"
 	},
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
-		"tsx": "^3.13.0"
-	}
+		"@types/noble": "latest",
+		"@types/node": "^20.8.0",
+		"tsx": "^3.13.0",
+		"ws": "^8.14.2",
+		"bindings": "latest",
+		"node-gyp": "latest"
+	},
+	"gypfile": true
 }
