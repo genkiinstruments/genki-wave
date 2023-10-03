@@ -1,8 +1,23 @@
 import { Bluetooth } from "webbluetooth"
-
+import {EventEmitter} from "events";
 import {PacketHandler} from "./addon";
 
-const obj = new PacketHandler();
+const emitter = new EventEmitter()
+const emit = emitter.emit.bind(emitter);
+
+let obj: typeof PacketHandler | null;
+
+emitter.on('data', (data) => {
+    console.log('### DATA:', data);
+})
+
+emitter.on('button', (button) => {
+    console.log('### BUTTON:', button);
+})
+
+emitter.on('battery', (battery) => {
+    console.log('### BATTERY:', battery);
+})
 
 const WAVE_API_SERVICE_UUID = "65e9296c-8dfb-11ea-bc55-0242ac130003";
 const WAVE_API_CHARACTERISTIC_UUID = "65e92bb1-8dfb-11ea-bc55-0242ac130003";
@@ -35,6 +50,8 @@ const enumerateGatt = async server => {
 
     await api_charact.startNotifications();
     console.log("Notifications started");
+
+    obj = new PacketHandler(emit);
 
     api_charact.addEventListener("characteristicvaluechanged", event => {
         obj.pushBytes(event.target.value?.buffer);
