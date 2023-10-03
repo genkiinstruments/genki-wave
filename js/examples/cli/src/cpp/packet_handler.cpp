@@ -15,8 +15,6 @@ Napi::Object PacketHandler::Init(Napi::Env env, Napi::Object exports) {
   return exports;
 }
 
-PacketHandler::PacketHandler(const Napi::CallbackInfo& info) : Napi::ObjectWrap<PacketHandler>(info) { }
-
 void PacketHandler::PushBytes(const Napi::CallbackInfo& info) {
     if (info.Length() == 1 && info[0].IsArrayBuffer())
     {
@@ -25,11 +23,8 @@ void PacketHandler::PushBytes(const Napi::CallbackInfo& info) {
         std::vector<uint8_t> v(buf.ByteLength());
         std::memcpy(v.data(), buf.Data(), buf.ByteLength());
 
-        for (const auto& b : v)
-            std::printf("%02x ", b);
+          const auto s = gsl::as_bytes(gsl::span(reinterpret_cast<const uint8_t*>(buf.Data()), buf.ByteLength()));
 
-        std::printf("\n");
-
-        // TODO: Do something with bytes here...
+        codec.receivePacket(s);
     }
 }

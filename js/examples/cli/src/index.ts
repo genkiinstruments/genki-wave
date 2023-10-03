@@ -2,7 +2,7 @@ import { Bluetooth } from "webbluetooth"
 
 import {PacketHandler} from "./addon";
 
-const obj = new PacketHandler(10);
+const obj = new PacketHandler();
 
 const WAVE_API_SERVICE_UUID = "65e9296c-8dfb-11ea-bc55-0242ac130003";
 const WAVE_API_CHARACTERISTIC_UUID = "65e92bb1-8dfb-11ea-bc55-0242ac130003";
