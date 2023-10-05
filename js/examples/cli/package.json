@@ -9,6 +9,7 @@
 	},
 	"keywords": [],
 	"dependencies": {
+		"@types/web-bluetooth": "^0.0.18",
 		"bindings": "latest",
 		"genki-wave": "file:../../genki-wave",
 		"noble": "^1.9.1",
