@@ -1,5 +1,3 @@
-var addon = require('bindings')('addon');
-
-// console.log('This should be eight:', addon.add(3, 5))
+var addon = require('bindings')('packethandler');
 
 export const PacketHandler = addon.PacketHandler;

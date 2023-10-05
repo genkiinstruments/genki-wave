@@ -8,6 +8,9 @@ dependencies:
   bindings:
     specifier: latest
     version: 1.5.0
+  cmake-js:
+    specifier: ^7.0.0
+    version: 7.0.0
   genki-wave:
     specifier: file:../../genki-wave
     version: file:../../genki-wave
@@ -332,12 +335,11 @@ packages:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: false
 
-  /axios@1.5.1(debug@4.3.4):
-    resolution: {integrity: sha512-Q28iYCWzNHjAm+yEAot5QaAMxhMghWLFVf7rRdwhUI+c2jix2DUXjAHXVi+s1ibs3mjPO/cCgbA++3BjD0vP/A==}
+  /axios@0.27.2(debug@4.3.4):
+    resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
     dependencies:
       follow-redirects: 1.15.3(debug@4.3.4)
       form-data: 4.0.0
-      proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
     dev: false
@@ -448,17 +450,17 @@ packages:
       wrap-ansi: 7.0.0
     dev: false
 
-  /cmake-js@7.2.1:
-    resolution: {integrity: sha512-AdPSz9cSIJWdKvm0aJgVu3X8i0U3mNTswJkSHzZISqmYVjZk7Td4oDFg0mCBA383wO+9pG5Ix7pEP1CZH9x2BA==}
+  /cmake-js@7.0.0:
+    resolution: {integrity: sha512-Xmti54GzAg+70lsPRKsuw18ktAB+NwPS3m+b6dLzh3Zi+7k8QSVi857UWXzn9sjPXGz5BfSfo3vNISRaTVU/4A==}
     engines: {node: '>= 14.15.0'}
     hasBin: true
     dependencies:
-      axios: 1.5.1(debug@4.3.4)
+      axios: 0.27.2(debug@4.3.4)
       debug: 4.3.4
       fs-extra: 10.1.0
       lodash.isplainobject: 4.0.6
       memory-stream: 1.0.0
-      node-api-headers: 0.0.2
+      node-api-headers: 0.0.1
       npmlog: 6.0.2
       rc: 1.2.8
       semver: 7.5.4
@@ -1067,8 +1069,8 @@ packages:
     resolution: {integrity: sha512-vgbBJTS4m5/KkE16t5Ly0WW9hz46swAstv0hYYwMtbG7AznRhNyfLRe8HZAiWIpcHzoO7HxhLuBQj9rJ/Ho0ZA==}
     dev: false
 
-  /node-api-headers@0.0.2:
-    resolution: {integrity: sha512-YsjmaKGPDkmhoNKIpkChtCsPVaRE0a274IdERKnuc/E8K1UJdBZ4/mvI006OijlQZHCfpRNOH3dfHQs92se8gg==}
+  /node-api-headers@0.0.1:
+    resolution: {integrity: sha512-eRxckUSXMRQRV69h+ksfleQzR3BdRwkJuc/Y65KFFwhibC5G1y6wgytYW2WWTB/oG1bt+pf2RwjZDYC0xKqgqQ==}
     dev: false
 
   /node-gyp-build@4.6.1:
@@ -1171,10 +1173,6 @@ packages:
       err-code: 2.0.3
       retry: 0.12.0
     dev: true
-
-  /proxy-from-env@1.1.0:
-    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
-    dev: false
 
   /pump@3.0.0:
     resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
@@ -1534,7 +1532,7 @@ packages:
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
-      cmake-js: 7.2.1
+      cmake-js: 7.0.0
       node-addon-api: 7.0.0
       prebuild-install: 7.1.1
     transitivePeerDependencies:

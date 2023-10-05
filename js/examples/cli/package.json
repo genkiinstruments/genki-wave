@@ -13,7 +13,8 @@
 		"genki-wave": "file:../../genki-wave",
 		"noble": "^1.9.1",
 		"node-addon-api": "latest",
-		"webbluetooth": "file:webbluetooth"
+		"webbluetooth": "file:webbluetooth",
+		"cmake-js": "^7.0.0"
 	},
 	"author": "",
 	"license": "ISC",
@@ -23,6 +24,5 @@
 		"node-gyp": "latest",
 		"tsx": "^3.13.0",
 		"ws": "^8.14.2"
-	},
-	"gypfile": true
+	}
 }
