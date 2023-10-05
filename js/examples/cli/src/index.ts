@@ -5,7 +5,7 @@ import {PacketHandler} from "./addon";
 const emitter = new EventEmitter()
 const emit = emitter.emit.bind(emitter);
 
-let obj: typeof PacketHandler | null;
+let packet_handler: typeof PacketHandler | null;
 
 emitter.on('data', (data) => {
     console.log('### DATA:', data);
@@ -51,10 +51,12 @@ const enumerateGatt = async server => {
     await api_charact.startNotifications();
     console.log("Notifications started");
 
-    obj = new PacketHandler(emit);
+    packet_handler = new PacketHandler(emit, (data: ArrayBuffer) => {
+        api_charact.writeValueWithResponse(data);
+    });
 
     api_charact.addEventListener("characteristicvaluechanged", event => {
-        obj.pushBytes(event.target.value?.buffer);
+        packet_handler.pushBytes(event.target.value?.buffer);
     });
 };
 
@@ -80,6 +82,15 @@ const bluetooth = new Bluetooth({deviceFound: (device, selectFn): boolean => {
         var should_exit = false;
 
         process.on('SIGINT', () => { should_exit = true; });
+
+        // Request battery level every 1 second
+        setInterval(() => {
+            packet_handler.sendQuery({
+                'type': 'request',
+                'id': 2,
+                'payload_size': 0
+            })
+        }, 1000);
 
         while (!should_exit) {
             await new Promise(resolve => setTimeout(resolve, 500));

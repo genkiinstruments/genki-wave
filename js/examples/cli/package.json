@@ -9,23 +9,20 @@
 	},
 	"keywords": [],
 	"dependencies": {
-		"@abandonware/noble": "1.9.2-23",
+		"bindings": "latest",
 		"genki-wave": "file:../../genki-wave",
 		"noble": "^1.9.1",
-		"webbluetooth": "^3.1.0",
-		"xpc-connection": "^0.1.4",
-		"bindings": "latest",
-		"node-addon-api": "latest"
+		"node-addon-api": "latest",
+		"webbluetooth": "file:webbluetooth"
 	},
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
-		"@types/noble": "latest",
 		"@types/node": "^20.8.0",
-		"tsx": "^3.13.0",
-		"ws": "^8.14.2",
 		"bindings": "latest",
-		"node-gyp": "latest"
+		"node-gyp": "latest",
+		"tsx": "^3.13.0",
+		"ws": "^8.14.2"
 	},
 	"gypfile": true
 }
