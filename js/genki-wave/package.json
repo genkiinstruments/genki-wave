@@ -6,7 +6,7 @@
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build": "cmake-js build && npx tsc",
+		"build": "cmake-js --prefer-make -p 32 build && npx tsc",
 		"prebuild": "prebuild --backend cmake-js --runtime napi --all --strip --verbose"
 	},
 	"files": [
