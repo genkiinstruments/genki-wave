@@ -6,6 +6,31 @@ import {EventEmitter} from "eventemitter3";
 const WAVE_API_SERVICE_UUID = "65e9296c-8dfb-11ea-bc55-0242ac130003";
 const WAVE_API_CHARACTERISTIC_UUID = "65e92bb1-8dfb-11ea-bc55-0242ac130003";
 
+type DeviceCallback = (device: BluetoothDevice) => boolean
+
+export enum QueryType {
+    Request = 1,
+    Response,
+    Stream,
+}
+
+export enum QueryId {
+    Datastream = 1,
+    BatteryStatus,
+    DeviceInfo,
+    ButtonEvent,
+    DeviceMode,
+    Identify,
+    Recenter,
+    DisplayFrame,
+}
+
+export type Query = {
+    type: QueryType,
+    id: QueryId,
+    payloadSize?: number
+};
+
 type Wave = {
     server: BluetoothRemoteGATTServer,
     emitter: EventEmitter,

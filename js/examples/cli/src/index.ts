@@ -1,4 +1,4 @@
-import {connect, disconnect, discover} from "genki-wave"
+import { connect, disconnect, discover, QueryType, QueryId } from "genki-wave"
 
 (async () => {
     console.log("scanning...")
@@ -21,12 +21,11 @@ import {connect, disconnect, discover} from "genki-wave"
 
     // Request battery level every 1 second
     setInterval(() => {
-        // TODO: Wrap Query and IDs in JS
         wave.packet_handler.sendQuery({
-            'type': 'request',
-            'id': 2,
-            'payload_size': 0
-        })
+            type: QueryType.Request,
+            id: QueryId.BatteryStatus,
+        });
+
     }, 1000);
 
     while (!should_exit) {

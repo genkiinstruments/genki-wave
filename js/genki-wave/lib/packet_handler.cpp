@@ -46,7 +46,7 @@ void PacketHandler::SendQuery(const Napi::CallbackInfo& info) {
         const auto jq = info[0].As<Napi::Object>();
 
         const genki::Wave::Api::Query query {
-            .type = type_from_str(jq.Get("type").As<Napi::String>().Utf8Value()),
+            .type = genki::Wave::Api::Query::Type(static_cast<uint8_t>(static_cast<int>(jq.Get("type").ToNumber()))),
             .id = genki::Wave::Api::Query::Id(static_cast<uint8_t>(static_cast<int>(jq.Get("id").ToNumber()))),
             .payload_size = static_cast<uint16_t>(static_cast<int>(jq.Get("payload_size").ToNumber())),
         };
