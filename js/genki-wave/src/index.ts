@@ -31,13 +31,11 @@ export type Query = {
     payloadSize?: number
 };
 
-type Wave = {
+export type Wave = {
     server: BluetoothRemoteGATTServer,
     emitter: EventEmitter,
     packet_handler: typeof lib.PacketHandler,
 };
-
-type DeviceCallback = (device: BluetoothDevice) => boolean
 
 export async function discover(deviceFound: DeviceCallback, timeout?: number) {
 
