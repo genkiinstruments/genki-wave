@@ -2,29 +2,34 @@
 	"name": "genki-wave",
 	"version": "0.1.0",
 	"type": "module",
-	"main": "./dist/genki-wave.umd.cjs",
-	"module": "./dist/genki-wave.js",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
-	"exports": {
-		".": {
-			"import": "./dist/genki-wave.js",
-			"require": "./dist/genki-wave.umd.cjs"
-		}
-	},
 	"scripts": {
-		"dev": "vite",
-		"build": "tsc && vite build",
-		"preview": "vite preview"
+		"build": "cmake-js build && npx tsc",
+		"prebuild": "prebuild --backend cmake-js --runtime napi --all --strip --verbose"
 	},
 	"files": [
-		"dist"
+		"dist",
+		"build/**/*.node"
 	],
 	"devDependencies": {
 		"@types/node": "^20.8.0",
-		"typescript": "^5.0.2",
-		"vite": "^4.4.5",
-		"vite-plugin-dts": "^3.6.0"
+		"@types/web-bluetooth": "^0.0.18",
+		"typescript": "^4.9.4",
+		"prebuild": "latest"
 	},
 	"dependencies": {
+		"bindings": "^1.5.0",
+		"cmake-js": "^7.0.0",
+		"node-addon-api": "^7.0.0",
+		"prebuild-install": "^7.1.1",
+		"webbluetooth": "file:webbluetooth",
+		"eventemitter3": "latest"
+	},
+	"binary": {
+		"napi_versions": [
+			6
+		]
 	}
 }

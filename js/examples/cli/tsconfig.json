@@ -1,13 +1,11 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "ambient.d.ts",
-    "./types/**/$types.d.ts",
-    "../vite.config.ts",
-    "../src/**/*.js",
-    "../src/**/*.ts",
-    "../tests/**/*.js",
-    "../tests/**/*.ts",
-    "../scripts/**/*.ts"
-  ]
+  "compilerOptions": {
+    "target": "es5",
+    "alwaysStrict": true,
+    "downlevelIteration": true,
+    "noImplicitReturns": true,
+    "noEmitOnError": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  }
 }

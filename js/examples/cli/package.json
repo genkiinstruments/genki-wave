@@ -5,25 +5,17 @@
 	"main": "src/index.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "pnpx tsx pull.ts && node-gyp build"
+		"build": ""
 	},
 	"keywords": [],
 	"dependencies": {
-		"@types/web-bluetooth": "^0.0.18",
-		"bindings": "latest",
-		"genki-wave": "file:../../genki-wave",
-		"noble": "^1.9.1",
-		"node-addon-api": "latest",
-		"webbluetooth": "file:webbluetooth",
-		"cmake-js": "^7.0.0"
+		"genki-wave": "file:../../genki-wave"
 	},
-	"author": "",
+	"author": "genki",
 	"license": "ISC",
 	"devDependencies": {
 		"@types/node": "^20.8.0",
-		"bindings": "latest",
-		"node-gyp": "latest",
-		"tsx": "^3.13.0",
-		"ws": "^8.14.2"
+		"@types/web-bluetooth": "^0.0.18",
+		"tsx": "^3.13.0"
 	}
 }

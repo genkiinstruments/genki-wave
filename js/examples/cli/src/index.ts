@@ -1,4 +1,4 @@
-import {connect, disconnect, discover} from "./genki-wave"
+import {connect, disconnect, discover} from "genki-wave"
 
 (async () => {
     console.log("scanning...")

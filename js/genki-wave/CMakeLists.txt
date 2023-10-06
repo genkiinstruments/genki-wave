@@ -14,7 +14,7 @@ endif()
 set(GENKI_WAVE_BUILD_EXAMPLES OFF)
 set(GENKI_WAVE_ENABLE_TESTING OFF)
 set(GENKI_WAVE_ENABLE_JUCE_TARGETS OFF)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../../cpp ${CMAKE_CURRENT_BINARY_DIR}/genki-wave)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp ${CMAKE_CURRENT_BINARY_DIR}/genki-wave)
 
 # Add Node bindings.
 execute_process(COMMAND node -p "require('node-addon-api').include_dir"
