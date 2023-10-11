@@ -14,18 +14,20 @@
 		"build/**/*.node"
 	],
 	"devDependencies": {
+		"@types/bindings": "^1.5.2",
 		"@types/node": "^20.8.0",
 		"@types/web-bluetooth": "^0.0.18",
-		"typescript": "^4.9.4",
-		"prebuild": "latest"
+		"bindings": "^1.5.0",
+		"prebuild": "latest",
+		"typescript": "^4.9.4"
 	},
 	"dependencies": {
 		"bindings": "^1.5.0",
 		"cmake-js": "^7.0.0",
+		"eventemitter3": "latest",
 		"node-addon-api": "^7.0.0",
 		"prebuild-install": "^7.1.1",
-		"webbluetooth": "file:webbluetooth",
-		"eventemitter3": "latest"
+		"webbluetooth": "file:webbluetooth"
 	},
 	"binary": {
 		"napi_versions": [

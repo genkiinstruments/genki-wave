@@ -25,6 +25,9 @@ dependencies:
     version: file:webbluetooth
 
 devDependencies:
+  '@types/bindings':
+    specifier: ^1.5.2
+    version: 1.5.2
   '@types/node':
     specifier: ^20.8.0
     version: 20.8.0
@@ -69,6 +72,12 @@ packages:
   /@tootallnate/once@2.0.0:
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
     engines: {node: '>= 10'}
+    dev: true
+
+  /@types/bindings@1.5.2:
+    resolution: {integrity: sha512-t2XpLaeHQu3aMXZoEnsXTqweM+nUb2C/RVcQSNXS42uFCb3BBeXotk9lh02e+oozboYq8VkC/f58hgiXrB0NWQ==}
+    dependencies:
+      '@types/node': 20.8.0
     dev: true
 
   /@types/node@20.8.0:
@@ -233,7 +242,6 @@ packages:
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
-    dev: true
 
   /b4a@1.6.4:
     resolution: {integrity: sha512-fpWrvyVHEKyeEvbKZTVOeZF3VSKKWtJxFIxX/jaVPf+cLbGUSitjb49pHLqPV2BUNNZ0LcoeEGfE/YCpyDYHIw==}
@@ -395,7 +403,6 @@ packages:
       yargs: 17.7.2
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
   /code-point-at@1.1.0:
     resolution: {integrity: sha512-RpAVKQA5T63xEj6/giIbUEtZwJ4UFIc3ZtvEkiaUERylqe8xb5IvqcgOurZLahv93CLKfxcw5YI+DZcUBRyLXA==}
@@ -1239,7 +1246,6 @@ packages:
 
   /node-api-headers@0.0.2:
     resolution: {integrity: sha512-YsjmaKGPDkmhoNKIpkChtCsPVaRE0a274IdERKnuc/E8K1UJdBZ4/mvI006OijlQZHCfpRNOH3dfHQs92se8gg==}
-    dev: true
 
   /node-gyp@9.4.0:
     resolution: {integrity: sha512-dMXsYP6gc9rRbejLXmTbVRYjAHw7ppswsKyMxuxJxxOHzluIO1rGp9TOQgjFJ+2MCqcOcQTOPB/8Xwhr+7s4Eg==}
@@ -1516,7 +1522,6 @@ packages:
 
   /proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
-    dev: true
 
   /psl@1.9.0:
     resolution: {integrity: sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==}
@@ -2056,7 +2061,7 @@ packages:
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
-      cmake-js: 7.0.0
+      cmake-js: 7.2.1
       node-addon-api: 7.0.0
       prebuild-install: 7.1.1
     transitivePeerDependencies:
