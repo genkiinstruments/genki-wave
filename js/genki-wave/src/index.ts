@@ -1,4 +1,5 @@
-var lib = require('bindings')('packethandler');
+import * as bindings from 'bindings';
+var lib = bindings('packethandler')
 
 import {Bluetooth,} from "webbluetooth"
 import {EventEmitter} from "eventemitter3";
