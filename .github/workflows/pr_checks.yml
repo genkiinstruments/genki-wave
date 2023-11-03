@@ -29,6 +29,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: ppremk/lfs-warning@v3.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           filesizelimit: '524288' # 512Kb
 
