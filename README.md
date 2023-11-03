@@ -10,6 +10,14 @@ For more details, please refer to the
 
 ![Wave](assets/wave.png)
 
+# Supported environments
+
+The main package is a Python library (instructions below), but adapters are available for other environments
+
+* [Android](./android)
+* [C++ (macOS and Windows 10)](./cpp)
+* [Node.js](./js)
+
 # Installation
 This package has been tested with `python 3.8` on both macOS and Linux. Installation is straight forward.
 
