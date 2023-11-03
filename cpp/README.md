@@ -10,9 +10,11 @@ The project depends on a few third-party libraries
 * [GSL](https://github.com/microsoft/GSL)
 * [fmt](https://github.com/fmtlib/fmt)
 * [range-v3](https://github.com/ericniebler/range-v3)
+* [etl](https://github.com/ETLCPP/etl)
 * [boost-ext/sml](https://github.com/boost-ext/sml)
 
-The CMake build script manages these dependencies automatically. If you use a different build system, you might have to do some extra work.
+The CMake build script uses [CPM](https://github.com/cpm-cmake/CPM.cmake) to fetch these dependencies.
+If you use a different build system, you will have to make sure these libraries are available and linked properly as part of your appliation build step.
 
 ## Build
 
@@ -67,3 +69,4 @@ See the examples folder for more details.
 
 * There is currently no Linux backend for [juce_bluetooth](https://github.com/genkiinstruments/juce_bluetooth), so the project will only build on Windows 10 and macOS.
 * On Windows, the program might not work correctly if the Bluetooth adapter is disabled on program startup.
+* 

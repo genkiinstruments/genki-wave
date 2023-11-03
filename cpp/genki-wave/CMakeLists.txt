@@ -16,6 +16,7 @@ target_link_libraries(${headers}
         fmt
         GSL
         range-v3
+        sml
         )
 
 if (GENKI_WAVE_ENABLE_JUCE_TARGETS)

@@ -2,21 +2,21 @@ cmake_minimum_required(VERSION 3.15)
 
 project(genki-wave VERSION 0.1.0)
 
-include(cmake/fetch_from_git.cmake)
+include(cmake/CPM.cmake)
 
 option(GENKI_WAVE_BUILD_EXAMPLES ON "Enable genki-wave example builds")
 option(GENKI_WAVE_ENABLE_JUCE_TARGETS ON "Fetch JUCE and enable JUCE-based targets")
 
 if (GENKI_WAVE_ENABLE_JUCE_TARGETS)
-    fetch_from_git(JUCE https://github.com/juce-framework/JUCE.git SOURCE_DIRECTORY_VAR juce_source_dir)
-    fetch_from_git(juce_bluetooth https://github.com/genkiinstruments/juce_bluetooth.git GIT_TAG main)
+    CPMAddPackage("gh:juce-framework/JUCE#7.0.7")
+    CPMAddPackage("gh:genkiinstruments/juce_bluetooth#1.0.0")
 endif()
 
-fetch_from_git(gsl https://github.com/microsoft/GSL.git GIT_TAG main)
-fetch_from_git(etl https://github.com/ETLCPP/etl.git)
-fetch_from_git(fmt https://github.com/fmtlib/fmt.git)
-fetch_from_git(range-v3 https://github.com/ericniebler/range-v3.git)
-fetch_from_git(sml https://github.com/boost-ext/sml.git SOURCE_DIRECTORY_VAR sml_source_dir)
+CPMAddPackage("gh:microsoft/GSL#v4.0.0")
+CPMAddPackage("gh:fmtlib/fmt#10.1.1")
+CPMAddPackage("gh:ericniebler/range-v3#0.12.0")
+CPMAddPackage("gh:ETLCPP/etl#20.38.5")
+CPMAddPackage("gh:boost-ext/sml#07d159027abd1f1b2fb9ff36955f1437e3a80b23")
 
 add_subdirectory(genki-wave)
 
