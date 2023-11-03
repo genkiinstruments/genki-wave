@@ -1,7 +1,7 @@
 import * as bindings from 'bindings';
 var lib = bindings('packethandler')
 
-import {Bluetooth,} from "webbluetooth"
+import {Bluetooth} from "webbluetooth"
 import {EventEmitter} from "eventemitter3";
 
 const WAVE_API_SERVICE_UUID = "65e9296c-8dfb-11ea-bc55-0242ac130003";
