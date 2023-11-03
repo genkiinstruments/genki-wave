@@ -28,7 +28,7 @@ jobs:
     name: Check that no large files have been added
     steps:
       - uses: actions/checkout@v1
-      - uses: ppremk/lfs-warning@v1.0
+      - uses: ppremk/lfs-warning@v3.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
