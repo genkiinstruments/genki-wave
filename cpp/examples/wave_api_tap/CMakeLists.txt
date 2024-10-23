@@ -9,7 +9,9 @@ endif ()
 project(wave_api_tap VERSION 0.1.0)
 set(target ${PROJECT_NAME})
 
-juce_add_gui_app(${target})
+juce_add_gui_app(${target}
+        BLUETOOTH_PERMISSION_ENABLED TRUE
+)
 
 target_sources(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 

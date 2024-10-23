@@ -22,7 +22,7 @@ public:
         tap_sensitivity.setRange(0.0, 1.0);
         tap_sensitivity.setValue(0.7, juce::dontSendNotification);
 
-        label.setFont(24.0f);
+        label.setFont(juce::FontOptions(24.0f));
         label.setJustificationType(juce::Justification::centred);
 
         tap_sensitivity.onDragEnd = [this] { updateApiConfig(); };

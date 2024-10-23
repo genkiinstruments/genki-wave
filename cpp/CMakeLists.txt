@@ -8,7 +8,7 @@ option(GENKI_WAVE_BUILD_EXAMPLES ON "Enable genki-wave example builds")
 option(GENKI_WAVE_ENABLE_JUCE_TARGETS ON "Fetch JUCE and enable JUCE-based targets")
 
 if (GENKI_WAVE_ENABLE_JUCE_TARGETS)
-    CPMAddPackage("gh:juce-framework/JUCE#7.0.7")
+    CPMAddPackage("gh:juce-framework/JUCE#8.0.3")
     CPMAddPackage("gh:genkiinstruments/juce_bluetooth#1.0.0")
 endif()
 
