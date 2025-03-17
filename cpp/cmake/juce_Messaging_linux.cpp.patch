@@ -1,0 +1,71 @@
+diff --git a/modules/juce_events/native/juce_Messaging_linux.cpp b/modules/juce_events/native/juce_Messaging_linux.cpp
+index 8d4943098f..b3e155a424 100644
+--- a/modules/juce_events/native/juce_Messaging_linux.cpp
++++ b/modules/juce_events/native/juce_Messaging_linux.cpp
+@@ -32,8 +32,13 @@
+   ==============================================================================
+ */
+ 
+-namespace juce
+-{
++#if defined(JUCE_LINUX_USE_GLIB_MAINLOOP) && JUCE_LINUX_USE_GLIB_MAINLOOP
++#include <glib.h>
++
++static GMainLoop* g_main_loop = nullptr;
++#endif
++
++namespace juce {
+ 
+ //==============================================================================
+ class InternalMessageQueue
+@@ -311,10 +316,24 @@ void MessageManager::doPlatformSpecificInitialisation()
+ 
+     InternalRunLoop::getInstance();
+     InternalMessageQueue::getInstance();
++
++#if defined(JUCE_LINUX_USE_GLIB_MAINLOOP) && JUCE_LINUX_USE_GLIB_MAINLOOP
++    jassert (g_main_loop == nullptr);
++    g_main_loop = g_main_loop_new (nullptr, false);
++#endif
+ }
+ 
+ void MessageManager::doPlatformSpecificShutdown()
+ {
++#if defined(JUCE_LINUX_USE_GLIB_MAINLOOP) && JUCE_LINUX_USE_GLIB_MAINLOOP
++    if (g_main_loop != nullptr)
++    {
++        g_main_loop_quit (g_main_loop);
++        g_main_loop_unref (g_main_loop);
++        g_main_loop = nullptr;
++    }
++#endif
++
+     InternalMessageQueue::deleteInstance();
+     InternalRunLoop::deleteInstance();
+ }
+@@ -345,15 +364,22 @@ bool dispatchNextMessageOnSystemQueue (bool returnIfNoPendingMessages)
+         if (LinuxErrorHandling::keyboardBreakOccurred)
+             JUCEApplicationBase::quit();
+ 
++        bool hadGlibEvent = false;
++#if defined(JUCE_LINUX_USE_GLIB_MAINLOOP) && JUCE_LINUX_USE_GLIB_MAINLOOP
++        hadGlibEvent = g_main_context_iteration (nullptr, false);
++#endif
++
+         if (auto* runLoop = InternalRunLoop::getInstanceWithoutCreating())
+         {
+             if (runLoop->dispatchPendingEvents())
+-                break;
++                return true;// JUCE events were processed
+ 
+-            if (returnIfNoPendingMessages)
++            if (returnIfNoPendingMessages && !hadGlibEvent)
+                 return false;
+ 
+-            runLoop->sleepUntilNextEvent (2000);
++            // Only sleep if we didn't process any glib events
++            if (!hadGlibEvent)
++                runLoop->sleepUntilNextEvent (2000);
+         }
+     }
+ 

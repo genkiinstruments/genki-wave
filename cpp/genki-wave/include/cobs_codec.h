@@ -4,10 +4,12 @@
 #include <etl/queue.h>
 #include <gsl/span>
 #include <vector>
+#include <fmt/format.h>
 
 #include "cobs.h"
 #include "sml_wrapper.h"
 #include "txrx.h"
+
 
 namespace genki {
 

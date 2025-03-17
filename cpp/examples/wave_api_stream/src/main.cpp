@@ -21,6 +21,15 @@ int main()
 
     std::unique_ptr<genki::WaveApiDevice> wave;
 
+    {
+        // Adapter status might have updated before we had a chance to attach the listener
+        const auto is_powered_on = adapter.status() == AdapterStatus::PoweredOn;
+        fmt::print("Adapter is powered {}\n", is_powered_on ? "on" : "off");
+
+        adapter.scan(is_powered_on);
+    }
+
+
     listener.property_changed = [&](juce::ValueTree& vt, const juce::Identifier& id)
     {
         if (vt.hasType(ID::BLUETOOTH_ADAPTER) && id == ID::status)
@@ -45,6 +54,8 @@ int main()
         }
     };
 
+    uint64_t prev_t = 0;
+
     listener.child_added = [&](juce::ValueTree&, juce::ValueTree& vt)
     {
         const juce::String name = vt.getProperty(ID::name);
@@ -65,14 +76,15 @@ int main()
                         if (id == Id::Datastream)
                         {
                             const auto& ds = genki::copy<genki::Wave::Datastream>(payload);
-                            DBG(fmt::format("Datastream: gyro: {} acc: {}, orientation: {}",
-                                    ds.data.gyro, ds.data.accel, ds.motionData.currentPose));
+                            const auto dt = (ds.timestamp_us - prev_t) / 1e6;
+                            prev_t = ds.timestamp_us;
+                            fmt::print("Datastream: gyro: {} acc: {}, orientation: {}, sample rate: {}\n", ds.data.gyro, ds.data.accel, ds.motionData.currentPose, 1.0 / dt);
                         }
                         else if (id == Id::ButtonEvent)
                         {
                             const auto evt = genki::copy<genki::Wave::ButtonEvent>(payload);
 
-                            DBG(fmt::format("Button event: {}", evt));
+                            fmt::print("Button event: {}", evt);
 
                             if (evt.id == genki::Wave::ButtonId::B && evt.action == genki::Wave::ButtonAction::Click)
                             {
@@ -89,7 +101,7 @@ int main()
                                                  | ranges::views::join(':')
                                                  | ranges::to<std::string>();
 
-                            DBG(fmt::format("Device info:\n"
+                            fmt::print("Device info:\n"
                                             "  Firmware version: {}.{}.{}\n"
                                             "  Board version: {}\n"
                                             "  MAC address: {}\n"
@@ -97,14 +109,14 @@ int main()
                                     ver.major, ver.minor, ver.patch,
                                     board.c_str(),
                                     mac_str,
-                                    serial.c_str()));
+                                    serial.c_str());
                         }
                         else if (id == Id::BatteryStatus)
                         {
                             const auto bs = genki::copy<genki::Wave::BatteryStatus>(payload);
 
-                            DBG(fmt::format("Battery status: {}%{}\n",
-                                    static_cast<int>(bs.percentage), bs.is_charging ? " (charging)" : ""));
+                            fmt::print("Battery status: {}%{}\n",
+                                    static_cast<int>(bs.percentage), bs.is_charging ? " (charging)" : "");
                         }
                     }
             );
