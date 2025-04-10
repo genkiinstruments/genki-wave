@@ -16,7 +16,7 @@ The project depends on a few third-party libraries
 The CMake build script uses [CPM](https://github.com/cpm-cmake/CPM.cmake) to fetch these dependencies.
 If you use a different build system, you will have to make sure these libraries are available and linked properly as part of your appliation build step.
 
-**NOTE** (Linux only): If you provide your own copy of JUCE, you'll have to apply [this patch](./cmake/juce_Messaging_linux.cpp.patch) to hook the G-Lib mainloop up correctly. It's auto-applied if JUCE is fetched through CPM via this repo.
+**Note** (Linux only): If you provide your own copy of JUCE, you'll have to apply [this patch](./cmake/juce_Messaging_linux.cpp.patch) to hook the G-Lib mainloop up correctly. It's auto-applied if JUCE is fetched through CPM via this repo.
 
 ## Build
 
