@@ -16,6 +16,8 @@ The project depends on a few third-party libraries
 The CMake build script uses [CPM](https://github.com/cpm-cmake/CPM.cmake) to fetch these dependencies.
 If you use a different build system, you will have to make sure these libraries are available and linked properly as part of your appliation build step.
 
+**Note** (Linux only): If you provide your own copy of JUCE, you'll have to apply [this patch](./cmake/juce_Messaging_linux.cpp.patch) to hook the G-Lib mainloop up correctly. It's auto-applied if JUCE is fetched through CPM via this repo.
+
 ## Build
 
 If using CMake, either load the project in your editor or run from the command line
@@ -67,6 +69,4 @@ See the examples folder for more details.
 
 # Known issues
 
-* There is currently no Linux backend for [juce_bluetooth](https://github.com/genkiinstruments/juce_bluetooth), so the project will only build on Windows 10 and macOS.
 * On Windows, the program might not work correctly if the Bluetooth adapter is disabled on program startup.
-* 

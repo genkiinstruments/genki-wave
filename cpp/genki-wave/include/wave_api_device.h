@@ -10,6 +10,8 @@
 #include "wave_public_types.h"
 #include "requests.h"
 
+#include <fmt/format.h>
+
 namespace genki {
 
 namespace util {
@@ -36,7 +38,12 @@ struct WaveApiDevice : private juce::ValueTree::Listener
     //==================================================================================================================
     WaveApiDevice(std::unique_ptr<BleTransport> trans, QueryCallback qcb)
             : transport(std::move(trans)),
-              query_callback(std::move(qcb))
+              query_callback(std::move(qcb)),
+              ble_packetizer(std::make_unique<BlePacketizer<BleTransport, Codec>>(
+                  *transport,
+                  juce::Uuid(ApiCharactUuidString.data()),
+                  [this](auto d) { handleIncomingPacket(d); }, 20) // Until the linux version of juce_bluetooth supports MTU change notification
+              )
     {
         const auto dev = transport->connect(ble_callbacks);
 
@@ -96,7 +103,9 @@ private:
         {
             if (child.hasType(ID::CHARACTERISTIC))
             {
-                if (child.getProperty(ID::uuid))
+                const auto uuid = juce::Uuid(child.getProperty(ID::uuid).toString());
+
+                if (uuid == juce::Uuid(ApiCharactUuidString.data()))
                 {
                     message(child, ID::ENABLE_NOTIFICATIONS);
                 }

@@ -19,6 +19,8 @@ target_sources(${target}
 target_compile_definitions(${target}
         PRIVATE
         JUCE_MODAL_LOOPS_PERMITTED=1
+	JUCE_USE_CURL=0
+	JUCE_WEB_BROWSER=0
         )
 
 target_link_libraries(${target}

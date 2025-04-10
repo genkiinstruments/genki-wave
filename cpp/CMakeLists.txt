@@ -8,8 +8,15 @@ option(GENKI_WAVE_BUILD_EXAMPLES ON "Enable genki-wave example builds")
 option(GENKI_WAVE_ENABLE_JUCE_TARGETS ON "Fetch JUCE and enable JUCE-based targets")
 
 if (GENKI_WAVE_ENABLE_JUCE_TARGETS)
-    CPMAddPackage("gh:juce-framework/JUCE#8.0.3")
-    CPMAddPackage("gh:genkiinstruments/juce_bluetooth#1.0.0")
+    CPMAddPackage(NAME JUCE
+        GITHUB_REPOSITORY juce-framework/JUCE
+        GIT_TAG 8.0.3
+        PATCH_COMMAND git apply --ignore-space-change ${CMAKE_CURRENT_SOURCE_DIR}/cmake/juce_Messaging_linux.cpp.patch
+        UPDATE_DISCONNECTED 1
+        OPTIONS "JUCE_BUILD_EXTRAS OFF" "JUCE_BUILD_EXAMPLES OFF" "JUCE_ENABLE_MODULE_SOURCE_GROUPS ON"
+    )
+
+    CPMAddPackage("gh:genkiinstruments/juce_bluetooth#1.1.0")
 endif()
 
 CPMAddPackage("gh:microsoft/GSL#v4.0.0")
