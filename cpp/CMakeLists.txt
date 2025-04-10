@@ -16,7 +16,7 @@ if (GENKI_WAVE_ENABLE_JUCE_TARGETS)
         OPTIONS "JUCE_BUILD_EXTRAS OFF" "JUCE_BUILD_EXAMPLES OFF" "JUCE_ENABLE_MODULE_SOURCE_GROUPS ON"
     )
 
-    CPMAddPackage("gh:genkiinstruments/juce_bluetooth#1.0.0")
+    CPMAddPackage("gh:genkiinstruments/juce_bluetooth#1.1.0")
 endif()
 
 CPMAddPackage("gh:microsoft/GSL#v4.0.0")
