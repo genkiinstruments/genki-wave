@@ -1,27 +1,25 @@
 diff --git a/modules/juce_events/native/juce_Messaging_linux.cpp b/modules/juce_events/native/juce_Messaging_linux.cpp
-index 8d4943098f..b3e155a424 100644
+index d18131bbf5..d76daed862 100644
 --- a/modules/juce_events/native/juce_Messaging_linux.cpp
 +++ b/modules/juce_events/native/juce_Messaging_linux.cpp
-@@ -32,8 +32,13 @@
+@@ -32,6 +32,12 @@
    ==============================================================================
  */
  
--namespace juce
--{
 +#if defined(JUCE_LINUX_USE_GLIB_MAINLOOP) && JUCE_LINUX_USE_GLIB_MAINLOOP
 +#include <glib.h>
 +
 +static GMainLoop* g_main_loop = nullptr;
 +#endif
 +
-+namespace juce {
+ namespace juce
+ {
  
- //==============================================================================
- class InternalMessageQueue
-@@ -311,10 +316,24 @@ void MessageManager::doPlatformSpecificInitialisation()
+@@ -315,10 +321,25 @@ void MessageManager::doPlatformSpecificInitialisation()
  
      InternalRunLoop::getInstance();
      InternalMessageQueue::getInstance();
++
 +
 +#if defined(JUCE_LINUX_USE_GLIB_MAINLOOP) && JUCE_LINUX_USE_GLIB_MAINLOOP
 +    jassert (g_main_loop == nullptr);
@@ -43,7 +41,7 @@ index 8d4943098f..b3e155a424 100644
      InternalMessageQueue::deleteInstance();
      InternalRunLoop::deleteInstance();
  }
-@@ -345,15 +364,22 @@ bool dispatchNextMessageOnSystemQueue (bool returnIfNoPendingMessages)
+@@ -349,15 +370,23 @@ bool dispatchNextMessageOnSystemQueue (bool returnIfNoPendingMessages)
          if (LinuxErrorHandling::keyboardBreakOccurred)
              JUCEApplicationBase::quit();
  
@@ -52,11 +50,12 @@ index 8d4943098f..b3e155a424 100644
 +        hadGlibEvent = g_main_context_iteration (nullptr, false);
 +#endif
 +
++
          if (auto* runLoop = InternalRunLoop::getInstanceWithoutCreating())
          {
              if (runLoop->dispatchPendingEvents())
 -                break;
-+                return true;// JUCE events were processed
++                return true; // JUCE events were processed
  
 -            if (returnIfNoPendingMessages)
 +            if (returnIfNoPendingMessages && !hadGlibEvent)
