@@ -11,7 +11,7 @@ if (GENKI_WAVE_ENABLE_JUCE_TARGETS)
     CPMAddPackage(NAME JUCE
         GITHUB_REPOSITORY juce-framework/JUCE
         GIT_TAG 8.0.3
-        PATCH_COMMAND git apply ${CMAKE_CURRENT_SOURCE_DIR}/cmake/juce_Messaging_linux.cpp.patch
+        PATCH_COMMAND git apply --ignore-space-change ${CMAKE_CURRENT_SOURCE_DIR}/cmake/juce_Messaging_linux.cpp.patch
         UPDATE_DISCONNECTED 1
         OPTIONS "JUCE_BUILD_EXTRAS OFF" "JUCE_BUILD_EXAMPLES OFF" "JUCE_ENABLE_MODULE_SOURCE_GROUPS ON"
     )
